@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319439082741",
+    "project_id": "melody-meter-local",
+    "storage_bucket": "melody-meter-local.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319439082741:android:60d686aa234e8c5349e1bc",
+        "android_client_info": {
+          "package_name": "com.example.melody_meter_local"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArZ8FTwymYQ0sysBJz2pdV8HbX5BXif5E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
