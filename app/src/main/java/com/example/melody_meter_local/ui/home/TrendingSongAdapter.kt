@@ -13,7 +13,7 @@ class TrendingSongAdapter (private val trendingSongList: List<Song>): RecyclerVi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.trending_song_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_song, parent, false)
         return SongViewHolder(view)
     }
 

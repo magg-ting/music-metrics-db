@@ -9,10 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.example.melody_meter_local.data.User
 import com.example.melody_meter_local.databinding.FragmentSignupBinding
 import com.example.melody_meter_local.ui.login.LoginDialogFragment
 import com.example.melody_meter_local.ui.login.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class SignUpDialogFragment : DialogFragment() {
     private var _binding: FragmentSignupBinding? = null
@@ -22,6 +25,7 @@ class SignUpDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var databaseReference: DatabaseReference
     private val loginViewModel: LoginViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -73,13 +77,26 @@ class SignUpDialogFragment : DialogFragment() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(requireActivity()) {
                         if (it.isSuccessful) {
-                            loginViewModel.login()
-                            Toast.makeText(
-                                context,
-                                "Account created successfully",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            dismiss()  //dismiss the signup modal upon successful registration
+                            // get the user id and add user to database
+                            val uid = auth.currentUser?.uid
+                            val user = User(username = email)  // default username will be email
+                            databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+
+                            if (uid != null) {
+                                databaseReference.child(uid).setValue(user)
+                                    .addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            Toast.makeText(
+                                                context,
+                                                "Account created successfully",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            loginViewModel.login()
+                                            dismiss()  //dismiss the signup modal upon successful registration
+                                            //TODO: redirect new user to finish their profile
+                                        }
+                                    }
+                            }
                         }
                     }
                     .addOnFailureListener {

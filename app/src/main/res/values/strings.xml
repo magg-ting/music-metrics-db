@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">Melody-Meter-Local</string>
     <string name="login">Login</string>
-    <string name="signUp">Sign Up</string>
+    <string name="signup">Sign Up</string>
     <string name="login_or_signup">Login or Sign up</string>
     <string name="logout">Logout</string>
     <string name="hello">Hello</string>
-    <string name="register">Register</string>
     <string name="title_activity_nav_bar">NavBar</string>
     <string name="title_home">Home</string>
     <string name="title_search">Search</string>
@@ -21,15 +20,17 @@
     <string name="unmatched_passwords">Passwords do not match. Please try again.</string>
     <string name="login_failed">"Login failed"</string>
     <string name="action_sign_up"><u>Sign up</u></string>
-    <string name="action_sign_in">Login</string>
-    <string name="action_sign_in_short">Login</string>
     <string name="action_login_or_signup">Login or sign up to see your profile.</string>
     <string name="favorite">Favorite</string>
-    <string name="watchlist">Watchlist</string>
-    <string name="watch_history">Watch History</string>
-    <string name="my_lists">My Lists</string>
-    <string name="popcorn_puzzles">Popcorn Puzzles</string>
-    <string name="theme">Theme</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="rating_history">Rating History</string>
     <string name="error_occurred">Error occurred.</string>
     <string name="image_to_prompt_user_to_login">Image to prompt user to login</string>
+    <string name="recent_searches"><b>Recent Searches</b></string>
+    <string name="listen_on_spotify"><u>Listen on Spotify</u></string>
+    <string name="clear_search_item">Clear search item</string>
+    <string name="clear_all">Clear All</string>
+    <string name="login_to_see_recent_searches">Login to see recent searches.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

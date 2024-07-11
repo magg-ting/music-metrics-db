@@ -32,9 +32,9 @@ class HomeFragment : Fragment() {
 
         //sample data
         val songs = listOf(
-            Song("Happy Birthday", "Anonymous", 10.0),
-            Song("DelayNoMore", "F**k", 8.8),
-            Song("Other World", "Keira", 6.5)
+            Song("","Happy Birthday", "Anonymous", null, 10.0),
+            Song("","DelayNoMore", "F**k", null, 8.8),
+            Song("","Other World", "Keira", null, 6.5)
         )
 
         val adapter = TrendingSongAdapter(songs)

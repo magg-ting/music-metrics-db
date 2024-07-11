@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_medium_16dp" >
+
+        <ImageView
+            android:id="@+id/albumImg"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_album_cover"
+            android:layout_gravity="center_vertical"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical" >
+
+            <TextView
+                android:id="@+id/trackName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Track Name"
+                android:textAppearance="?attr/textAppearanceHeadline6"/>
+
+            <TextView
+                android:id="@+id/trackArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artist Name"
+                android:textAppearance="?attr/textAppearanceSubtitle2"/>
+
+            <TextView
+                android:id="@+id/spotifyUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/listen_on_spotify"
+                android:textColor="@color/hyperlink" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/rating"
+            style="@style/TextStyle.TitleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_card_background"
+            android:drawablePadding="@dimen/spacing_small_8dp"
+            android:padding="@dimen/spacing_small_8dp"
+            android:text="6.5"
+            android:layout_gravity="center_vertical"
+            android:gravity="end|center_vertical"
+            android:textColor="@color/on_background_60"
+            app:drawableStartCompat="@drawable/rating_fill_star"
+            app:drawableTint="@color/star" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
