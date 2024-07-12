@@ -8,16 +8,26 @@ import com.bumptech.glide.Glide
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.ItemSongBinding
 
-class SearchResultsAdapter (private val searchResults: List<Song>):
-    RecyclerView.Adapter<SearchResultsAdapter.SearchResultsViewHolder>(){
-    class SearchResultsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+class SearchResultsAdapter (
+    private val searchResults: List<Song>,
+    private val onItemClick: (Song) -> Unit
+): RecyclerView.Adapter<SearchResultsAdapter.SearchResultsViewHolder>(){
+
+    class SearchResultsViewHolder(
+        private val itemView: View,
+        private val onItemClick: (Song) -> Unit
+    ) : RecyclerView.ViewHolder(itemView){
+
         private val binding = ItemSongBinding.bind(itemView)
         fun bind(item: Song) {
             binding.trackName.text = item.name
             binding.trackArtist.text = item.artist
-            // Load image into binding.albumImg using Glide or Picasso
+            // Load image into binding.albumImg using Glide
             Glide.with(binding.root).load(item.imgUrl).into(binding.albumImg)
             binding.rating.text = item.avgRating.toString()
+            itemView.setOnClickListener{
+                onItemClick(item)
+            }
         }
     }
 

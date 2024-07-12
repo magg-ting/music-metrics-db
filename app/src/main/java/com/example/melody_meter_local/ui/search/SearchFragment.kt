@@ -9,6 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.model.Song
@@ -72,7 +73,10 @@ class SearchFragment : Fragment() {
         }
 
         // set up search results view
-        searchResultsAdapter = SearchResultsAdapter(searchResults)
+        searchResultsAdapter = SearchResultsAdapter(searchResults){song ->
+            val action = SearchFragmentDirections.actionSearchFragmentToSongDetailFragment(song)
+            findNavController().navigate(action)
+        }
 
         binding.searchResultsRecyclerView.apply{
             layoutManager = LinearLayoutManager(context)
