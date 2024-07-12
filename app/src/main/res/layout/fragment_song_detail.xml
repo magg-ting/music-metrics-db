@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    tools:context=".ui.detail.SongDetailFragment">
+
+    <FrameLayout
+        android:id="@+id/image_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <ImageView
+            android:id="@+id/album_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_x_medium_20dp"
+            app:imageUrl="@drawable/default_album_cover"
+            tools:src="@drawable/default_album_cover"
+            app:tint="@color/on_background_60" />
+
+<!--        <View-->
+<!--            android:id="@+id/image_background"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/main_image_gradient"-->
+<!--            android:scaleType="centerCrop" />-->
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_gravity="center_vertical"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/arrow_left"
+            app:tint="@color/on_background_60" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/title_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_wrapper"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/song_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Song Name" />
+
+        <ImageButton
+            android:id="@+id/saveButton"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:backgroundTint="@color/on_primary"
+            android:onClick="@{()-> viewModel.onClickSaveButton()}"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_save_unpressed"
+            app:isVisible="@{!viewModel.state.loading &amp; viewModel.state.logedin }"
+            app:tint="@color/on_background_60" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/artist_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Artist"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_wrapper" />
+
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4.0 (based on 30 ratings)"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/artist_name" />
+
+<!--    TODO: rating bar for user -->
+
+    <TextView
+        android:id="@+id/spotify_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Listen on Spotify"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rating" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

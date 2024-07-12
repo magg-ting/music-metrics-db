@@ -116,6 +116,7 @@ class SearchFragment : Fragment() {
         }
     }
 
+    // TODO: search results not hidden when navigated back to search fragment
     override fun onResume() {
         super.onResume()
         // show recent searches group and hide search results group by default
