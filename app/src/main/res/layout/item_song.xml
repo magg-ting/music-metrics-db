@@ -40,14 +40,6 @@
                 android:text="Artist Name"
                 android:textAppearance="?attr/textAppearanceSubtitle2"/>
 
-            <TextView
-                android:id="@+id/spotifyUrl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/listen_on_spotify"
-                android:clickable="true"
-                android:textColor="@color/hyperlink" />
-
         </LinearLayout>
 
         <TextView

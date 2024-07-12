@@ -1,6 +1,6 @@
 package com.example.melody_meter_local.network
 
-import com.example.melody_meter_local.model.SpotifyResponse
+import com.example.melody_meter_local.model.spotify.SpotifyResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

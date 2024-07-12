@@ -15,7 +15,6 @@ class SearchResultsAdapter (private val searchResults: List<Song>):
         fun bind(item: Song) {
             binding.trackName.text = item.name
             binding.trackArtist.text = item.artist
-            binding.spotifyUrl.text = "https://open.spotify.com/track/${item.spotifyTrackId}"
             // Load image into binding.albumImg using Glide or Picasso
             Glide.with(binding.root).load(item.imgUrl).into(binding.albumImg)
             binding.rating.text = item.avgRating.toString()
