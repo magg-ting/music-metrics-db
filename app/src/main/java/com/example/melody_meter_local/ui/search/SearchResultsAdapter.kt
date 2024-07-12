@@ -1,13 +1,11 @@
 package com.example.melody_meter_local.ui.search
 
-import android.app.appsearch.SearchResult
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.melody_meter_local.data.Song
+import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.ItemSongBinding
 
 class SearchResultsAdapter (private val searchResults: List<Song>):
@@ -17,7 +15,7 @@ class SearchResultsAdapter (private val searchResults: List<Song>):
         fun bind(item: Song) {
             binding.trackName.text = item.name
             binding.trackArtist.text = item.artist
-            binding.spotifyUrl.text = "https://open.spotify.com/track/${item.spotifyId}"
+            binding.spotifyUrl.text = "https://open.spotify.com/track/${item.spotifyTrackId}"
             // Load image into binding.albumImg using Glide or Picasso
             Glide.with(binding.root).load(item.imgUrl).into(binding.albumImg)
             binding.rating.text = item.avgRating.toString()

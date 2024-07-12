@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.melody_meter_local.data.Song
+import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -30,11 +30,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //sample data
+        //sample model
         val songs = listOf(
-            Song("","Happy Birthday", "Anonymous", null, 10.0),
-            Song("","DelayNoMore", "F**k", null, 8.8),
-            Song("","Other World", "Keira", null, 6.5)
+            Song("","Happy Birthday", "Anonymous", null, null, 10.0),
+            Song("","DelayNoMore", "F**k", null, null, 8.8),
+            Song("","Other World", "Keira", null, null, 6.5)
         )
 
         val adapter = TrendingSongAdapter(songs)

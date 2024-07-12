@@ -1,10 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
-    id("kotlin-kapt")
+    kotlin("kapt")
     id("com.google.dagger.hilt.android")
 }
+
 
 android {
     namespace = "com.example.melody_meter_local"
@@ -16,8 +19,17 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+        val localProperties = Properties()
+        localProperties.load(project.rootProject.file("local.properties").inputStream())
+
+        val SPOTIFY_CLIENT_ID: String by localProperties
+        val SPOTIFY_CLIENT_SECRET: String by localProperties
+
+        buildConfigField("String", "SPOTIFY_CLIENT_ID", "$SPOTIFY_CLIENT_ID")
+        buildConfigField("String", "SPOTIFY_CLIENT_SECRET", "$SPOTIFY_CLIENT_SECRET")
     }
 
     buildTypes {
@@ -32,6 +44,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -56,13 +69,17 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.annotation)
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.database)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.14")
     implementation("com.airbnb.android:lottie:6.4.1")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("com.google.dagger:hilt-android:2.44")
-    implementation(libs.firebase.database.ktx)
-    implementation(libs.firebase.database)
-    kapt("com.google.dagger:hilt-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-compiler:2.51.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

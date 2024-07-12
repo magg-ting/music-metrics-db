@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.melody_meter_local.R
-import com.example.melody_meter_local.data.Song
+import com.example.melody_meter_local.model.Song
 
 class TrendingSongAdapter (private val trendingSongList: List<Song>): RecyclerView.Adapter<TrendingSongAdapter.SongViewHolder>(){
     class SongViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

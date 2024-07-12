@@ -9,7 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.melody_meter_local.data.Song
+import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentSearchBinding
 import com.example.melody_meter_local.ui.login.LoginDialogFragment
 import com.example.melody_meter_local.ui.login.LoginViewModel
@@ -90,8 +90,8 @@ class SearchFragment : Fragment() {
                 query?.let {
                     val trimmedQuery = it.trim()
                     if (trimmedQuery.isNotEmpty()) {
-                        searchViewModel.performSearch(trimmedQuery)
                         saveSearchQuery(trimmedQuery)
+                        searchViewModel.performSearch(trimmedQuery)
                     }
                 }
                 return true

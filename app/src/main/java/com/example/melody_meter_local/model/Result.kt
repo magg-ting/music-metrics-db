@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.data
+package com.example.melody_meter_local.model
 
 /**
  * A generic class that holds a value with its loading status.
@@ -11,7 +11,7 @@ sealed class Result<out T : Any> {
 
     override fun toString(): String {
         return when (this) {
-            is Success<*> -> "Success[data=$data]"
+            is Success<*> -> "Success[model=$data]"
             is Error -> "Error[exception=$exception]"
         }
     }

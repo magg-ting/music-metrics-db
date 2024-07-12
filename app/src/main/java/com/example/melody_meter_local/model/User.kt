@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.data
+package com.example.melody_meter_local.model
 
 data class User(
     var username: String = "",

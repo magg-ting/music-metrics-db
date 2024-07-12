@@ -20,6 +20,8 @@
     <string name="unmatched_passwords">Passwords do not match. Please try again.</string>
     <string name="login_failed">"Login failed"</string>
     <string name="action_sign_up"><u>Sign up</u></string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Login</string>
     <string name="action_login_or_signup">Login or sign up to see your profile.</string>
     <string name="favorite">Favorite</string>
     <string name="edit_profile">Edit Profile</string>
