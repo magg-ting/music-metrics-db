@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.melody_meter_local.R
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentSearchBinding
 import com.example.melody_meter_local.ui.login.LoginDialogFragment
@@ -20,7 +22,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
@@ -29,7 +33,7 @@ class SearchFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val searchViewModel: SearchViewModel by activityViewModels()
+    private val searchViewModel: SearchViewModel by hiltNavGraphViewModels(R.id.mobile_navigation)
     private val loginViewModel: LoginViewModel by activityViewModels()
 
     private lateinit var recentSearchesAdapter: RecentSearchesAdapter

@@ -4,8 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
-    kotlin("kapt")
-    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 
@@ -51,6 +51,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -79,7 +80,10 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

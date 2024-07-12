@@ -21,11 +21,6 @@ class SearchViewModel @Inject constructor(
     private val _searchResults = MutableLiveData<List<Song>>()
     val searchResults: LiveData<List<Song>> get() = _searchResults
 
-    // Default constructor with default or placeholder dependencies
-    constructor() : this(
-        SpotifyRepository()
-    )
-
     fun performSearch(query: String) {
         viewModelScope.launch {
             try {
