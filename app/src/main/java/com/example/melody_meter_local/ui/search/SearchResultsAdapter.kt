@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.melody_meter_local.R
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.ItemSongBinding
 
@@ -14,7 +15,7 @@ class SearchResultsAdapter (
 ): RecyclerView.Adapter<SearchResultsAdapter.SearchResultsViewHolder>(){
 
     class SearchResultsViewHolder(
-        private val itemView: View,
+        itemView: View,
         private val onItemClick: (Song) -> Unit
     ) : RecyclerView.ViewHolder(itemView){
 
@@ -22,8 +23,13 @@ class SearchResultsAdapter (
         fun bind(item: Song) {
             binding.trackName.text = item.name
             binding.trackArtist.text = item.artist
-            // Load image into binding.albumImg using Glide
-            Glide.with(binding.root).load(item.imgUrl).into(binding.albumImg)
+            if(!item.imgUrl.isNullOrEmpty()){
+                // Load image into binding.albumImg using Glide
+                Glide.with(binding.root).load(item.imgUrl).into(binding.albumImg)
+            }
+            else{
+                binding.albumImg.setImageResource(R.drawable.default_album_cover)
+            }
             binding.rating.text = item.avgRating.toString()
             itemView.setOnClickListener{
                 onItemClick(item)
@@ -33,7 +39,7 @@ class SearchResultsAdapter (
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultsViewHolder {
         val binding = ItemSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SearchResultsViewHolder(binding.root)
+        return SearchResultsViewHolder(binding.root, onItemClick)
     }
 
     override fun onBindViewHolder(holder: SearchResultsViewHolder, position: Int) {

@@ -21,8 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/spacing_x_medium_20dp"
-            tools:src="@drawable/default_album_cover"
-            app:tint="@color/on_background_60" />
+            android:src="@drawable/default_album_cover"
+            app:tint="@color/on_background_60"
+            android:scaleType="centerCrop" />
 
 <!--        <View-->
 <!--            android:id="@+id/image_background"-->
@@ -53,10 +54,12 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/song_name"
+            android:id="@+id/track_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/placeholder_song_title"
+            android:textSize="@dimen/text_large"/>
 
         <ImageButton
             android:id="@+id/saveButton"
@@ -78,14 +81,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_wrapper" />
+        app:layout_constraintTop_toBottomOf="@+id/title_wrapper"
+        android:text="@string/placeholder_artist_name"
+        android:textSize="@dimen/text_medium"
+        android:paddingTop="@dimen/spacing_small_8dp"/>
 
     <TextView
         android:id="@+id/rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/artist_name" />
+        app:layout_constraintTop_toBottomOf="@+id/artist_name"
+        android:text="@string/default_no_rating" />
 
 <!--    TODO: rating bar for user -->
 
@@ -96,6 +103,8 @@
         android:text="@string/listen_on_spotify"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rating"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:clickable="true"
         android:textColor="@color/hyperlink" />
 

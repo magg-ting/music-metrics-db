@@ -30,14 +30,14 @@
                 android:id="@+id/trackName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Track Name"
+                android:text="@string/placeholder_song_title"
                 android:textAppearance="?attr/textAppearanceHeadline6"/>
 
             <TextView
                 android:id="@+id/trackArtist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Artist Name"
+                android:text="@string/placeholder_artist_name"
                 android:textAppearance="?attr/textAppearanceSubtitle2"/>
 
         </LinearLayout>

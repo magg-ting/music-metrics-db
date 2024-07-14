@@ -21,7 +21,7 @@ class ProfileFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by activityViewModels()
 
-    private lateinit var databaseReference: DatabaseReference
+    private lateinit var userDbReference: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
