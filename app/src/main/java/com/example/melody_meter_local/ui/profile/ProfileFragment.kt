@@ -38,7 +38,6 @@ class ProfileFragment : Fragment() {
     private lateinit var userDbReference: DatabaseReference
     private lateinit var songDbReference: DatabaseReference
 
-    private var user: User ?= null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -124,8 +123,14 @@ class ProfileFragment : Fragment() {
             findNavController()
                 .navigate(ProfileFragmentDirections.actionProfileFragmentToFavoritesFragment(user))
         }
-        binding.textViewChangePassword.setOnClickListener { findNavController().navigate(R.id.navigation_change_password) }
-        binding.textViewRatingHistory.setOnClickListener { findNavController().navigate(R.id.navigation_rating_history) }
+        binding.textViewChangePassword.setOnClickListener {
+            findNavController()
+                .navigate(ProfileFragmentDirections.actionProfileFragmentToChangePasswordFragment(user))
+        }
+        binding.textViewRatingHistory.setOnClickListener {
+            findNavController()
+                .navigate(ProfileFragmentDirections.actionProfileFragmentToRatingHistoryFragment(user))
+        }
         binding.textViewLogout.setOnClickListener { showLogoutConfirmDialog() }
         binding.btnChangeImage.setOnClickListener {  }
 

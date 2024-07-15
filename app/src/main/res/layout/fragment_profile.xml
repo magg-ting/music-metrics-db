@@ -221,6 +221,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_logout"
+        android:layout_marginTop="@dimen/spacing_large_24dp"
         android:text="@string/save_changes"
         style="@style/TextStyle.TitleSmall"
         android:textAllCaps="false"
