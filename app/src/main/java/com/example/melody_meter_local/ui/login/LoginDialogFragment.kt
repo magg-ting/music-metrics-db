@@ -3,12 +3,15 @@ package com.example.melody_meter_local.ui.login
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.example.melody_meter_local.R
 
 import com.example.melody_meter_local.databinding.FragmentLoginBinding
 import com.example.melody_meter_local.ui.signup.SignUpDialogFragment
@@ -71,6 +74,7 @@ class LoginDialogFragment : DialogFragment() {
                         loginViewModel.login()
                         Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                         dismiss()  //dismiss the login modal upon successful sign in
+                        Log.d("Login Dialog", "Dismissed login dialog")
                     }
                 }
                 .addOnFailureListener{
@@ -92,5 +96,10 @@ class LoginDialogFragment : DialogFragment() {
             (resources.displayMetrics.widthPixels * 0.8).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -19,6 +19,7 @@ class RecentSearchesAdapter(private val recentSearches: MutableList<String>, pri
 
         fun bind(searchItem: String, onClearClick: (String) -> Unit) {
             searchTextView.text = searchItem
+//            TODO: onclick listener not working
             clearButton.setOnClickListener {
                 onClearClick(searchItem)
             }

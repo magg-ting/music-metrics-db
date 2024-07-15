@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 class LoginViewModel : ViewModel() {
 
     private val _isLoggedIn = MutableLiveData<Boolean>()
-    val isLoggedIn: LiveData<Boolean> = _isLoggedIn
+    val isLoggedIn: LiveData<Boolean> get() = _isLoggedIn
 
     init {
         _isLoggedIn.value = false  // Initialize isLoggedIn to false
@@ -21,6 +21,7 @@ class LoginViewModel : ViewModel() {
     fun logout() {
         _isLoggedIn.value = false
     }
+
 }
 
 //    // A placeholder username validation check

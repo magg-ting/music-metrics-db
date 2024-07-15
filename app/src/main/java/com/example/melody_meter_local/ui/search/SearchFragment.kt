@@ -1,5 +1,6 @@
 package com.example.melody_meter_local.ui.search
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -142,6 +143,7 @@ class SearchFragment : Fragment() {
             binding.recentSearchesRecyclerView.visibility = View.VISIBLE
             binding.clearAllSearches.visibility = View.VISIBLE
             binding.loginPromptWrapper.visibility = View.GONE
+//            TODO: onclick listener not working
             binding.clearAllSearches.setOnClickListener {
                 recentSearches.clear()
                 recentSearchesAdapter.notifyDataSetChanged()
@@ -184,7 +186,7 @@ class SearchFragment : Fragment() {
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
-                        // Handle error
+                        Log.w(ContentValues.TAG, "Load Recent Searches: onCancelled", databaseError.toException())
                     }
                 })
         }
@@ -205,7 +207,7 @@ class SearchFragment : Fragment() {
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
-                        // Handle error
+                        Log.w(ContentValues.TAG, "Load Recent Searches: onCancelled", databaseError.toException())
                     }
                 })
         }

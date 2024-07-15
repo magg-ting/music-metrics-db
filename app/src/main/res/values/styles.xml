@@ -94,8 +94,11 @@
     </style>
 
     <style name="TextInputLayoutStyle">
-        <item name="boxStrokeWidth">0dp</item>
-        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="strokeColor">@color/on_background_38</item>
+        <item name="boxCornerRadiusTopStart">15dp</item>
+        <item name="boxCornerRadiusTopEnd">15dp</item>
+        <item name="boxCornerRadiusBottomStart">15dp</item>
+        <item name="boxCornerRadiusBottomEnd">15dp</item>
     </style>
 
     <style name="PrimaryButton" parent="@style/Widget.Material3.Button.UnelevatedButton">

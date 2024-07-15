@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.example.melody_meter_local.R
 import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.databinding.FragmentSignupBinding
 import com.example.melody_meter_local.ui.login.LoginDialogFragment
@@ -43,6 +45,7 @@ class SignUpDialogFragment : DialogFragment() {
         auth = FirebaseAuth.getInstance()
 
         val btnSignup = binding.btnSignup
+        val edtxtUsername = binding.username
         val edtxtEmail = binding.email
         val edtxtPassword = binding.password
         val edtxtConfirmPassword = binding.confirmPassword
@@ -54,11 +57,12 @@ class SignUpDialogFragment : DialogFragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val username = edtxtUsername.text.toString().trim()
                 val email = edtxtEmail.text.toString().trim()
                 val password = edtxtPassword.text.toString().trim()
                 val confirmPassword = edtxtConfirmPassword.text.toString().trim()
                 btnSignup.isEnabled =
-                    email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()
+                    username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -69,6 +73,7 @@ class SignUpDialogFragment : DialogFragment() {
         edtxtConfirmPassword.addTextChangedListener(textWatcher)
 
         btnSignup.setOnClickListener {
+            val username = edtxtUsername.text.toString().trim()
             val email = edtxtEmail.text.toString().trim()
             val password = edtxtPassword.text.toString().trim()
             val confirmPassword = edtxtConfirmPassword.text.toString().trim()
@@ -79,7 +84,7 @@ class SignUpDialogFragment : DialogFragment() {
                         if (it.isSuccessful) {
                             // get the user id and add user to database
                             val uid = auth.currentUser?.uid
-                            val user = User(username = email)  // default username will be email
+                            val user = User(username = username)
                             databaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
                             if (uid != null) {
@@ -93,7 +98,7 @@ class SignUpDialogFragment : DialogFragment() {
                                             ).show()
                                             loginViewModel.login()
                                             dismiss()  //dismiss the signup modal upon successful registration
-                                            //TODO: redirect new user to finish their profile
+                                            //findNavController().navigate(R.id.navigation_edit_profile)
                                         }
                                     }
                             }
@@ -121,4 +126,10 @@ class SignUpDialogFragment : DialogFragment() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

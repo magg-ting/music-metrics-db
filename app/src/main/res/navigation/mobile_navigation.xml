@@ -3,41 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_profile">
 
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.melody_meter_local.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_search"
         android:name="com.example.melody_meter_local.ui.search.SearchFragment"
-        android:label="@string/title_search"
+        android:label="Search"
         tools:layout="@layout/fragment_search" >
-
         <action
             android:id="@+id/action_searchFragment_to_songDetailFragment"
-            app:destination="@id/songDetailFragment"
+            app:destination="@id/navigation_song_detail"
             app:enterAnim="@anim/enter_anim"
             app:exitAnim="@anim/exit_anim"
             app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim">
-
             <argument
                 android:name="song"
                 app:argType="com.example.melody_meter_local.model.Song"
                 app:nullable="false" />
-
         </action>
-
     </fragment>
 
     <fragment
-        android:id="@+id/songDetailFragment"
+        android:id="@+id/navigation_song_detail"
         android:name="com.example.melody_meter_local.ui.detail.SongDetailFragment"
-        android:label="Song Details">
+        android:label="Song Details"
+        tools:layout="@layout/fragment_song_detail" >
         <argument
             android:name="song"
             app:argType="com.example.melody_meter_local.model.Song"
@@ -47,7 +44,53 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.melody_meter_local.ui.profile.ProfileFragment"
-        android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_favoritesFragment"
+            app:destination="@id/navigation_favorites"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim">
+            <argument
+                android:name="user"
+                app:argType="com.example.melody_meter_local.model.User"
+                app:nullable="false" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_change_password"
+        android:name="com.example.melody_meter_local.ui.profile.ChangePasswordFragment"
+        android:label="Change Password"
+        tools:layout="@layout/fragment_change_password" >
+        <argument
+            android:name="user"
+            app:argType="com.example.melody_meter_local.model.User"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_favorites"
+        android:name="com.example.melody_meter_local.ui.profile.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <argument
+            android:name="user"
+            app:argType="com.example.melody_meter_local.model.User"
+            app:nullable="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_rating_history"
+        android:name="com.example.melody_meter_local.ui.profile.RatingHistoryFragment"
+        android:label="Rating History"
+        tools:layout="@layout/fragment_rating_history" >
+        <argument
+            android:name="user"
+            app:argType="com.example.melody_meter_local.model.User"
+            app:nullable="false" />
+    </fragment>
 
 </navigation>

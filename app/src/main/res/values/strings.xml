@@ -23,7 +23,7 @@
     <string name="action_sign_in">Login</string>
     <string name="action_sign_in_short">Login</string>
     <string name="action_login_or_signup">Login or sign up to see your profile.</string>
-    <string name="favorite">Favorite</string>
+    <string name="saved">Saved</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="rating_history">Rating History</string>
     <string name="error_occurred">Error occurred.</string>
@@ -38,4 +38,11 @@
     <string name="placeholder_song_title">{Placeholder: Song Title}</string>
     <string name="placeholder_artist_name">{Placeholder: Artist Name}</string>
     <string name="default_no_rating">No ratings from the community yet.</string>
+    <string name="confirm_logout">Are you sure you want to log out?</string>
+    <string name="cancel">Cancel</string>
+    <string name="prompt_username">Username (no space allowed)</string>
+    <string name="placeholder_username">{Placeholder_Username}</string>
+    <string name="change_password">Change Password</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="no_favorites_msg">You don\'t have any saved songs yet.</string>
 </resources>
