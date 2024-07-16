@@ -103,7 +103,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recent_searches_title_wrapper" />
+        app:layout_constraintTop_toBottomOf="@id/recent_searches_title_wrapper"
+        app:layoutManager="LinearLayoutManager"
+        android:scrollbars="vertical" />
 
     <!-- Search results section -->
     <androidx.constraintlayout.widget.Group
@@ -124,6 +126,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_view" />
+        app:layout_constraintTop_toBottomOf="@id/search_view"
+        app:layoutManager="LinearLayoutManager"
+        android:scrollbars="vertical" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

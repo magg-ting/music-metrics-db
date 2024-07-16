@@ -80,6 +80,7 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.4.1")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.storage)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.dagger:hilt-android:2.51.1")

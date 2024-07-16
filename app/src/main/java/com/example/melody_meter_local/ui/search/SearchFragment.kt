@@ -13,6 +13,8 @@ import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.melody_meter_local.R
+import com.example.melody_meter_local.adapter.RecentSearchesAdapter
+import com.example.melody_meter_local.adapter.SearchResultsAdapter
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentSearchBinding
 import com.example.melody_meter_local.ui.login.LoginDialogFragment

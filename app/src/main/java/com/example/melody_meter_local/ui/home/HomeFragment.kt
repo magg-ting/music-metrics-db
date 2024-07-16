@@ -1,6 +1,6 @@
 package com.example.melody_meter_local.ui.home
 
-import TrendingSongAdapter
+import com.example.melody_meter_local.adapter.TrendingSongAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
