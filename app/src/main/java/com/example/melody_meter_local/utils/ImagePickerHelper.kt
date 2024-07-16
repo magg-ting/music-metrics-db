@@ -1,13 +1,11 @@
 package com.example.melody_meter_local.utils
 
 import android.Manifest
-import android.app.Activity
-import android.app.ProgressDialog
 import android.content.ContentValues
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -27,6 +25,20 @@ class ImagePickerHelper(private val fragment: Fragment, private val profileViewM
     private val pickImageCamera = fragment.registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             imageUri?.let { uploadProfileCoverPhoto(it) }
+        }
+    }
+
+    private val requestPermissionLauncher = fragment.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            pickFromCamera()
+        }
+    }
+
+    private val requestMultiplePermissionsLauncher = fragment.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        if (permissions[Manifest.permission.CAMERA] == true && permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
+            pickFromCamera()
+        } else if (permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
+            pickFromGallery()
         }
     }
 
@@ -54,9 +66,9 @@ class ImagePickerHelper(private val fragment: Fragment, private val profileViewM
 
     private fun pickFromCamera() {
         val contentValues = ContentValues()
-        contentValues.put(MediaStore.Images.Media.TITLE, "Temp_Image")
-        contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Temp_Description")
-        imageUri = fragment.requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        contentValues.put(MediaStore.Images.Media.TITLE, "Temp Image Title")
+        contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Temp Image Description")
+        imageUri = fragment.requireActivity().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
         pickImageCamera.launch(imageUri)
     }
 
@@ -72,7 +84,7 @@ class ImagePickerHelper(private val fragment: Fragment, private val profileViewM
     }
 
     private fun requestCameraPermission() {
-        fragment.requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE), CAMERA_REQUEST)
+        requestMultiplePermissionsLauncher.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -81,13 +93,18 @@ class ImagePickerHelper(private val fragment: Fragment, private val profileViewM
     }
 
     private fun requestStoragePermission() {
-        fragment.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_REQUEST)
+        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 
     private fun uploadProfileCoverPhoto(uri: Uri) {
-        val pd = ProgressDialog(fragment.requireContext())
-        pd.setMessage("Updating Profile Picture")
-        pd.show()
+        val progressBar = ProgressBar(fragment.requireContext())
+        progressBar.isIndeterminate = true
+
+        val dialog = MaterialAlertDialogBuilder(fragment.requireContext())
+            .setTitle("Updating Profile Picture")
+            .setView(progressBar)
+            .setCancelable(false)
+            .show()
 
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val filePathAndName = "users_profile_image/$uid"
@@ -95,16 +112,12 @@ class ImagePickerHelper(private val fragment: Fragment, private val profileViewM
             .addOnSuccessListener { taskSnapshot ->
                 taskSnapshot.storage.downloadUrl.addOnSuccessListener { downloadUri ->
                     profileViewModel.setUserProfileImageUrl(downloadUri.toString())
-                    pd.dismiss()
+                    dialog.dismiss()
                 }
             }
             .addOnFailureListener { e ->
-                pd.dismiss()
+                dialog.dismiss()
             }
     }
-
-    companion object {
-        private const val CAMERA_REQUEST = 100
-        private const val STORAGE_REQUEST = 200
-    }
 }
+
