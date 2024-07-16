@@ -78,7 +78,8 @@ class SignUpDialogFragment : DialogFragment() {
             val password = edtxtPassword.text.toString().trim()
             val confirmPassword = edtxtConfirmPassword.text.toString().trim()
 
-            if (confirmPassword == password) {
+            // TODO: add password validation
+            if (confirmPassword == password && username.isNotEmpty()) {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(requireActivity()) {
                         if (it.isSuccessful) {

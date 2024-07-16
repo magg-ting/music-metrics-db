@@ -1,6 +1,5 @@
-package com.example.melody_meter_local.ui.profile
+package com.example.melody_meter_local.ui.profile.secondary
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,18 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentChangePasswordBinding
-import com.example.melody_meter_local.databinding.FragmentProfileBinding
 import com.example.melody_meter_local.ui.login.LoginViewModel
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 
 class ChangePasswordFragment : Fragment() {
     private var _binding: FragmentChangePasswordBinding? = null

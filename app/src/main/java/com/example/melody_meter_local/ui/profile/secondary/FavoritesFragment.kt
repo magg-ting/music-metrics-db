@@ -1,18 +1,12 @@
-package com.example.melody_meter_local.ui.profile
+package com.example.melody_meter_local.ui.profile.secondary
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
-import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentFavoritesBinding
-import com.example.melody_meter_local.ui.detail.SongDetailFragmentArgs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase

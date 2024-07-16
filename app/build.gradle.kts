@@ -79,6 +79,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.14")
     implementation("com.airbnb.android:lottie:6.4.1")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.firebase.storage.ktx)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.dagger:hilt-android:2.51.1")
