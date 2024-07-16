@@ -85,17 +85,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_change_password"
-        android:name="com.example.melody_meter_local.ui.profile.ChangePasswordFragment"
-        android:label="Change Password"
-        tools:layout="@layout/fragment_change_password" >
-        <argument
-            android:name="user"
-            app:argType="com.example.melody_meter_local.model.User"
-            app:nullable="false" />
-    </fragment>
-
-    <fragment
         android:id="@+id/navigation_favorites"
         android:name="com.example.melody_meter_local.ui.profile.FavoritesFragment"
         android:label="Favorites"

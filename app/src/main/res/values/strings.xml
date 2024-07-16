@@ -18,6 +18,9 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="unmatched_passwords">Passwords do not match. Please try again.</string>
+    <string name="password_changed">Password changed successfully.</string>
+    <string name="password_unchanged">Failed to update password. Please try again.</string>
+    <string name="authentication_failed">Authentication failed. Please enter a valid current password.</string>
     <string name="login_failed">"Login failed"</string>
     <string name="action_sign_up"><u>Sign up</u></string>
     <string name="action_sign_in">Login</string>
@@ -45,4 +48,8 @@
     <string name="change_password">Change Password</string>
     <string name="save_changes">Save Changes</string>
     <string name="no_favorites_msg">You don\'t have any saved songs yet.</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="password_instructions">Choose a password that:\n- is 8 to 12 characters in length\n- uses uppercase and lowercase letters\n- uses at least one digit (0-9) and one special character</string>
 </resources>
