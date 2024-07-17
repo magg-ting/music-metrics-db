@@ -12,22 +12,18 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentSongDetailBinding
 import com.example.melody_meter_local.viewmodel.SongDetailViewModel
-import com.example.melody_meter_local.viewmodel.SongDetailViewModelFactory
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
+import dagger.hilt.android.AndroidEntryPoint
 
 //TODO: album image
 
+@AndroidEntryPoint
 class SongDetailFragment : Fragment() {
     private var _binding: FragmentSongDetailBinding? = null
     private val binding get() = _binding!!
@@ -35,7 +31,7 @@ class SongDetailFragment : Fragment() {
     private val args: SongDetailFragmentArgs by navArgs()
     private val song by lazy { args.song }
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-    private val songDetailViewModel: SongDetailViewModel by viewModels { SongDetailViewModelFactory(auth) }
+    private val songDetailViewModel: SongDetailViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
