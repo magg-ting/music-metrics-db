@@ -18,16 +18,12 @@ class ProfileViewModel: ViewModel()  {
     private val _hasChanges = MutableLiveData<Boolean>()
     val hasChanges: LiveData<Boolean> get() = _hasChanges
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var userDbReference: DatabaseReference
+    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var userDbReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
     private var username: String? = null
     private var profileUrl: String? = null
 
-    init {
-        auth = FirebaseAuth.getInstance()
-        userDbReference = FirebaseDatabase.getInstance().getReference("Users")
-    }
 
     fun loadUserProfile() {
         val uid = auth.currentUser?.uid
@@ -42,10 +38,7 @@ class ProfileViewModel: ViewModel()  {
                         _user.value = user
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
         }
     }

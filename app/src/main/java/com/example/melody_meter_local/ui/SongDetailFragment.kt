@@ -10,11 +10,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentSongDetailBinding
+import com.example.melody_meter_local.viewmodel.SongDetailViewModel
+import com.example.melody_meter_local.viewmodel.SongDetailViewModelFactory
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -29,10 +34,8 @@ class SongDetailFragment : Fragment() {
 
     private val args: SongDetailFragmentArgs by navArgs()
     private val song by lazy { args.song }
-
-    private lateinit var auth: FirebaseAuth
-    private lateinit var userDbReference: DatabaseReference
-    private lateinit var songDbReference: DatabaseReference
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private val songDetailViewModel: SongDetailViewModel by viewModels { SongDetailViewModelFactory(auth) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,13 +49,11 @@ class SongDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = FirebaseAuth.getInstance()
-        userDbReference = FirebaseDatabase.getInstance().getReference("Users")
-        songDbReference = FirebaseDatabase.getInstance().getReference("Songs")
 
         showSongDetails()
-        saveToFavorites()
-        backNavigation()
+        updateSaveButtonState()
+        setupObservers()
+        setupListeners()
     }
 
     override fun onDestroyView() {
@@ -77,25 +78,69 @@ class SongDetailFragment : Fragment() {
             }
             // show community rating of the song
             if (it.ratings.isEmpty()) {
-                binding.rating.setText(R.string.default_no_rating)
+                binding.rating.text = getString(R.string.default_no_rating)
             } else {
                 val average = it.ratings.average()
                 binding.rating.text = "${average} (based on ${it.ratings.size} ratings)"
             }
+        }
+    }
 
-            binding.spotifyUrl.setOnClickListener {
-                val url = "https://open.spotify.com/track/${song.spotifyTrackId}"
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    private fun updateSaveButtonState() {
+        if (auth.currentUser == null) {
+            binding.saveButton.setImageResource(R.drawable.ic_save_unpressed)
+        } else {
+            songDetailViewModel.updateFavoriteState(song.spotifyTrackId)
+        }
+    }
+
+    private fun setupObservers() {
+        songDetailViewModel.isFavorite.observe(viewLifecycleOwner, Observer { isFavorite ->
+            binding.saveButton.setImageResource(
+                if (isFavorite) R.drawable.ic_save_pressed else R.drawable.ic_save_unpressed
+            )
+        })
+
+        songDetailViewModel.ratingSubmissionStatus.observe(viewLifecycleOwner, Observer { isSuccess ->
+            if (isSuccess) {
+                Toast.makeText(context, "Your rating has been submitted.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed to submit rating. Please try again.", Toast.LENGTH_SHORT).show()
             }
+        })
+    }
 
-            binding.btnRate.setOnClickListener {
-                if (auth.currentUser == null) {
-                    showLoginPrompt()
-                } else {
-                    showRatingDialog()
-                }
+    private fun setupListeners() {
+        binding.spotifyUrl.setOnClickListener {
+            val url = "https://open.spotify.com/track/${song.spotifyTrackId}"
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        }
+
+        binding.rateButton.setOnClickListener{
+            if (auth.currentUser == null) {
+                showLoginPrompt()
+            } else {
+                showRatingDialog()
             }
         }
+
+        binding.saveButton.setOnClickListener {
+            handleSaveButtonClick()
+        }
+
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()
+                }
+            }
+        )
+
     }
 
     private fun showLoginPrompt() {
@@ -114,132 +159,18 @@ class SongDetailFragment : Fragment() {
                     composeView.visibility = View.GONE
                 },
                 onRatingSelected = { rating ->
-                    saveRating(rating)
+                    songDetailViewModel.saveRating(song.spotifyTrackId, rating)
                 })
         }
     }
 
-    private fun saveRating(rating: Double) {
-        val uid = auth.currentUser?.uid ?: return
-        val userRef = userDbReference.child(uid)
-        val songRef = songDbReference.child(song.spotifyTrackId)
-
-        // Task to update the song ratings
-        val songTask = songRef.child("ratings").get().continueWithTask { dataSnapshot ->
-            if (dataSnapshot.isSuccessful) {
-                val songRatings = dataSnapshot.result.getValue(object :
-                    GenericTypeIndicator<MutableList<Double>>() {}) ?: mutableListOf()
-                songRatings.add(rating)
-                songRef.child("ratings").setValue(songRatings)
-            } else {
-                throw dataSnapshot.exception ?: Exception("Failed to get song ratings")
-            }
-        }
-
-        // Task to update the user ratings
-        val userTask = userRef.child(uid).get().continueWithTask { dataSnapshot ->
-            if (dataSnapshot.isSuccessful) {
-                val userRatings = dataSnapshot.result.getValue(object :
-                    GenericTypeIndicator<MutableList<MutableMap<String, Double>>>() {})
-                    ?: mutableListOf()
-                userRatings.add(mutableMapOf(song.spotifyTrackId to rating))
-                userRef.child("ratings").setValue(userRatings)
-            } else {
-                throw dataSnapshot.exception ?: Exception("Failed to get user ratings")
-            }
-        }
-
-        // Run both tasks in parallel
-        Tasks.whenAll(songTask, userTask)
-            .addOnSuccessListener {
-                Toast.makeText(context, "Your rating has been submitted.", Toast.LENGTH_SHORT)
-                    .show()
-            }
-            .addOnFailureListener { e ->
-                Log.e("Song Detail Fragment", "Failed to save rating", e)
-                Toast.makeText(
-                    context,
-                    "Failed to submit your rating. Please try again.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-    }
-
-    private fun saveToFavorites() {
-        // if user is not logged in, set the save button to unpressed
-        if (auth.currentUser == null) {
-            binding.saveButton.setImageResource(R.drawable.ic_save_unpressed)
-        }
-        // if user is logged in, check if the song is already in his favorites list and displays the icon accordingly
-        else {
-            val uid = auth.currentUser!!.uid
-            val userRef = userDbReference.child(uid)
-
-            userRef.child("favorites").get()
-                .addOnSuccessListener { dataSnapshot ->
-                    val favorites = dataSnapshot.getValue(object :
-                        GenericTypeIndicator<MutableList<String>>() {}) ?: mutableListOf()
-                    if (favorites.contains(song.spotifyTrackId)) {
-                        binding.saveButton.setImageResource(R.drawable.ic_save_pressed)
-                    } else {
-                        binding.saveButton.setImageResource(R.drawable.ic_save_unpressed)
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("SongDetailFragment", "Failed to get user favorites", e)
-                }
-        }
-
-        binding.saveButton.setOnClickListener {
-            if (auth.currentUser == null) {
-                val loginDialogFragment = LoginDialogFragment()
-                loginDialogFragment.show(parentFragmentManager, "loginDialogFragment")
-            } else {
-                handleSaveButtonClick()
-            }
-        }
-    }
-
     private fun handleSaveButtonClick() {
-        val uid = auth.currentUser?.uid ?: return
-        val userRef = userDbReference.child(uid)
-
-        userRef.child("favorites").get()
-            .addOnSuccessListener { dataSnapshot ->
-                val favorites =
-                    dataSnapshot.getValue(object : GenericTypeIndicator<MutableList<String>>() {})
-                        ?: mutableListOf()
-                if (favorites.contains(song.spotifyTrackId)) {
-                    favorites.remove(song.spotifyTrackId)
-                    Toast.makeText(context, "Removed from favorites", Toast.LENGTH_SHORT).show()
-                    binding.saveButton.setImageResource(R.drawable.ic_save_unpressed)
-                } else {
-                    favorites.add(song.spotifyTrackId)
-                    Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show()
-                    binding.saveButton.setImageResource(R.drawable.ic_save_pressed)
-                }
-                userRef.child("favorites").setValue(favorites)
-            }
-            .addOnFailureListener { e ->
-                Log.e("SongDetailFragment", "Failed to get user favorites", e)
-            }
-    }
-
-
-    // handle navigation back to the search results
-    private fun backNavigation() {
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
+        if (auth.currentUser == null) {
+            showLoginPrompt()
+        } else {
+            songDetailViewModel.toggleFavorite(song.spotifyTrackId)
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    findNavController().navigateUp()
-                }
-            }
-        )
     }
+
+
 }
