@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.melody_meter_local.ui.home.HomeFragment"
+        android:name="com.example.melody_meter_local.ui.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.example.melody_meter_local.ui.search.SearchFragment"
+        android:name="com.example.melody_meter_local.ui.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/navigation_song_detail"
-        android:name="com.example.melody_meter_local.ui.detail.SongDetailFragment"
+        android:name="com.example.melody_meter_local.ui.SongDetailFragment"
         android:label="Song Details"
         tools:layout="@layout/fragment_song_detail" >
         <argument
@@ -86,7 +86,7 @@
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.example.melody_meter_local.ui.profile.secondary.FavoritesFragment"
+        android:name="com.example.melody_meter_local.ui.profile.FavoritesFragment"
         android:label="Favorites"
         tools:layout="@layout/fragment_favorites" >
         <argument
@@ -97,7 +97,7 @@
 
     <fragment
         android:id="@+id/navigation_rating_history"
-        android:name="com.example.melody_meter_local.ui.profile.secondary.RatingHistoryFragment"
+        android:name="com.example.melody_meter_local.ui.profile.RatingHistoryFragment"
         android:label="Rating History"
         tools:layout="@layout/fragment_rating_history" >
         <argument
@@ -108,7 +108,7 @@
 
     <fragment
         android:id="@+id/navigation_change_password"
-        android:name="com.example.melody_meter_local.ui.profile.secondary.ChangePasswordFragment"
+        android:name="com.example.melody_meter_local.ui.profile.ChangePasswordFragment"
         android:label="Change Password"
         tools:layout="@layout/fragment_change_password" >
         <argument

@@ -11,7 +11,7 @@ data class Song (
     val artist: String = "",
     val album: String? = null,
     val imgUrl: String? = null,
-    var avgRating: Double = 0.0
+    var ratings: List<Double> = listOf()
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
@@ -19,8 +19,9 @@ data class Song (
         parcel.readString().toString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readDouble()
-    )
+        TODO("ratings")
+    ) {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(spotifyTrackId)
@@ -28,7 +29,6 @@ data class Song (
         parcel.writeString(artist)
         parcel.writeString(album)
         parcel.writeString(imgUrl)
-        parcel.writeDouble(avgRating)
     }
 
     override fun describeContents(): Int {

@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.ui.search
+package com.example.melody_meter_local.ui
 
 import android.content.ContentValues
 import android.os.Bundle
@@ -17,8 +17,8 @@ import com.example.melody_meter_local.adapter.RecentSearchesAdapter
 import com.example.melody_meter_local.adapter.SearchResultsAdapter
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentSearchBinding
-import com.example.melody_meter_local.ui.login.LoginDialogFragment
-import com.example.melody_meter_local.ui.login.LoginViewModel
+import com.example.melody_meter_local.viewmodel.LoginViewModel
+import com.example.melody_meter_local.viewmodel.SearchViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

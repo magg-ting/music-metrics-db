@@ -6,31 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
-    tools:context=".ui.detail.SongDetailFragment">
+    tools:context=".ui.SongDetailFragment">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/image_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
-        <ImageView
-            android:id="@+id/album_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/spacing_x_medium_20dp"
-            android:src="@drawable/default_album_cover"
-            app:tint="@color/on_background_60"
-            android:scaleType="centerCrop" />
-
-<!--        <View-->
-<!--            android:id="@+id/image_background"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="@drawable/main_image_gradient"-->
-<!--            android:scaleType="centerCrop" />-->
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
 
         <ImageButton
             android:id="@+id/back_button"
@@ -42,7 +27,16 @@
             android:src="@drawable/arrow_left"
             app:tint="@color/on_background_60" />
 
-    </FrameLayout>
+        <ImageView
+            android:id="@+id/album_image"
+            android:layout_width="350dp"
+            android:layout_height="@dimen/height_image_details"
+            android:padding="@dimen/spacing_x_medium_20dp"
+            android:src="@drawable/default_album_cover"
+            app:tint="@color/on_background_60"
+            android:scaleType="centerCrop" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/title_wrapper"
@@ -95,6 +89,19 @@
         android:text="@string/default_no_rating" />
 
 <!--    TODO: rating bar for user -->
+    <Button
+        android:id="@+id/btn_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rating"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/spotify_url"
+        android:text="@string/rate_this_song"
+        style="@style/TextStyle.TitleSmall"
+        android:textAllCaps="false"
+        android:textColor="@color/on_primary"
+        android:background="@drawable/button_retry" />
 
     <TextView
         android:id="@+id/spotify_url"
@@ -102,10 +109,20 @@
         android:layout_height="wrap_content"
         android:text="@string/listen_on_spotify"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rating"
+        app:layout_constraintTop_toBottomOf="@+id/btn_rate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:clickable="true"
         android:textColor="@color/hyperlink" />
+    
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/spotify_url"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

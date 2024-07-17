@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.ui.profile.secondary
+package com.example.melody_meter_local.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

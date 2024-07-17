@@ -46,11 +46,16 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        compose = true
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
 
     kotlinOptions {
@@ -81,6 +86,10 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.storage)
+    implementation(libs.androidx.material3.android)
+    implementation("androidx.compose.ui:ui:1.6.8")
+    implementation("androidx.compose.ui:ui-tooling:1.6.8")
+    implementation("androidx.compose.material:material:1.6.8")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.dagger:hilt-android:2.51.1")

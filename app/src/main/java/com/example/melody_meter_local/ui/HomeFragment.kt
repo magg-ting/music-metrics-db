@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.ui.home
+package com.example.melody_meter_local.ui
 
 import com.example.melody_meter_local.adapter.TrendingSongAdapter
 import android.os.Bundle
@@ -32,9 +32,9 @@ class HomeFragment : Fragment() {
 
         //sample model
         val songs = listOf(
-            Song("","Happy Birthday", "Anonymous", null, null, 10.0),
-            Song("","DelayNoMore", "F**k", null, null, 8.8),
-            Song("","Other World", "Keira", null, null, 6.5)
+            Song("","Happy Birthday", "Anonymous", null, null, listOf(10.0)),
+            Song("","DelayNoMore", "F**k", null, null, listOf(8.8, 7.8)),
+            Song("","Other World", "Keira", null, null, listOf(6.5))
         )
 
         val adapter = TrendingSongAdapter(songs)

@@ -30,7 +30,14 @@ class SearchResultsAdapter (
             else{
                 binding.albumImg.setImageResource(R.drawable.default_album_cover)
             }
-            binding.rating.text = item.avgRating.toString()
+            if(item.ratings.isEmpty()){
+                binding.rating.text = "--"
+            }
+            else{
+                val average = item.ratings.average()
+                binding.rating.text = average.toString()
+            }
+
             itemView.setOnClickListener{
                 onItemClick(item)
             }

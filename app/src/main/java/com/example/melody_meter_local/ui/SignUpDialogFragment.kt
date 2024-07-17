@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.ui.signup
+package com.example.melody_meter_local.ui
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,12 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import com.example.melody_meter_local.R
 import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.databinding.FragmentSignupBinding
-import com.example.melody_meter_local.ui.login.LoginDialogFragment
-import com.example.melody_meter_local.ui.login.LoginViewModel
+import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase

@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.ui.profile.secondary
+package com.example.melody_meter_local.ui.profile
 
 import android.os.Bundle
 import android.text.Editable
@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentChangePasswordBinding
-import com.example.melody_meter_local.ui.login.LoginViewModel
+import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference

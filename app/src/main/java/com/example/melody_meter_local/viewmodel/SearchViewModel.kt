@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.ui.search
+package com.example.melody_meter_local.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData

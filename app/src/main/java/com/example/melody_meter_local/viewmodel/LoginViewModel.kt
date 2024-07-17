@@ -1,4 +1,4 @@
-package com.example.melody_meter_local.ui.login
+package com.example.melody_meter_local.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
