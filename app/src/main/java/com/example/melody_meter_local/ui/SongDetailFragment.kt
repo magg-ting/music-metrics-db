@@ -20,6 +20,7 @@ import com.example.melody_meter_local.databinding.FragmentSongDetailBinding
 import com.example.melody_meter_local.viewmodel.SongDetailViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.round
 
 //TODO: album image
 
@@ -76,8 +77,8 @@ class SongDetailFragment : Fragment() {
             if (it.ratings.isEmpty()) {
                 binding.rating.text = getString(R.string.default_no_rating)
             } else {
-                val average = it.ratings.average()
-                binding.rating.text = "${average} (based on ${it.ratings.size} ratings)"
+                val average = it.ratings.map { pair -> pair.values.first() }.average()
+                binding.rating.text = String.format("%.1f", it.avgRating) + "(based on ${it.ratings.size} ratings)"
             }
         }
     }

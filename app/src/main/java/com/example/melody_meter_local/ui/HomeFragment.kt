@@ -1,15 +1,22 @@
 package com.example.melody_meter_local.ui
 
-import com.example.melody_meter_local.adapter.TrendingSongAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.melody_meter_local.adapter.NewReleasesAdapter
+import com.example.melody_meter_local.adapter.TopRatedAdapter
+import com.example.melody_meter_local.adapter.TrendingAdapter
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentHomeBinding
+import com.example.melody_meter_local.model.spotify.Artist
+import com.example.melody_meter_local.viewmodel.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -17,6 +24,11 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var topRatedAdapter: TopRatedAdapter
+    private lateinit var trendingAdapter: TrendingAdapter
+    private lateinit var newReleasesAdapter : NewReleasesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,16 +42,43 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //sample model
-        val songs = listOf(
-            Song("","Happy Birthday", "Anonymous", null, null, listOf(10.0)),
-            Song("","DelayNoMore", "F**k", null, null, listOf(8.8, 7.8)),
-            Song("","Other World", "Keira", null, null, listOf(6.5))
-        )
+        //homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        setupRecyclerViews()
+    }
 
-        val adapter = TrendingSongAdapter(songs)
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.adapter = adapter
+    private fun setupRecyclerViews() {
+        // Top Rated Section
+        topRatedAdapter = TopRatedAdapter()
+        binding.topRatedRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = topRatedAdapter
+        }
+        // Observe the LiveData from the ViewModel and update the adapter when data changes
+        homeViewModel.topRatedSongs.observe(viewLifecycleOwner) { songs ->
+            topRatedAdapter.submitList(songs)
+        }
+
+        // Trending Section
+        trendingAdapter = TrendingAdapter()
+        binding.trendingRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = trendingAdapter
+        }
+        // Observe the LiveData from the ViewModel and update the adapter when data changes
+        homeViewModel.trendingSongs.observe(viewLifecycleOwner) { songs ->
+            trendingAdapter.submitList(songs)
+        }
+
+        // New Releases Section
+        newReleasesAdapter = NewReleasesAdapter()
+        binding.newReleasesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = newReleasesAdapter
+        }
+        // Observe the LiveData from the ViewModel and update the adapter when data changes
+        homeViewModel.newReleases.observe(viewLifecycleOwner) { albums ->
+            newReleasesAdapter.submitList(albums)
+        }
     }
 
     override fun onDestroyView() {

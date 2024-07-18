@@ -77,14 +77,43 @@ class SongDetailViewModel @Inject constructor(
                 val userRef = userDbReference.child(uid)
                 val songRef = songDbReference.child(spotifyTrackId)
 
+                // Update the song DB
                 val songDataSnapshot = songRef.child("ratings").get().await()
-                val songRatings = songDataSnapshot.getValue(object : GenericTypeIndicator<MutableList<Double>>() {}) ?: mutableListOf()
-                songRatings.add(rating)
-                songRef.child("ratings").setValue(songRatings).await()
+                val songRatings = songDataSnapshot.getValue(object : GenericTypeIndicator<MutableList<MutableMap<String, Double>>>() {}) ?: mutableListOf()
 
+                // Check if user already rated the song before
+                val existingRatingByUser = songRatings.find{it.contains(uid)}
+                if (existingRatingByUser != null) {
+                    // Update existing rating
+                    existingRatingByUser[uid] = rating
+                } else {
+                    // Add new rating
+                    songRatings.add(mutableMapOf(uid to rating))
+                }
+
+                // Update average rating of the song
+                val average = if(songRatings.isNotEmpty()){
+                    songRatings.sumOf { it.values.first() } / songRatings.size
+                } else {0.0}
+
+                songRef.child("ratings").setValue(songRatings).await()
+                songRef.child("avgRating").setValue(average).await()
+
+
+                // Update the user DB
                 val userDataSnapshot = userRef.child("ratings").get().await()
                 val userRatings = userDataSnapshot.getValue(object : GenericTypeIndicator<MutableList<MutableMap<String, Double>>>() {}) ?: mutableListOf()
-                userRatings.add(mutableMapOf(spotifyTrackId to rating))
+
+                // Check if user already rated the song before
+                val existingRatingOfSong = userRatings.find{it.contains(spotifyTrackId)}
+                if(existingRatingOfSong != null){
+                    // Update existing rating
+                    existingRatingOfSong[spotifyTrackId] = rating
+                } else {
+                    // Add new rating
+                    userRatings.add(mutableMapOf(spotifyTrackId to rating))
+                }
+
                 userRef.child("ratings").setValue(userRatings).await()
 
                 _ratingSubmissionStatus.value = true

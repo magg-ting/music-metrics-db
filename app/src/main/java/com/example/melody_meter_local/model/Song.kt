@@ -9,17 +9,19 @@ data class Song (
     val spotifyTrackId: String = "",
     val name: String = "",
     val artist: String = "",
-    val album: String? = null,
+    val album: String = "",
     val imgUrl: String? = null,
-    var ratings: List<Double> = listOf()
+    var ratings: MutableList<MutableMap<String, Double>> = mutableListOf(),
+    var avgRating: Double = 0.0
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
+        parcel.readString().toString(),
         parcel.readString(),
-        parcel.readString(),
-        TODO("ratings")
+        TODO("ratings"),
+        parcel.readDouble()
     ) {
     }
 
@@ -29,6 +31,7 @@ data class Song (
         parcel.writeString(artist)
         parcel.writeString(album)
         parcel.writeString(imgUrl)
+        parcel.writeDouble(avgRating)
     }
 
     override fun describeContents(): Int {

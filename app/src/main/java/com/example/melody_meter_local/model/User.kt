@@ -6,9 +6,9 @@ import android.os.Parcelable
 data class User(
     var username: String = "",
     var profileUrl: String? = null,
-    var ratings: List<MutableMap<String, Double>>? = null,
-    var recentSearches: List<String>? = null,
-    var favorites: List<String>? = null
+    var ratings: MutableList<MutableMap<String, Double>>? = null,
+    var recentSearches: MutableList<String>? = null,
+    var favorites: MutableList<String>? = null
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
@@ -39,4 +39,5 @@ data class User(
             return arrayOfNulls(size)
         }
     }
+
 }

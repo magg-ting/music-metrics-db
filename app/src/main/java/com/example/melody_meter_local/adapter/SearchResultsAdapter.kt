@@ -34,8 +34,7 @@ class SearchResultsAdapter (
                 binding.rating.text = "--"
             }
             else{
-                val average = item.ratings.average()
-                binding.rating.text = average.toString()
+                binding.rating.text = item.avgRating.toString()
             }
 
             itemView.setOnClickListener{

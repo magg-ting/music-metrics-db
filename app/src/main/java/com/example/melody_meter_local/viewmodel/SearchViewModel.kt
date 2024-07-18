@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.repository.SpotifyRepository
+import com.example.melody_meter_local.utils.toSong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,13 +34,7 @@ class SearchViewModel @Inject constructor(
                         val results = mutableListOf<Song>()
                         res.tracks?.items?.forEach { track ->
                             results.add(
-                                Song(
-                                    spotifyTrackId = track.id,
-                                    name = track.name,
-                                    artist = track.artists.joinToString(", ") { it.name },
-                                    album = track.album.name,
-                                    imgUrl = track.album.images.firstOrNull()?.url
-                                )
+                                track.toSong()
                             )
                         }
                         _searchResults.postValue(results)

@@ -82,4 +82,6 @@
 
     <!--image dimens-->
     <dimen name="profile_image_size">123dp</dimen>
+    <dimen name="pageMargin">30dp</dimen>
+    <dimen name="offset">10dp</dimen>
 </resources>

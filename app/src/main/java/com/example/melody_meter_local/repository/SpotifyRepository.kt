@@ -7,4 +7,6 @@ class SpotifyRepository @Inject constructor(
     private val api: SpotifyApi
 ){
     suspend fun search(query: String) = api.search(query)
+
+    suspend fun getNewReleases() = api.getNewReleases()
 }
