@@ -10,6 +10,7 @@ class TopRatedRepository {
     private val songDbReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Songs")
 
     suspend fun fetchTopRatedSongs(): List<Song> {
+        Log.d("TopRatedRepository", "Fetching top-rated songs")
         return try {
             val snapshot = songDbReference.orderByChild("avgRating").limitToLast(10).get().await()
             val songs = mutableListOf<Song>()
@@ -17,6 +18,7 @@ class TopRatedRepository {
                 val song = songSnapshot.getValue(Song::class.java)
                 song?.let { songs.add(it) }
             }
+            Log.d("TopRatedRepository", "Fetched top-rated songs")
             songs
         } catch (e: Exception) {
             Log.e("TopRatedRepository", "Error fetching top-rated songs", e)

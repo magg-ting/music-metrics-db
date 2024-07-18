@@ -1,16 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--region Font-->
+<!--region Font-->
     <style name="TextStyle">
         <item name="android:textDirection">locale</item>
-        <item name="android:fontFamily">@font/montserrat_regular</item>
     </style>
 
     <!--region Title-Font-->
     <style name="TextStyle.TitleLarge">
         <item name="android:textSize">@dimen/text_giant</item>
-        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginTop">@dimen/heading_margin_top</item>
+        <item name="android:paddingHorizontal">@dimen/heading_padding_horizontal</item>
+        <item name="android:paddingBottom">@dimen/heading_padding_bottom</item>
+    </style>
+
+    <style name="TextStyle.CarouselItem">
+        <item name="android:layout_width">@dimen/carousel_item_size</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextStyle.CarouselItem.SongTitle">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/carousel_title_spacing</item>
+    </style>
+
+    <style name="TextStyle.CarouselItem.ArtistName">
+        <item name="android:textSize">@dimen/text_semi_small</item>
+    </style>
+
+    <style name="TextStyle.SongItem">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextStyle.SongItem.SongTitle">
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/carousel_title_spacing</item>
+    </style>
+
+    <style name="TextStyle.SongItem.ArtistName">
+        <item name="android:textSize">@dimen/text_semi_small</item>
+    </style>
+
+    <style name="TextStyle.SongDetail">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextStyle.SongDetail.SongTitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">@dimen/text_giant</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">@dimen/carousel_title_spacing</item>
+    </style>
+
+    <style name="TextStyle.SongDetail.ArtistName">
+        <item name="android:textSize">@dimen/text_medium</item>
+    </style>
+
+    <style name="TextStyle.HelpText">
+        <item name="android:textSize">@dimen/text_semi_small</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:layout_marginTop">@dimen/heading_margin_top</item>
+        <item name="android:paddingHorizontal">@dimen/heading_padding_horizontal</item>
+        <item name="android:paddingBottom">@dimen/heading_padding_bottom</item>
+    </style>
+
+    <style name="TextStyle.HyperlinkText">
+        <item name="android:textColor">@color/hyperlink</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextStyle.HyperlinkText.LoginSignupPrompt">
+        <item name="android:layout_gravity">end</item>
+        <item name="android:layout_marginTop">@dimen/spacing_medium_16dp</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_medium_16dp</item>
+        <item name="android:textSize">@dimen/text_semi_small</item>
+    </style>
+
+    <style name="TextStyle.ProfileNavItem">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/height_field</item>
+        <item name="android:paddingStart">@dimen/spacing_large_24dp</item>
+        <item name="android:paddingEnd">@dimen/spacing_medium_16dp</item>
+        <item name="android:background">@drawable/custom_card_background</item>
+        <item name="android:drawablePadding">@dimen/spacing_small_8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingVertical">@dimen/spacing_small_8dp</item>
+        <item name="android:textColor">@color/on_background_60</item>
+        <item name="drawableStartCompat">@drawable/ic_bookmark</item>
+        <item name="drawableTint">@color/on_background_60</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="TextStyle.TitleMedium">
@@ -64,9 +154,10 @@
         <item name="android:fontFamily">@font/montserrat_regular</item>
     </style>
     <!--    endregion-->
-    <!--    endregion-->
 
-    <!--    region styles-->
+<!--    endregion-->
+
+<!--    region styles-->
     <style name="ViewDividerStyle">
         <item name="android:radius">@dimen/radius_full</item>
     </style>
@@ -94,23 +185,49 @@
     </style>
 
     <style name="TextInputLayoutStyle">
-        <item name="strokeColor">@color/on_background_38</item>
+        <item name="boxStrokeColor">@color/on_background_38</item>
         <item name="boxCornerRadiusTopStart">15dp</item>
         <item name="boxCornerRadiusTopEnd">15dp</item>
         <item name="boxCornerRadiusBottomStart">15dp</item>
         <item name="boxCornerRadiusBottomEnd">15dp</item>
     </style>
 
+    <style name="LoginSignupTextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="boxStrokeColor">@color/on_background_38</item>
+        <item name="android:layout_marginHorizontal">@dimen/spacing_medium_16dp</item>
+        <item name="android:layout_marginBottom">@dimen/spacing_small_8dp</item>
+    </style>
+
     <style name="PrimaryButton" parent="@style/Widget.Material3.Button.UnelevatedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
         <item name="android:backgroundTint">@color/primary</item>
         <item name="android:textColor">@color/on_primary</item>
         <item name="android:textAppearance">@style/TextStyle.TitleSmall</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Material3.Corner.Full</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:background">@drawable/button_retry</item>
     </style>
 
     <style name="PrimaryButton.ReturnHomeButton" parent="@style/Widget.Material3.Button.UnelevatedButton">
         <item name="android:backgroundTint">@color/secondary</item>
         <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <style name="BackButton">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">@dimen/back_btn_size</item>
+        <item name="android:layout_height">@dimen/back_btn_size</item>
+        <item name="android:background">@null</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@drawable/arrow_left</item>
+        <item name="tint">@color/on_background_87</item>
     </style>
 
     <style name="TextStyle.BodyMedium.TextInputEditTextStyle">
@@ -153,6 +270,30 @@
         <item name="android:textColor">@color/on_background_60</item>
         <item name="chipBackgroundColor">@color/background</item>
         <item name="strokeColor">@color/on_background_38</item>
+    </style>
+<!--    endregion-->
+
+<!--    Region Image -->
+    <style name="ImageStyle">
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="ImageStyle.Carousel">
+        <item name="android:layout_width">@dimen/carousel_item_size</item>
+        <item name="android:layout_height">@dimen/carousel_item_size</item>
+    </style>
+
+    <style name="ImageStyle.SongItem">
+        <item name="android:layout_width">@dimen/song_item_size</item>
+        <item name="android:layout_height">@dimen/song_item_size</item>
+        <item name="android:layout_marginEnd">@dimen/spacing_medium_16dp</item>
+    </style>
+
+    <style name="ImageStyle.SongDetail">
+        <item name="android:layout_width">@dimen/song_detail_size</item>
+        <item name="android:layout_height">@dimen/song_detail_size</item>
+        <item name="android:padding">@dimen/spacing_medium_16dp</item>
+        <item name="android:layout_gravity">center</item>
     </style>
     <!--    endregion-->
 </resources>

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "319439082741",
+    "firebase_url": "https://melody-meter-local-default-rtdb.firebaseio.com",
     "project_id": "melody-meter-local",
     "storage_bucket": "melody-meter-local.appspot.com"
   },

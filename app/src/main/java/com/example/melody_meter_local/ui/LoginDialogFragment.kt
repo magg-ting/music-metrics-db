@@ -39,6 +39,7 @@ class LoginDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         auth = FirebaseAuth.getInstance()
+        auth.currentUser?.uid?.let { Log.d("LoginDialog", it) }
 
         val btnLogin = binding.btnLogin
         val edtxtEmail = binding.email
@@ -63,20 +64,24 @@ class LoginDialogFragment : DialogFragment() {
         edtxtPassword.addTextChangedListener(textWatcher)
 
         btnLogin.setOnClickListener {
+            Log.d("LoginDialog", "Clicked login button")
             val email = edtxtEmail.text.toString().trim()
             val password = edtxtPassword.text.toString().trim()
-
+            Log.d("LoginDialog", email)
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) {
+                    Log.d("LoginDialog", "Attempting to login")
                     if (it.isSuccessful) {
                         loginViewModel.login()
+
                         Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                         dismiss()  //dismiss the login modal upon successful sign in
-                        Log.d("Login Dialog", "Dismissed login dialog")
+                        Log.d("LoginDialog", "Dismissed login dialog")
                     }
                 }
                 .addOnFailureListener{
                     Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
+                    Log.e("LoginDialog", "Failed to login", it)
                 }
         }
 

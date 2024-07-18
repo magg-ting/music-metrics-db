@@ -3,28 +3,21 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="@dimen/carousel_item_padding">
 
     <ImageView
+        style="@style/ImageStyle.Carousel"
         android:id="@+id/album_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:scaleType="centerCrop"
         android:src="@drawable/default_album_cover" />
 
     <TextView
+        style="@style/TextStyle.CarouselItem.SongTitle"
         android:id="@+id/track_name"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Track Name"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:text="Track Name" />
 
     <TextView
+        style="@style/TextStyle.CarouselItem.ArtistName"
         android:id="@+id/artist_name"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Artist Name"
-        android:textSize="12sp" />
+        android:text="Artist Name" />
+
 </LinearLayout>

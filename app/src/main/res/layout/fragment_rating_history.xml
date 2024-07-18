@@ -4,45 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/spacing_large_24dp"
-    android:layout_marginHorizontal="@dimen/spacing_medium_16dp"
-    tools:context=".ui.profile.RatingHistoryFragment">
+    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+    android:layout_marginVertical="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context=".ui.profile.FavoritesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageButton
+        style="@style/BackButton"
+        android:id="@+id/btn_back"
+        android:layout_marginHorizontal="@dimen/spacing_medium_16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <TextView
+        style="@style/TextStyle.TitleLarge"
         android:id="@+id/title_rating_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/rating_history"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/spacing_large_24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/TextStyle.TitleLarge" />
-
+        app:layout_constraintTop_toBottomOf="@+id/btn_back"
+        android:text="@string/rating_history" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rating_history_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/spacing_large_24dp"
         android:layout_marginTop="@dimen/spacing_small_8dp"
-        android:layout_marginEnd="@dimen/spacing_large_24dp"
+        android:layout_marginHorizontal="@dimen/spacing_medium_16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_rating_history" />
 
     <TextView
-        android:id="@+id/no_rating_history_msg"
+        style="@style/TextStyle.BodyMedium"
+        android:id="@+id/no_history_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_rating_history"
         android:text="@string/no_rating_history"
-        android:layout_marginStart="@dimen/spacing_large_24dp"
+        android:layout_marginHorizontal="@dimen/spacing_medium_16dp"
         android:layout_marginTop="@dimen/spacing_large_24dp"
-        android:layout_marginEnd="@dimen/spacing_large_24dp"
         android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

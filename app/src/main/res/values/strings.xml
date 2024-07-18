@@ -53,6 +53,6 @@
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="password_instructions">Choose a password that:\n- is 8 to 12 characters in length\n- uses uppercase and lowercase letters\n- uses at least one digit (0-9) and one special character</string>
     <string name="rate_this_song">Rate this song</string>
-    <string name="rating_prompt">How do you like the song? (1 = lowest abd 5 = highest)</string>
+    <string name="rating_prompt">How do you like the song?\n(1 = lowest and 5 = highest)</string>
     <string name="no_rating_history">You have no rating history.</string>
 </resources>

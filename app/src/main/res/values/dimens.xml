@@ -1,9 +1,19 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">0dp</dimen>
+    <dimen name="activity_vertical_margin">24dp</dimen>
 
     <!-- Spacing dimens-->
+    <dimen name="heading_margin_top">20dp</dimen>
+    <dimen name="heading_padding_horizontal">16dp</dimen>
+    <dimen name="heading_padding_bottom">4dp</dimen>
+    <dimen name="carousel_title_spacing">8dp</dimen>
+    <dimen name="carousel_item_padding">8dp</dimen>
+    <dimen name="search_item_padding_horizontal">16dp</dimen>
+    <dimen name="search_item_padding_vertical">8dp</dimen>
+    <dimen name="dialog_padding_horizontal">0dp</dimen>
+    <dimen name="dialog_padding_vertical">24dp</dimen>
+
     <dimen name="spacing_zero_0dp">0dp</dimen>
     <dimen name="spacing_one_1dp">1dp</dimen>
     <dimen name="spacing_very_tiny_2dp">2dp</dimen>
@@ -81,7 +91,9 @@
     <dimen name="width_chip_myrated">180dp</dimen>
 
     <!--image dimens-->
-    <dimen name="profile_image_size">123dp</dimen>
-    <dimen name="pageMargin">30dp</dimen>
-    <dimen name="offset">10dp</dimen>
+    <dimen name="profile_image_size">150dp</dimen>
+    <dimen name="carousel_item_size">150dp</dimen>
+    <dimen name="song_item_size">75dp</dimen>
+    <dimen name="song_detail_size">350dp</dimen>
+    <dimen name="back_btn_size">24dp</dimen>
 </resources>
