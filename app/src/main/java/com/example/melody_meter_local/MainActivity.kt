@@ -1,16 +1,21 @@
 package com.example.melody_meter_local
 
 import android.content.res.Configuration
+import android.media.Image
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.melody_meter_local.databinding.ActivityMainBinding
+import com.example.melody_meter_local.ui.profile.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.FirebaseApp
@@ -36,16 +41,41 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavBar?.setupWithNavController(navController)
         }
         else {
-            binding.btnHome?.setOnClickListener {
+            val btnHome = binding.btnHome
+            val btnSearch = binding.btnSearch
+            val btnProfile = binding.btnProfile
+
+            btnHome?.setOnClickListener {
+                setActiveButton(btnHome)
                 navController.navigate(R.id.navigation_home)
             }
-            binding.btnSearch?.setOnClickListener {
+            btnSearch?.setOnClickListener {
+                setActiveButton(btnSearch)
                 navController.navigate(R.id.navigation_search)
             }
-            binding.btnProfile?.setOnClickListener {
+            btnProfile?.setOnClickListener {
+                setActiveButton(btnProfile)
                 navController.navigate(R.id.navigation_profile)
             }
+
+//            // Set initial fragment
+//            if (savedInstanceState == null) {
+//                supportFragmentManager.beginTransaction()
+//                    .replace(R.id.nav_host_fragment, ProfileFragment())
+//                    .commit()
+//                setActiveButton(btnProfile!!)
+//            }
         }
 
+    }
+
+    private fun setActiveButton(activeButton: ImageButton) {
+        // Reset all buttons to inactive state
+        binding.btnHome?.background = ContextCompat.getDrawable(this, R.color.transparent)
+        binding.btnSearch?.background = ContextCompat.getDrawable(this, R.color.transparent)
+        binding.btnProfile?.background = ContextCompat.getDrawable(this, R.color.transparent)
+
+        // Set active button color
+        activeButton.background = ContextCompat.getDrawable(this, R.drawable.active_indicator)
     }
 }
