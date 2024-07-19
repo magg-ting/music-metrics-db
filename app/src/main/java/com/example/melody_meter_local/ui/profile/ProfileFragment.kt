@@ -47,7 +47,7 @@ class ProfileFragment : Fragment() {
         imagePickerHelper = ImagePickerHelper(this, profileViewModel)
 
         // TODO: set button save to visible when either profile pic or username is changed
-        binding.btnSaveChanges.visibility = View.GONE
+        binding.btnSaveChanges.isEnabled = false
 
         loginViewModel.isLoggedIn.observe(viewLifecycleOwner) { isLoggedIn ->
             if (isLoggedIn) {
@@ -73,7 +73,7 @@ class ProfileFragment : Fragment() {
         }
 
         profileViewModel.hasChanges.observe(viewLifecycleOwner) { hasChanges ->
-            binding.btnSaveChanges.visibility = if (hasChanges) View.VISIBLE else View.GONE
+            binding.btnSaveChanges.isEnabled = hasChanges
         }
 
         binding.btnSaveChanges.setOnClickListener { profileViewModel.saveChanges() }

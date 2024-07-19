@@ -171,7 +171,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_logout"
         android:layout_marginTop="@dimen/spacing_large_24dp"
-        android:text="@string/save_changes"
-        android:visibility="gone"/>
+        android:text="@string/save_changes" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

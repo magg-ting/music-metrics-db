@@ -44,11 +44,7 @@ class ProfileViewModel: ViewModel()  {
     }
 
     fun checkIfChanged(newUsername: String) {
-        if (newUsername != username) {
-            _hasChanges.value = true
-        } else {
-            _hasChanges.value = false
-        }
+        _hasChanges.value = newUsername != username
     }
 
     fun saveChanges() {

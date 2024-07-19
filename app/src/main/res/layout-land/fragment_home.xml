@@ -2,17 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/spacing_zero_0dp"
-    android:layout_marginBottom="@dimen/spacing__extra_extra_extra_giant_70dp"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ui.HomeFragment">
+        android:layout_marginTop="@dimen/spacing_giant_32dp"
+        android:paddingBottom="@dimen/spacing_extra_giant_48dp" >
 
         <!-- New Releases Section -->
         <TextView
