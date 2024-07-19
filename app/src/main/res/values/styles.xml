@@ -54,6 +54,7 @@
     <style name="TextStyle.SongDetail.SongTitle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">0dp</item>
         <item name="android:textSize">@dimen/text_giant</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_marginTop">@dimen/carousel_title_spacing</item>
@@ -169,7 +170,6 @@
         <item name="itemIconTint">@color/bottom_nav_icon_tint</item>
         <item name="itemTextAppearanceActive">@style/TextStyle.TitleSmall.ItemTextAppearanceActive</item>
         <item name="itemTextAppearanceInactive">@style/TextStyle.TitleSmall.ItemTextAppearanceInactive</item>
-        <item name="labelVisibilityMode">labeled</item>
     </style>
 
     <style name="TextStyle.TitleSmall.ItemTextAppearanceActive">
