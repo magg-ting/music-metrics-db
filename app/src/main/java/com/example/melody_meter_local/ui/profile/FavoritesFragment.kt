@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.melody_meter_local.adapter.FavoritesAdapter
 import com.example.melody_meter_local.databinding.FragmentFavoritesBinding
+import com.example.melody_meter_local.model.Song
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -23,6 +27,8 @@ class FavoritesFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var userDbReference: DatabaseReference
+    private lateinit var favoritesAdapter: FavoritesAdapter
+    private val favorites = mutableListOf<Song>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +44,17 @@ class FavoritesFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         userDbReference = FirebaseDatabase.getInstance().getReference("Users")
 
+        favoritesAdapter = FavoritesAdapter(favorites) { song ->
+            val action =
+                FavoritesFragmentDirections.actionFavoritesFragmentToSongDetailFragment(song)
+            findNavController().navigate(action)
+        }
+
+        binding.favoritesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = favoritesAdapter
+        }
+
         showFavorites()
         //toggleFavorites()
     }
@@ -49,7 +66,7 @@ class FavoritesFragment : Fragment() {
 
     private fun showFavorites() {
         user.let {
-            if(!it.favorites.isNullOrEmpty()){
+            if (!it.favorites.isNullOrEmpty()) {
                 binding.noFavoritesMsg.visibility = View.GONE
                 binding.favoritesRecyclerView.visibility = View.VISIBLE
             } else {

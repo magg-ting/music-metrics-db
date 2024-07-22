@@ -90,6 +90,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.6.8")
     implementation("androidx.compose.ui:ui-tooling:1.6.8")
     implementation("androidx.compose.material:material:1.6.8")
+
     kapt("com.github.bumptech.glide:compiler:4.16.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.dagger:hilt-android:2.51.1")

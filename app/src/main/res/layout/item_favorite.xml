@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/spacing_small_8dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_medium_16dp"
+        android:paddingVertical="@dimen/spacing_small_8dp" >
+
+        <ImageView
+            style="@style/ImageStyle.SongItem"
+            android:id="@+id/albumImg"
+            android:src="@drawable/default_album_cover"
+            android:layout_gravity="center_vertical"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/TextStyle.SongItem.SongTitle"
+                android:id="@+id/trackName"
+                android:text="@string/placeholder_song_title" />
+
+            <TextView
+                style="@style/TextStyle.SongItem.ArtistName"
+                android:id="@+id/trackArtist"
+                android:text="@string/placeholder_artist_name" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/save_button"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/spacing_medium_16dp"
+            android:background="@null"
+            android:backgroundTint="@color/on_primary"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_save_pressed"
+            app:tint="@color/on_background_60" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

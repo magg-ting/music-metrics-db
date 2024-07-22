@@ -103,6 +103,7 @@ class SearchFragment : Fragment() {
                     if (trimmedQuery.isNotEmpty()) {
                         saveSearchQuery(trimmedQuery)
                         searchViewModel.performSearch(trimmedQuery)
+                        binding.recentSearchesGroup.visibility = View.GONE
                     }
                 }
                 return true
