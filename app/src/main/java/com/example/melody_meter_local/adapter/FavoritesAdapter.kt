@@ -13,7 +13,6 @@ import com.example.melody_meter_local.viewmodel.FavoritesViewModel
 
 class FavoritesAdapter (
     private val viewModel: FavoritesViewModel,
-
     private val onItemClick: (Song) -> Unit
 ): RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>(){
     private var favorites: List<Song> = emptyList()

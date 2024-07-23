@@ -25,7 +25,6 @@ class FavoritesFragment : Fragment() {
 
     private val favoritesViewModel: FavoritesViewModel by viewModels()
     private lateinit var favoritesAdapter: FavoritesAdapter
-//    private val favorites = mutableListOf<Song>()
 
     override fun onCreateView(
         inflater: LayoutInflater,

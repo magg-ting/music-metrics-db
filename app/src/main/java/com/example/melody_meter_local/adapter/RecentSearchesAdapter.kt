@@ -8,7 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.melody_meter_local.R
 
-class RecentSearchesAdapter(private val recentSearches: MutableList<String>, private val onClearClick: (String) -> Unit) :
+class RecentSearchesAdapter(
+    private val recentSearches: MutableList<String>,
+    private val onClearClick: (String) -> Unit
+) :
     RecyclerView.Adapter<RecentSearchesAdapter.RecentSearchesViewHolder>() {
 
     class RecentSearchesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
