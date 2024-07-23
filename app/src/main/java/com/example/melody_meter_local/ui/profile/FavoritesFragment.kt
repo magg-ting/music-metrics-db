@@ -4,31 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.melody_meter_local.adapter.FavoritesAdapter
 import com.example.melody_meter_local.databinding.FragmentFavoritesBinding
 import com.example.melody_meter_local.model.Song
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.example.melody_meter_local.viewmodel.FavoritesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private val args: FavoritesFragmentArgs by navArgs()
-    private val user by lazy { args.user }
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var userDbReference: DatabaseReference
+    private val favoritesViewModel: FavoritesViewModel by viewModels()
     private lateinit var favoritesAdapter: FavoritesAdapter
-    private val favorites = mutableListOf<Song>()
+//    private val favorites = mutableListOf<Song>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,10 +38,8 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = FirebaseAuth.getInstance()
-        userDbReference = FirebaseDatabase.getInstance().getReference("Users")
 
-        favoritesAdapter = FavoritesAdapter(favorites) { song ->
+        favoritesAdapter = FavoritesAdapter(favoritesViewModel) { song ->
             val action =
                 FavoritesFragmentDirections.actionFavoritesFragmentToSongDetailFragment(song)
             findNavController().navigate(action)
@@ -55,8 +50,23 @@ class FavoritesFragment : Fragment() {
             adapter = favoritesAdapter
         }
 
-        showFavorites()
-        //toggleFavorites()
+        favoritesViewModel.favoriteSongs.observe(viewLifecycleOwner) { songs ->
+            favoritesAdapter.updateFavorites(songs)
+            showFavorites(songs)
+        }
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigateUp()
+                }
+            }
+        )
     }
 
     override fun onDestroyView() {
@@ -64,20 +74,16 @@ class FavoritesFragment : Fragment() {
         _binding = null
     }
 
-    private fun showFavorites() {
-        user.let {
-            if (!it.favorites.isNullOrEmpty()) {
-                binding.noFavoritesMsg.visibility = View.GONE
-                binding.favoritesRecyclerView.visibility = View.VISIBLE
-            } else {
-                binding.noFavoritesMsg.visibility = View.VISIBLE
-                binding.favoritesRecyclerView.visibility = View.GONE
-            }
+    private fun showFavorites(songs: List<Song>) {
+        if (songs.isNotEmpty()) {
+            binding.noFavoritesMsg.visibility = View.GONE
+            binding.favoritesRecyclerView.visibility = View.VISIBLE
+        } else {
+            binding.noFavoritesMsg.visibility = View.VISIBLE
+            binding.favoritesRecyclerView.visibility = View.GONE
         }
     }
 
-//    private fun toggleFavorites() {
-//        TODO("Not yet implemented")
-//    }
+    //TODO: remove unsaved song when navigating back to the favorites fragment
 
 }

@@ -1,5 +1,8 @@
 package com.example.melody_meter_local.viewmodel
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -15,30 +18,47 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class FavoritesViewModel (
+@HiltViewModel
+class FavoritesViewModel @Inject constructor (
     private val repository: FavoritesRepository,
-    private val savedStateHandle: SavedStateHandle,
-    private val user: User?,
-    private val uid: String?
 ) : ViewModel() {
 
     private val _favoriteSongs = MutableLiveData<List<Song>>()
     val favoriteSongs: LiveData<List<Song>> get() = _favoriteSongs
 
-    private val _isEmpty = MutableLiveData<Boolean>()
-    val isEmpty: LiveData<Boolean> get() = _isEmpty
-
     init {
-        uid?.let {
-            fetchFavoriteSongs(it)
+        fetchFavoriteSongs()
+    }
+
+    private fun fetchFavoriteSongs() {
+        viewModelScope.launch {
+            val favorites = repository.fetchFavoriteSongs()
+            _favoriteSongs.value = favorites
         }
     }
 
-    private fun fetchFavoriteSongs(uid: String) {
+    fun addFavorite(songId: String){
         viewModelScope.launch {
-            val songs = repository.fetchFavoriteSongs(uid)
-            _favoriteSongs.value = songs
-            _isEmpty.value = songs.isEmpty()
+            try{
+                repository.addFavorite(songId)
+                // refresh the list after adding
+                //fetchFavoriteSongs()
+            }
+            catch(e: Exception){
+                Log.e("FavoritesViewModel", "Failed to add favorite", e)
+            }
+        }
+    }
+
+    fun removeFavorite(songId: String) {
+        viewModelScope.launch {
+            try {
+                repository.removeFavorite(songId)
+                // Refresh the list after removing
+                //fetchFavoriteSongs()
+            } catch (e: Exception) {
+                Log.e("FavoritesViewModel", "Failed to remove favorite", e)
+            }
         }
     }
 }

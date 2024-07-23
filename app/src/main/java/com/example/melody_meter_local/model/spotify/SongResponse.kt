@@ -2,11 +2,11 @@ package com.example.melody_meter_local.model.spotify
 
 import com.example.melody_meter_local.model.Song
 
-data class Track(
+data class SongResponse(
+    val id: String,
     val name: String,
-    val artists: List<Artist>,
     val album: Album,
-    val id: String
+    val artists: List<Artist>
 ){
     fun toSong(): Song {
         val artistNames = this.artists.joinToString(", ") { it.name }
@@ -21,3 +21,4 @@ data class Track(
         )
     }
 }
+

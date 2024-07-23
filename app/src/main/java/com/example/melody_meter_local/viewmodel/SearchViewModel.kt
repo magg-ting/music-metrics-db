@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.repository.SpotifyRepository
-import com.example.melody_meter_local.utils.toSong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

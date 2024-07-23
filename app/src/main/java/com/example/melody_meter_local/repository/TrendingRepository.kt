@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.model.spotify.Track
 import com.example.melody_meter_local.network.SpotifyApi
-import com.example.melody_meter_local.utils.toSong
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
