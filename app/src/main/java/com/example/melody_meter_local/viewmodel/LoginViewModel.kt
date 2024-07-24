@@ -12,7 +12,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoggedIn = MutableLiveData<Boolean>()
     val isLoggedIn: LiveData<Boolean> get() = _isLoggedIn
 
-    private val sharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    private val sharedPreferences =
+        application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     init {
         // Load the persisted login state

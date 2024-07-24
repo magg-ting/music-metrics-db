@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val spotifyRepository: SpotifyRepository
-): ViewModel(){
+) : ViewModel() {
 
     private val _searchResults = MutableLiveData<List<Song>>()
     val searchResults: LiveData<List<Song>> get() = _searchResults
@@ -39,7 +39,10 @@ class SearchViewModel @Inject constructor(
                         _searchResults.postValue(results)
                     }
                 } else {
-                    Log.e("SearchViewModel", "Search failed with response: ${response.errorBody()?.string()}")
+                    Log.e(
+                        "SearchViewModel",
+                        "Search failed with response: ${response.errorBody()?.string()}"
+                    )
                 }
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}")

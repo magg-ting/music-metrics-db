@@ -7,7 +7,7 @@ data class Track(
     val artists: List<Artist>,
     val album: Album,
     val id: String
-){
+) {
     fun toSong(): Song {
         val artistNames = this.artists.joinToString(", ") { it.name }
         val albumImageUrl = this.album.images?.firstOrNull()?.url

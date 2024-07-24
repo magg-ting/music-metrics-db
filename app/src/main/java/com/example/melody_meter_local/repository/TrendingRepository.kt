@@ -7,18 +7,17 @@ import com.example.melody_meter_local.network.SpotifyApi
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
-import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 class TrendingRepository @Inject constructor(
     private val spotifyApi: SpotifyApi
 ) {
 
-    private val userDbReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
-    suspend fun fetchAllRecentSearches(): List<String>{
+    private val userDbReference: DatabaseReference =
+        FirebaseDatabase.getInstance().getReference("Users")
+
+    suspend fun fetchAllRecentSearches(): List<String> {
         // Fetch all recent searches from the Firebase database
         Log.d("TrendingRepository", "Fetching all recent searches from Firebase")
         return try {
@@ -49,7 +48,10 @@ class TrendingRepository @Inject constructor(
                 Log.d("TrendingRepository", "Fetched track: $track")
                 track
             } else {
-                Log.e("TrendingRepository", "Spotify API response unsuccessful: ${response.message()}")
+                Log.e(
+                    "TrendingRepository",
+                    "Spotify API response unsuccessful: ${response.message()}"
+                )
                 null
             }
         } catch (e: Exception) {

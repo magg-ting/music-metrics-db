@@ -11,7 +11,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class ProfileViewModel: ViewModel()  {
+class ProfileViewModel : ViewModel() {
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> get() = _user
 
@@ -19,7 +19,8 @@ class ProfileViewModel: ViewModel()  {
     val hasChanges: LiveData<Boolean> get() = _hasChanges
 
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var userDbReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
+    private var userDbReference: DatabaseReference =
+        FirebaseDatabase.getInstance().getReference("Users")
 
     private var username: String? = null
     private var profileUrl: String? = null
@@ -38,6 +39,7 @@ class ProfileViewModel: ViewModel()  {
                         _user.value = user
                     }
                 }
+
                 override fun onCancelled(error: DatabaseError) {}
             })
         }

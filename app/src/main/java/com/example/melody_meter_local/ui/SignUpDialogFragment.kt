@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.databinding.FragmentSignupBinding
+import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference

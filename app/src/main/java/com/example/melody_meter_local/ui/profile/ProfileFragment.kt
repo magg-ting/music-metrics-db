@@ -14,8 +14,8 @@ import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentProfileBinding
 import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.ui.LoginDialogFragment
-import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.example.melody_meter_local.utils.ImagePickerHelper
+import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.example.melody_meter_local.viewmodel.ProfileViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

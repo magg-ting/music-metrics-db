@@ -20,7 +20,6 @@ import com.example.melody_meter_local.databinding.FragmentSongDetailBinding
 import com.example.melody_meter_local.viewmodel.SongDetailViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.round
 
 //TODO: album image
 
@@ -78,7 +77,8 @@ class SongDetailFragment : Fragment() {
                 binding.rating.text = getString(R.string.default_no_rating)
             } else {
                 val average = it.ratings.map { pair -> pair.values.first() }.average()
-                binding.rating.text = String.format("%.1f", it.avgRating) + "(based on ${it.ratings.size} ratings)"
+                binding.rating.text =
+                    String.format("%.1f", it.avgRating) + "(based on ${it.ratings.size} ratings)"
             }
         }
     }
@@ -98,13 +98,20 @@ class SongDetailFragment : Fragment() {
             )
         })
 
-        songDetailViewModel.ratingSubmissionStatus.observe(viewLifecycleOwner, Observer { isSuccess ->
-            if (isSuccess) {
-                Toast.makeText(context, "Your rating has been submitted.", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Failed to submit rating. Please try again.", Toast.LENGTH_SHORT).show()
-            }
-        })
+        songDetailViewModel.ratingSubmissionStatus.observe(
+            viewLifecycleOwner,
+            Observer { isSuccess ->
+                if (isSuccess) {
+                    Toast.makeText(context, "Your rating has been submitted.", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Failed to submit rating. Please try again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
     private fun setupListeners() {
@@ -113,7 +120,7 @@ class SongDetailFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
-        binding.rateButton.setOnClickListener{
+        binding.rateButton.setOnClickListener {
             if (auth.currentUser == null) {
                 showLoginPrompt()
             } else {

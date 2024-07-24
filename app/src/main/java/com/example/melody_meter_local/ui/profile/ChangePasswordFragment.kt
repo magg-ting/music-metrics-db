@@ -87,40 +87,56 @@ class ChangePasswordFragment : Fragment() {
         _binding = null
     }
 
-    private fun changePassword(){
+    private fun changePassword() {
         val user = auth.currentUser
         val currentPassword = binding.currentPassword.text.toString()
         val newPassword = binding.newPassword.text.toString()
         val confirmNewPassword = binding.confirmNewPassword.text.toString()
 
         // TODO: add password regex validation
-        if(newPassword != confirmNewPassword){
+        if (newPassword != confirmNewPassword) {
             Toast.makeText(requireContext(), R.string.unmatched_passwords, Toast.LENGTH_LONG).show()
             return
         }
         // re-authenticate user and update password, ref https://stackoverflow.com/a/40904516
-        if(user != null){
+        if (user != null) {
             val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
             user.reauthenticate(credential)
-                .addOnCompleteListener{
-                    if(it.isSuccessful){
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
                         user.updatePassword(newPassword)
-                            .addOnCompleteListener{ updateTask ->
-                                if(updateTask.isSuccessful){
-                                    Toast.makeText(requireContext(),R.string.password_changed, Toast.LENGTH_LONG).show()
+                            .addOnCompleteListener { updateTask ->
+                                if (updateTask.isSuccessful) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        R.string.password_changed,
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                     binding.currentPassword.setText("")
                                     binding.newPassword.setText("")
                                     binding.confirmNewPassword.setText("")
-                                }
-                                else{
-                                    Toast.makeText(requireContext(),R.string.password_unchanged, Toast.LENGTH_LONG).show()
-                                    Log.e("Change Password Fragment", "Failed to update password: ${updateTask.exception?.message}")
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        R.string.password_unchanged,
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    Log.e(
+                                        "Change Password Fragment",
+                                        "Failed to update password: ${updateTask.exception?.message}"
+                                    )
                                 }
                             }
-                    }
-                    else{
-                        Toast.makeText(requireContext(), R.string.authentication_failed, Toast.LENGTH_LONG).show()
-                        Log.e("Change Password Fragment", "Authentication failed: ${it.exception?.message}")
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.authentication_failed,
+                            Toast.LENGTH_LONG
+                        ).show()
+                        Log.e(
+                            "Change Password Fragment",
+                            "Authentication failed: ${it.exception?.message}"
+                        )
                     }
                 }
         }
