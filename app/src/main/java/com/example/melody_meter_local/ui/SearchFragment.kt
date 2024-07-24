@@ -18,6 +18,8 @@ import com.example.melody_meter_local.adapter.SearchResultsAdapter
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentSearchBinding
 import com.example.melody_meter_local.di.PopularSearchesDatabaseReference
+import com.example.melody_meter_local.di.SongDatabaseReference
+import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.example.melody_meter_local.viewmodel.SearchViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -51,9 +53,11 @@ class SearchFragment : Fragment() {
     lateinit var auth: FirebaseAuth
 
     @Inject
+    @UserDatabaseReference
     lateinit var userDbReference: DatabaseReference
 
     @Inject
+    @SongDatabaseReference
     lateinit var songDbReference: DatabaseReference
 
     @Inject
