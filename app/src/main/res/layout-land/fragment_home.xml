@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/spacing_giant_32dp"
-        android:paddingBottom="@dimen/spacing_extra_giant_48dp" >
+        android:paddingBottom="@dimen/spacing_extra_extra_giant_56dp" >
 
         <!-- New Releases Section -->
         <TextView
