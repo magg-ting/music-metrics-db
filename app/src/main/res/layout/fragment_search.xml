@@ -6,6 +6,7 @@
     android:layout_marginTop="@dimen/activity_no_back_btn_top_margin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/spacing_extra_extra_giant_56dp"
     tools:context=".ui.SearchFragment">
 
     <!-- Search bar at the top -->
