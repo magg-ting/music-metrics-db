@@ -17,6 +17,7 @@ import com.example.melody_meter_local.adapter.RecentSearchesAdapter
 import com.example.melody_meter_local.adapter.SearchResultsAdapter
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentSearchBinding
+import com.example.melody_meter_local.di.PopularSearchesDatabaseReference
 import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.example.melody_meter_local.viewmodel.SearchViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -45,9 +47,18 @@ class SearchFragment : Fragment() {
     private val recentSearches = mutableListOf<String>()
     private val searchResults = mutableListOf<Song>()
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var userDbReference: DatabaseReference
-    private lateinit var songDbReference: DatabaseReference
+    @Inject
+    lateinit var auth: FirebaseAuth
+
+    @Inject
+    lateinit var userDbReference: DatabaseReference
+
+    @Inject
+    lateinit var songDbReference: DatabaseReference
+
+    @Inject
+    @PopularSearchesDatabaseReference
+    lateinit var popularSearchesDbReference: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,9 +71,6 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = FirebaseAuth.getInstance()
-        userDbReference = FirebaseDatabase.getInstance().getReference("Users")
-        songDbReference = FirebaseDatabase.getInstance().getReference("Songs")
 
         // set up recent search view
         recentSearchesAdapter = RecentSearchesAdapter(recentSearches) {searchItem ->
@@ -170,6 +178,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun saveSearchQuery(query: String) {
+        // update the user db for recent searches
         val uid = auth.currentUser?.uid
         if (uid != null) {
             val user = userDbReference.child(uid)
@@ -193,6 +202,20 @@ class SearchFragment : Fragment() {
                     }
                 })
         }
+
+        // update the popular searches db for search count
+        popularSearchesDbReference.child(query)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val currentCount = dataSnapshot.child("count").getValue(Long::class.java) ?: 0
+                    popularSearchesDbReference.child(query).child("count").setValue(currentCount + 1)
+                    popularSearchesDbReference.child(query).child("searchString").setValue(query)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Update Popular Searches: onCancelled", databaseError.toException())
+                }
+            })
     }
 
     private fun loadRecentSearches() {

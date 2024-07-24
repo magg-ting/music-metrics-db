@@ -33,4 +33,10 @@ object FirebaseModule {
     }
 
 
+    @Provides
+    @Singleton
+    @PopularSearchesDatabaseReference
+    fun providePopularSearchesDatabaseReference(): DatabaseReference {
+        return FirebaseDatabase.getInstance().getReference("PopularSearches")
+    }
 }

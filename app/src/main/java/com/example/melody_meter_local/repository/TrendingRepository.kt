@@ -1,6 +1,7 @@
 package com.example.melody_meter_local.repository
 
 import android.util.Log
+import com.example.melody_meter_local.di.PopularSearchesDatabaseReference
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.model.spotify.Track
 import com.example.melody_meter_local.network.SpotifyApi
@@ -14,27 +15,20 @@ import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.tasks.await
 
 class TrendingRepository @Inject constructor(
-    private val spotifyApi: SpotifyApi
+    private val spotifyApi: SpotifyApi,
+    @PopularSearchesDatabaseReference private val popularSearchesDbReference: DatabaseReference
 ) {
 
-    private val userDbReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
-    suspend fun fetchAllRecentSearches(): List<String>{
-        // Fetch all recent searches from the Firebase database
-        Log.d("TrendingRepository", "Fetching all recent searches from Firebase")
+    suspend fun fetchPopularSearches(): List<String> {
+        // Fetch all popular searches from Firebase Realtime Database
+        Log.d("TrendingRepository", "Fetching popular searches from Firebase Realtime Database")
         return try {
-            val snapshot = userDbReference.get().await()
-            val recentSearches = mutableListOf<String>()
-            val t = object : GenericTypeIndicator<List<String>>() {}
-            for (userSnapshot in snapshot.children) {
-                val userRecentSearches = userSnapshot.child("recentSearches").getValue(t)
-                if (userRecentSearches != null) {
-                    recentSearches.addAll(userRecentSearches)
-                }
-            }
-            Log.d("TrendingRepository", "Fetched recent searches: $recentSearches")
-            recentSearches
+            val snapshot = popularSearchesDbReference.orderByChild("count").limitToLast(10).get().await()
+            val popularSearches = snapshot.children.mapNotNull { it.child("searchString").getValue(String::class.java) }
+            Log.d("TrendingRepository", "Fetched popular searches: $popularSearches")
+            popularSearches.reversed() // since Firebase returns the smallest first, reverse to get the largest count first
         } catch (e: Exception) {
-            Log.e("TrendingRepository", "Error fetching recent searches", e)
+            Log.e("TrendingRepository", "Error fetching popular searches", e)
             emptyList()
         }
     }
@@ -60,13 +54,7 @@ class TrendingRepository @Inject constructor(
 
     suspend fun fetchTrendingSongs(): List<Song> {
         Log.d("TrendingRepository", "Fetching trending songs")
-        val allRecentSearches: List<String> = fetchAllRecentSearches()
-        val searchFrequencyMap: Map<String, Int> = allRecentSearches.groupingBy { it }.eachCount()
-        val topSearches: List<String> = searchFrequencyMap.entries
-            .sortedByDescending { it.value }
-            .take(10)
-            .map { it.key }
-
+        val topSearches: List<String> = fetchPopularSearches()
         Log.d("TrendingRepository", "Top searches: $topSearches")
 
         val trendingSongs = mutableListOf<Song>()

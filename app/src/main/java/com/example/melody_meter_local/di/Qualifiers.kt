@@ -10,3 +10,7 @@ annotation class UserDatabaseReference
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class SongDatabaseReference
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class PopularSearchesDatabaseReference

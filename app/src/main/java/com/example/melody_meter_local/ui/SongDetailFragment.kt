@@ -22,8 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.round
 
-//TODO: album image
-
 @AndroidEntryPoint
 class SongDetailFragment : Fragment() {
     private var _binding: FragmentSongDetailBinding? = null
@@ -77,7 +75,7 @@ class SongDetailFragment : Fragment() {
             if (it.ratings.isEmpty()) {
                 binding.rating.text = getString(R.string.default_no_rating)
             } else {
-                val average = it.ratings.map { pair -> pair.values.first() }.average()
+                it.avgRating = it.ratings.map { pair -> pair.values.first() }.average()
                 binding.rating.text = String.format("%.1f", it.avgRating) + "(based on ${it.ratings.size} ratings)"
             }
         }
