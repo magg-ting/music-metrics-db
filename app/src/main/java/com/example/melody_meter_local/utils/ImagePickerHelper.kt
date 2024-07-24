@@ -14,33 +14,40 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 
-class ImagePickerHelper(private val fragment: Fragment, private val profileViewModel: ProfileViewModel) {
+class ImagePickerHelper(
+    private val fragment: Fragment,
+    private val profileViewModel: ProfileViewModel
+) {
 
     private var imageUri: Uri? = null
 
-    private val pickImageGallery = fragment.registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { uploadProfileCoverPhoto(it) }
-    }
-
-    private val pickImageCamera = fragment.registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-        if (success) {
-            imageUri?.let { uploadProfileCoverPhoto(it) }
+    private val pickImageGallery =
+        fragment.registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { uploadProfileCoverPhoto(it) }
         }
-    }
 
-    private val requestPermissionLauncher = fragment.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (isGranted) {
-            pickFromCamera()
+    private val pickImageCamera =
+        fragment.registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                imageUri?.let { uploadProfileCoverPhoto(it) }
+            }
         }
-    }
 
-    private val requestMultiplePermissionsLauncher = fragment.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-        if (permissions[Manifest.permission.CAMERA] == true && permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
-            pickFromCamera()
-        } else if (permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
-            pickFromGallery()
+    private val requestPermissionLauncher =
+        fragment.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                pickFromCamera()
+            }
         }
-    }
+
+    private val requestMultiplePermissionsLauncher =
+        fragment.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (permissions[Manifest.permission.CAMERA] == true && permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
+                pickFromCamera()
+            } else if (permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true) {
+                pickFromGallery()
+            }
+        }
 
     fun showImagePickDialog() {
         val options = arrayOf("Camera", "Gallery")
@@ -68,7 +75,10 @@ class ImagePickerHelper(private val fragment: Fragment, private val profileViewM
         val contentValues = ContentValues()
         contentValues.put(MediaStore.Images.Media.TITLE, "Temp Image Title")
         contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Temp Image Description")
-        imageUri = fragment.requireActivity().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        imageUri = fragment.requireActivity().contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
         pickImageCamera.launch(imageUri)
     }
 
@@ -78,18 +88,28 @@ class ImagePickerHelper(private val fragment: Fragment, private val profileViewM
 
     private fun checkCameraPermission(): Boolean {
         val context = fragment.requireContext()
-        val cameraPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-        val storagePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val cameraPermission =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+        val storagePermission =
+            ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         return cameraPermission == PackageManager.PERMISSION_GRANTED && storagePermission == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestCameraPermission() {
-        requestMultiplePermissionsLauncher.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        requestMultiplePermissionsLauncher.launch(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        )
     }
 
     private fun checkStoragePermission(): Boolean {
         val context = fragment.requireContext()
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestStoragePermission() {

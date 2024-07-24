@@ -5,7 +5,7 @@ import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class MelodyMeterApp: Application(){
+class MelodyMeterApp : Application() {
 
     override fun onCreate() {
         super.onCreate()

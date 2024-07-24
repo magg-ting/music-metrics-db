@@ -7,10 +7,11 @@ import com.bumptech.glide.Glide
 import com.example.melody_meter_local.databinding.ItemSongCarouselBinding
 import com.example.melody_meter_local.model.Song
 
-class TrendingAdapter: RecyclerView.Adapter<TrendingAdapter.SongViewHolder>() {
+class TrendingAdapter : RecyclerView.Adapter<TrendingAdapter.SongViewHolder>() {
     private var songs: List<Song> = emptyList()
 
-    class SongViewHolder(private val binding: ItemSongCarouselBinding) : RecyclerView.ViewHolder(binding.root) {
+    class SongViewHolder(private val binding: ItemSongCarouselBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             binding.trackName.text = song.name
             binding.artistName.text = song.artist
@@ -23,7 +24,8 @@ class TrendingAdapter: RecyclerView.Adapter<TrendingAdapter.SongViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        val binding = ItemSongCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemSongCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SongViewHolder(binding)
     }
 

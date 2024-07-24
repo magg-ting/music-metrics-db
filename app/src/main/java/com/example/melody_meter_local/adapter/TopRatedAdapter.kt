@@ -9,11 +9,12 @@ import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.ItemSongCarouselBinding
 import com.example.melody_meter_local.model.Song
 
-class TopRatedAdapter : RecyclerView.Adapter<TopRatedAdapter.SongViewHolder>(){
+class TopRatedAdapter : RecyclerView.Adapter<TopRatedAdapter.SongViewHolder>() {
     // Dynamically update the item views when data change
     private var songs: List<Song> = emptyList()
 
-    class SongViewHolder(private val binding: ItemSongCarouselBinding) : RecyclerView.ViewHolder(binding.root) {
+    class SongViewHolder(private val binding: ItemSongCarouselBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(song: Song) {
             Log.d("Top Rated Adapter", song.name)
             Log.d("Top Rated Adapter", "${song.artist}")
@@ -29,7 +30,8 @@ class TopRatedAdapter : RecyclerView.Adapter<TopRatedAdapter.SongViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        val binding = ItemSongCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemSongCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SongViewHolder(binding)
     }
 

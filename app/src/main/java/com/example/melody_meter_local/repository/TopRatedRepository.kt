@@ -7,7 +7,8 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.tasks.await
 
 class TopRatedRepository {
-    private val songDbReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Songs")
+    private val songDbReference: DatabaseReference =
+        FirebaseDatabase.getInstance().getReference("Songs")
 
     suspend fun fetchTopRatedSongs(): List<Song> {
         Log.d("TopRatedRepository", "Fetching top-rated songs")

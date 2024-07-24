@@ -30,7 +30,8 @@ class AlbumAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumSongViewHolder {
         // Inflate your item layout here
-        val binding = ItemAlbumSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemAlbumSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return AlbumSongViewHolder(binding.root, onItemClick)
     }
 

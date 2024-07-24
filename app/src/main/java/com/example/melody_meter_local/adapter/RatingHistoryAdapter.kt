@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.ItemRatingRecordBinding
 import com.example.melody_meter_local.model.Song
+
 //import com.example.melody_meter_local.viewmodel.RatingHistoryViewModel
 
 class RatingHistoryAdapter(

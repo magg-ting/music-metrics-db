@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.adapter.RecentSearchesAdapter
 import com.example.melody_meter_local.adapter.SearchResultsAdapter
-import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.FragmentSearchBinding
+import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.example.melody_meter_local.viewmodel.SearchViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -65,23 +65,23 @@ class SearchFragment : Fragment() {
         songDbReference = FirebaseDatabase.getInstance().getReference("Songs")
 
         // set up recent search view
-        recentSearchesAdapter = RecentSearchesAdapter(recentSearches) {searchItem ->
+        recentSearchesAdapter = RecentSearchesAdapter(recentSearches) { searchItem ->
             recentSearches.remove(searchItem)
             recentSearchesAdapter.notifyDataSetChanged()
         }
 
-        binding.recentSearchesRecyclerView.apply{
+        binding.recentSearchesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = recentSearchesAdapter
         }
 
         // set up search results view
-        searchResultsAdapter = SearchResultsAdapter(searchResults){song ->
+        searchResultsAdapter = SearchResultsAdapter(searchResults) { song ->
             val action = SearchFragmentDirections.actionSearchFragmentToSongDetailFragment(song)
             findNavController().navigate(action)
         }
 
-        binding.searchResultsRecyclerView.apply{
+        binding.searchResultsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = searchResultsAdapter
         }
@@ -189,7 +189,11 @@ class SearchFragment : Fragment() {
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Load Recent Searches: onCancelled", databaseError.toException())
+                        Log.w(
+                            ContentValues.TAG,
+                            "Load Recent Searches: onCancelled",
+                            databaseError.toException()
+                        )
                     }
                 })
         }
@@ -210,7 +214,11 @@ class SearchFragment : Fragment() {
                     }
 
                     override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Load Recent Searches: onCancelled", databaseError.toException())
+                        Log.w(
+                            ContentValues.TAG,
+                            "Load Recent Searches: onCancelled",
+                            databaseError.toException()
+                        )
                     }
                 })
         }

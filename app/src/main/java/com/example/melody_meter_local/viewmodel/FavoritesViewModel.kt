@@ -1,25 +1,19 @@
 package com.example.melody_meter_local.viewmodel
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.melody_meter_local.model.Song
-import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.repository.FavoritesRepository
-import com.google.firebase.auth.FirebaseAuth
-import dagger.assisted.Assisted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class FavoritesViewModel @Inject constructor (
+class FavoritesViewModel @Inject constructor(
     private val repository: FavoritesRepository,
 ) : ViewModel() {
 
@@ -37,14 +31,13 @@ class FavoritesViewModel @Inject constructor (
         }
     }
 
-    fun addFavorite(songId: String){
+    fun addFavorite(songId: String) {
         viewModelScope.launch {
-            try{
+            try {
                 repository.addFavorite(songId)
                 // refresh the list after adding
                 //fetchFavoriteSongs()
-            }
-            catch(e: Exception){
+            } catch (e: Exception) {
                 Log.e("FavoritesViewModel", "Failed to add favorite", e)
             }
         }

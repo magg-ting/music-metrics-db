@@ -1,8 +1,8 @@
 package com.example.melody_meter_local.repository
 
 import com.example.melody_meter_local.BuildConfig
-import com.example.melody_meter_local.network.SpotifyAuthApi
 import com.example.melody_meter_local.network.SessionManager
+import com.example.melody_meter_local.network.SpotifyAuthApi
 import javax.inject.Inject
 import javax.inject.Singleton
 
