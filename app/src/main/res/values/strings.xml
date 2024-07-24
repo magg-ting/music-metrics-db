@@ -55,4 +55,5 @@
     <string name="rate_this_song">Rate this song</string>
     <string name="rating_prompt">How do you like the song?\n(1 = lowest and 5 = highest)</string>
     <string name="no_rating_history">You have no rating history.</string>
+    <string name="placeholder_album_name">{Placeholder_Album_Name}</string>
 </resources>

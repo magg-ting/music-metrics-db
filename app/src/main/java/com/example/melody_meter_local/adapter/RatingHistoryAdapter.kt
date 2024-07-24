@@ -8,41 +8,40 @@ import com.bumptech.glide.Glide
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.ItemRatingRecordBinding
 import com.example.melody_meter_local.model.Song
-import com.example.melody_meter_local.viewmodel.RatingHistoryViewModel
+//import com.example.melody_meter_local.viewmodel.RatingHistoryViewModel
 
-class RatingHistoryAdapter (
-    private val viewModel: RatingHistoryViewModel,
-
+class RatingHistoryAdapter(
+    //private val viewModel: RatingHistoryViewModel,
     private val onItemClick: (Song) -> Unit
-): RecyclerView.Adapter<RatingHistoryAdapter.RatingHistoryViewHolder>(){
+) : RecyclerView.Adapter<RatingHistoryAdapter.RatingHistoryViewHolder>() {
     private var ratedSongs: List<Pair<Song, Double>> = emptyList()
 
     inner class RatingHistoryViewHolder(
         itemView: View,
         private val onItemClick: (Song) -> Unit
-    ) : RecyclerView.ViewHolder(itemView){
+    ) : RecyclerView.ViewHolder(itemView) {
 
         private val binding = ItemRatingRecordBinding.bind(itemView)
         fun bind(item: Pair<Song, Double>) {
             binding.trackName.text = item.first.name
             binding.trackArtist.text = item.first.artist
-            if(!item.first.imgUrl.isNullOrEmpty()){
+            if (!item.first.imgUrl.isNullOrEmpty()) {
                 // Load image into binding.albumImg using Glide
                 Glide.with(binding.root).load(item.first.imgUrl).into(binding.albumImg)
-            }
-            else{
+            } else {
                 binding.albumImg.setImageResource(R.drawable.default_album_cover)
             }
             binding.rating.text = item.second.toString()
 
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 onItemClick(item.first)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatingHistoryViewHolder {
-        val binding = ItemRatingRecordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemRatingRecordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RatingHistoryViewHolder(binding.root, onItemClick)
     }
 

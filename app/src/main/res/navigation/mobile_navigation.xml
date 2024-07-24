@@ -22,6 +22,41 @@
                 app:argType="com.example.melody_meter_local.model.Song"
                 app:nullable="false" />
         </action>
+        <action
+            android:id="@+id/action_homeFragment_to_albumFragment"
+            app:destination="@id/navigation_album"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim">
+            <argument
+                android:name="album"
+                app:argType="com.example.melody_meter_local.model.Album"
+                app:nullable="false" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_album"
+        android:name="com.example.melody_meter_local.ui.AlbumFragment"
+        android:label="Album"
+        tools:layout="@layout/fragment_album" >
+        <argument
+            android:name="album"
+            app:argType="com.example.melody_meter_local.model.Album"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_albumFragment_to_songDetailFragment"
+            app:destination="@id/navigation_song_detail"
+            app:enterAnim="@anim/enter_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim">
+            <argument
+                android:name="song"
+                app:argType="com.example.melody_meter_local.model.Song"
+                app:nullable="false" />
+        </action>
     </fragment>
 
     <fragment

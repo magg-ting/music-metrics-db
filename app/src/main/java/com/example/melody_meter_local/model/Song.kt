@@ -2,10 +2,9 @@ package com.example.melody_meter_local.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.io.Serializable
 
 
-data class Song (
+data class Song(
     val spotifyTrackId: String = "",
     val name: String = "",
     val artist: String = "",
@@ -13,7 +12,7 @@ data class Song (
     val imgUrl: String? = null,
     var ratings: MutableList<MutableMap<String, Double>> = mutableListOf(),
     var avgRating: Double = 0.0
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),
@@ -22,8 +21,7 @@ data class Song (
         parcel.readString(),
         TODO("ratings"),
         parcel.readDouble()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(spotifyTrackId)

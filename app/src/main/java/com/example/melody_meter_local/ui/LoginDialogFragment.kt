@@ -30,7 +30,7 @@ class LoginDialogFragment : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -79,7 +79,7 @@ class LoginDialogFragment : DialogFragment() {
                         Log.d("LoginDialog", "Dismissed login dialog")
                     }
                 }
-                .addOnFailureListener{
+                .addOnFailureListener {
                     Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
                     Log.e("LoginDialog", "Failed to login", it)
                 }

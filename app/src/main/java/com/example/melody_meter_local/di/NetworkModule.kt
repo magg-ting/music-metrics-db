@@ -1,7 +1,6 @@
 package com.example.melody_meter_local.di
 
 import android.content.Context
-import com.example.melody_meter_local.BuildConfig
 import com.example.melody_meter_local.network.AuthInterceptor
 import com.example.melody_meter_local.network.SessionManager
 import com.example.melody_meter_local.network.SpotifyApi
@@ -12,7 +11,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -92,7 +90,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideGsonConverterFactory(): GsonConverterFactory{
+    fun provideGsonConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
 

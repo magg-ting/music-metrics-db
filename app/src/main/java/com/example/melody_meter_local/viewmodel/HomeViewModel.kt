@@ -10,11 +10,6 @@ import com.example.melody_meter_local.model.spotify.Album
 import com.example.melody_meter_local.repository.SpotifyRepository
 import com.example.melody_meter_local.repository.TopRatedRepository
 import com.example.melody_meter_local.repository.TrendingRepository
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +29,9 @@ class HomeViewModel @Inject constructor(
 
     private val _newReleases = MutableLiveData<List<Album>>()
     val newReleases: LiveData<List<Album>> get() = _newReleases
+
+    private val _albumTracks = MutableLiveData<List<Song>>()
+    val albumTracks: LiveData<List<Song>> get() = _albumTracks
 
     init {
         loadTopRatedSongs()
@@ -72,5 +70,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 
 }

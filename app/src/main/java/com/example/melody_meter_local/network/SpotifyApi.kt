@@ -1,8 +1,8 @@
 package com.example.melody_meter_local.network
 
+import com.example.melody_meter_local.model.spotify.AlbumTracksResponse
 import com.example.melody_meter_local.model.spotify.NewReleasesResponse
 import com.example.melody_meter_local.model.spotify.SearchResponse
-import com.example.melody_meter_local.model.spotify.SongResponse
 import com.example.melody_meter_local.model.spotify.Track
 import retrofit2.Response
 import retrofit2.http.GET
@@ -23,5 +23,10 @@ interface SpotifyApi {
     @GET("tracks/{id}")
     suspend fun getSongById(
         @Path("id") id: String
-    ): Response<SongResponse>
+    ): Response<Track>
+
+    @GET("albums/{id}/tracks")
+    suspend fun getAlbumTracks(
+        @Path("id") id: String
+    ): Response<AlbumTracksResponse>
 }

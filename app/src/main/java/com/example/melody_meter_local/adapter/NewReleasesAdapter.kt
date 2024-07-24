@@ -1,18 +1,25 @@
 package com.example.melody_meter_local.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.melody_meter_local.databinding.ItemAlbumBinding
 import com.example.melody_meter_local.model.spotify.Album
 
-class NewReleasesAdapter : RecyclerView.Adapter<NewReleasesAdapter.AlbumViewHolder>() {
+class NewReleasesAdapter(
+    private val onItemClick: (Album) -> Unit
+) : RecyclerView.Adapter<NewReleasesAdapter.AlbumViewHolder>() {
 
     private var albums: List<Album> = emptyList()
 
-    class AlbumViewHolder(private val binding: ItemAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
+    class AlbumViewHolder(
+        itemView: View,
+        private val onItemClick: (Album) -> Unit
+    ) : RecyclerView.ViewHolder(itemView) {
 
+        private val binding = ItemAlbumBinding.bind(itemView)
         fun bind(album: Album) {
             binding.albumName.text = album.name
             binding.artistName.text = album.artists.joinToString(", ") { it.name }
@@ -22,12 +29,16 @@ class NewReleasesAdapter : RecyclerView.Adapter<NewReleasesAdapter.AlbumViewHold
                 .load(album.images?.first()?.url)
                 .into(binding.albumImage)
 
+            itemView.setOnClickListener {
+                onItemClick(album)
+            }
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
         // Inflate your item layout here
         val binding = ItemAlbumBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AlbumViewHolder(binding)
+        return AlbumViewHolder(binding.root, onItemClick)
     }
 
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {

@@ -1,8 +1,6 @@
 package com.example.melody_meter_local.repository
 
-import android.provider.ContactsContract.Data
 import android.util.Log
-import com.example.melody_meter_local.di.SongDatabaseReference
 import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.network.SpotifyApi
@@ -23,7 +21,7 @@ class RatingHistoryRepository @Inject constructor(
         return try {
             val snapshot = userDbReference.child(uid).child("ratings").get().await()
             val ratedSongs = mutableListOf<Pair<Song, Double>>()
-            snapshot.children.forEach{ ratingSnapshot ->
+            snapshot.children.forEach { ratingSnapshot ->
                 val ratingMap = ratingSnapshot.value as Map<String, Any>
                 ratingMap.forEach { (songId, rating) ->
                     val ratingValue = when (rating) {
@@ -38,8 +36,7 @@ class RatingHistoryRepository @Inject constructor(
                 }
             }
             ratedSongs
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e("RatingHistoryRepository", "Failed to fetch rating history", e)
             emptyList()
         }
@@ -47,16 +44,16 @@ class RatingHistoryRepository @Inject constructor(
 
     suspend fun fetchSongsDetails(songId: String): Song? {
         return try {
-                val response = api.getSongById(songId)
-                if (response.isSuccessful) {
-                    response.body()?.toSong()
-                } else {
-                    Log.e(
-                        "RatingHistoryRepository",
-                        "Failed to fetch song details: ${response.message()}"
-                    )
-                    null
-                }
+            val response = api.getSongById(songId)
+            if (response.isSuccessful) {
+                response.body()?.toSong()
+            } else {
+                Log.e(
+                    "RatingHistoryRepository",
+                    "Failed to fetch song details: ${response.message()}"
+                )
+                null
+            }
 
         } catch (e: Exception) {
             Log.e("RatingHistoryRepository", "Error fetching song details", e)

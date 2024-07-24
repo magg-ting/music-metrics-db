@@ -9,15 +9,14 @@ data class User(
     var ratings: MutableList<MutableMap<String, Double>>? = null,
     var recentSearches: MutableList<String>? = null,
     var favorites: MutableList<String>? = null
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString(),
         TODO("ratings"),
         parcel.createStringArrayList(),
         parcel.createStringArrayList()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(username)
