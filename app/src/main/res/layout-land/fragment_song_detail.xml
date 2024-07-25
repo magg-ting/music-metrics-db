@@ -8,7 +8,6 @@
     android:layout_marginEnd="@dimen/activity_horizontal_margin"
     tools:context=".ui.SongDetailFragment">
 
-
     <LinearLayout
         android:id="@+id/image_wrapper"
         android:layout_width="0dp"
@@ -24,17 +23,12 @@
             android:id="@+id/back_button"
             style="@style/BackButton"
             android:layout_marginStart="@dimen/spacing_medium_16dp"
-            android:layout_marginTop="@dimen/activity_back_btn_top_margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="@dimen/activity_back_btn_top_margin" />
 
         <ImageView
             android:id="@+id/album_image"
             style="@style/ImageStyle.SongDetail"
-            android:src="@drawable/default_album_cover"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/back_button" />
+            android:src="@drawable/default_album_cover" />
 
     </LinearLayout>
 
@@ -52,7 +46,6 @@
             android:id="@+id/title_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="horizontal">
 
             <TextView
@@ -79,9 +72,7 @@
             style="@style/TextStyle.SongDetail.ArtistName"
             android:layout_marginTop="@dimen/spacing_medium_16dp"
             android:paddingTop="@dimen/spacing_medium_16dp"
-            android:text="@string/placeholder_artist_name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title_wrapper" />
+            android:text="@string/placeholder_artist_name" />
 
         <TextView
             android:id="@+id/rating"
@@ -89,19 +80,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/spacing_small_8dp"
-            android:text="@string/default_no_rating"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/artist_name" />
+            android:text="@string/default_no_rating" />
 
         <Button
             android:id="@+id/rate_button"
             style="@style/PrimaryButton"
             android:text="@string/rate_this_song"
-            android:layout_marginTop="@dimen/spacing_extra_giant_48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rating"
-            app:layout_constraintBottom_toTopOf="@id/spotify_url"/>
+            android:layout_marginTop="@dimen/spacing_extra_giant_48dp" />
 
         <TextView
             android:id="@+id/spotify_url"
@@ -110,11 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_large_24dp"
-            android:text="@string/listen_on_spotify"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rate_button"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:text="@string/listen_on_spotify" />
 
 
     </LinearLayout>

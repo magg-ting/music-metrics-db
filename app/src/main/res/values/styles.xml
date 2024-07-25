@@ -295,5 +295,12 @@
         <item name="android:padding">@dimen/spacing_medium_16dp</item>
         <item name="android:layout_gravity">center</item>
     </style>
+
+    <style name="ImageStyle.AlbumDetail">
+        <item name="android:layout_width">@dimen/album_detail_size</item>
+        <item name="android:layout_height">@dimen/album_detail_size</item>
+        <item name="android:padding">@dimen/spacing_medium_16dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
     <!--    endregion-->
 </resources>

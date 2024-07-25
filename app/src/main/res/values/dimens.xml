@@ -97,6 +97,7 @@
     <dimen name="carousel_item_size">150dp</dimen>
     <dimen name="song_item_size">75dp</dimen>
     <dimen name="song_detail_size">350dp</dimen>
+    <dimen name="album_detail_size">350dp</dimen>
     <dimen name="back_btn_size">24dp</dimen>
     <dimen name="design_bottom_navigation_icon_size">24dp</dimen>
 </resources>
