@@ -74,7 +74,6 @@ class HomeFragment : Fragment() {
         // New Releases Section
         newReleasesAdapter = NewReleasesAdapter { album ->
             albumViewModel.selectAlbum(album)
-            Log.d("HomeFragment", "${album.spotifyAlbumId} ${album.name}")
             val action =
                 HomeFragmentDirections.actionHomeFragmentToAlbumFragment(album)
             findNavController().navigate(action)

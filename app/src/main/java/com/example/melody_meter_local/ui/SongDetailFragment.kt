@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -30,7 +31,7 @@ class SongDetailFragment : Fragment() {
     private val args: SongDetailFragmentArgs by navArgs()
     private val song by lazy { args.song }
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
-    private val songDetailViewModel: SongDetailViewModel by viewModels()
+    private val songDetailViewModel: SongDetailViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

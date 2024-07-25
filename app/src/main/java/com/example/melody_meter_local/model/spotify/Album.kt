@@ -7,9 +7,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Album(
     @SerializedName("id") val spotifyAlbumId: String,
-    val name: String,
-    val images: List<AlbumImage>? = null,
-    val artists: List<Artist>
+    @SerializedName("name") val name: String,
+    @SerializedName("images") val images: List<AlbumImage>? = null,
+    @SerializedName("artists") val artists: List<Artist>
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),

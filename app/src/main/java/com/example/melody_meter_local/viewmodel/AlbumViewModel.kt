@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.model.spotify.Album
+import com.example.melody_meter_local.model.spotify.Artist
 import com.example.melody_meter_local.repository.SpotifyRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class AlbumViewModel @Inject constructor(
     private val spotifyRepository: SpotifyRepository
 ) : ViewModel() {
+
     private val _selectedAlbum = MutableLiveData<Album>()
     val selectedAlbum: LiveData<Album> get() = _selectedAlbum
 
@@ -36,7 +38,8 @@ class AlbumViewModel @Inject constructor(
                     tracksResponse?.let {
                         val album = selectedAlbum.value
                         album?.let {
-                            _albumTracks.postValue(tracksResponse.toSongs(it))
+                            val songs = tracksResponse.toSongs(it)
+                            _albumTracks.postValue(songs)
                         }
                     }
                 } else {

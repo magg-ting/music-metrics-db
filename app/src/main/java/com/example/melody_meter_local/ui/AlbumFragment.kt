@@ -1,12 +1,14 @@
 package com.example.melody_meter_local.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -37,6 +39,10 @@ class AlbumFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Retrieve album from arguments
+        val album = AlbumFragmentArgs.fromBundle(requireArguments()).album
+        albumViewModel.selectAlbum(album)
+
         val albumAdapter = AlbumAdapter { song ->
             val action =
                 AlbumFragmentDirections.actionAlbumFragmentToSongDetailFragment(song)
@@ -44,7 +50,7 @@ class AlbumFragment : Fragment() {
         }
         binding.albumSongRecyclerView.adapter = albumAdapter
 
-        albumViewModel.selectedAlbum.observe(viewLifecycleOwner, Observer { album ->
+        albumViewModel.selectedAlbum.observe(viewLifecycleOwner) { album ->
             album.let {
                 binding.albumName.text = it.name
                 binding.artistName.text = it.artists.joinToString(", ") { artist -> artist.name }
@@ -53,7 +59,7 @@ class AlbumFragment : Fragment() {
                     .load(it.images?.first()?.url)
                     .into(binding.albumImage)
             }
-        })
+        }
 
         albumViewModel.albumTracks.observe(viewLifecycleOwner) { songs ->
             albumAdapter.submitList(songs)

@@ -1,5 +1,7 @@
 package com.example.melody_meter_local.model.spotify
 
+import com.google.gson.annotations.SerializedName
+
 data class AlbumImage(
-    val url: String
+    @SerializedName("url") val url: String
 )

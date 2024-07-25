@@ -3,15 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/spacing_small_8dp"
+    android:layout_marginVertical="@dimen/spacing_tiny_4dp"
     app:cardCornerRadius="8dp">
 
     <TextView
+        style="@style/TextStyle.BodySmall.ChipStyle"
         android:id="@+id/song_title"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="@dimen/text_semi_large"
-        android:textColor="@color/on_background_38" />
+        android:textSize="@dimen/text_medium"
+        android:paddingVertical="@dimen/spacing_medium_16dp"
+        android:paddingHorizontal="@dimen/spacing_small_8dp"
+        android:textColor="@color/on_background_60"
+        android:text="@string/placeholder_song_title"/>
 
 </com.google.android.material.card.MaterialCardView>
