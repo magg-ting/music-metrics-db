@@ -16,11 +16,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val topRatedRepository: TopRatedRepository,
     private val spotifyRepository: SpotifyRepository,
     private val trendingRepository: TrendingRepository
 ) : ViewModel() {
 
-    private val topRatedRepository = TopRatedRepository()
     private val _topRatedSongs = MutableLiveData<List<Song>>()
     val topRatedSongs: LiveData<List<Song>> get() = _topRatedSongs
 
@@ -34,26 +34,26 @@ class HomeViewModel @Inject constructor(
     val albumTracks: LiveData<List<Song>> get() = _albumTracks
 
     init {
-        loadTopRatedSongs()
+        fetchTopRatedSongs()
         fetchTrendingSongs()
         fetchNewReleases()
     }
 
-    private fun loadTopRatedSongs() {
+    fun fetchTopRatedSongs() {
         viewModelScope.launch {
             val songs = topRatedRepository.fetchTopRatedSongs()
             _topRatedSongs.postValue(songs)
         }
     }
 
-    private fun fetchTrendingSongs() {
+    fun fetchTrendingSongs() {
         viewModelScope.launch {
             val songs = trendingRepository.fetchTrendingSongs()
             _trendingSongs.postValue(songs)
         }
     }
 
-    private fun fetchNewReleases() {
+    fun fetchNewReleases() {
         viewModelScope.launch {
             try {
                 val response = spotifyRepository.getNewReleases()

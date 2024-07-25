@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.melody_meter_local.di.SongDatabaseReference
+import com.example.melody_meter_local.di.UserDatabaseReference
+import com.example.melody_meter_local.model.Song
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -16,21 +19,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SongDetailViewModel @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    @SongDatabaseReference var songDbReference: DatabaseReference,
+    @UserDatabaseReference var userDbReference: DatabaseReference
 ) : ViewModel() {
-    // Initialize Firebase references
-    private var userDbReference: DatabaseReference =
-        FirebaseDatabase.getInstance().getReference("Users")
-    private var songDbReference: DatabaseReference =
-        FirebaseDatabase.getInstance().getReference("Songs")
 
     // Live data for saving to favorites state
-    private val _isFavorite = MutableLiveData<Boolean>()
-    val isFavorite: LiveData<Boolean> get() = _isFavorite
+    private val _isFavorite = MutableLiveData<Boolean?>()
+    val isFavorite: MutableLiveData<Boolean?> get() = _isFavorite
 
     // Live data for rating submission state
-    private val _ratingSubmissionStatus = MutableLiveData<Boolean>()
-    val ratingSubmissionStatus: LiveData<Boolean> get() = _ratingSubmissionStatus
+    private val _ratingSubmissionStatus = MutableLiveData<Boolean?>()
+    val ratingSubmissionStatus: MutableLiveData<Boolean?> get() = _ratingSubmissionStatus
+
+    // Live data for song details (since avgRating may be updated when user submits a new rating)
+    private val _songDetails = MutableLiveData<Song?>()
+    val songDetails: MutableLiveData<Song?> get() = _songDetails
 
     fun updateFavoriteState(spotifyTrackId: String) {
         val uid = auth.currentUser?.uid ?: return
@@ -69,17 +73,17 @@ class SongDetailViewModel @Inject constructor(
                 _isFavorite.value = isFavorite
             } catch (e: Exception) {
                 _isFavorite.value = false
-                Log.e("Song Detail View Model", "Failed to update favorites", e)
+                Log.e("SongDetailViewModel", "Failed to update favorites", e)
             }
         }
     }
 
-    fun saveRating(spotifyTrackId: String, rating: Double) {
+    fun saveRating(song: Song, rating: Double) {
         val uid = auth.currentUser?.uid ?: return
         viewModelScope.launch {
             try {
                 val userRef = userDbReference.child(uid)
-                val songRef = songDbReference.child(spotifyTrackId)
+                val songRef = songDbReference.child(song.spotifyTrackId)
 
                 // Update the song DB
                 val songDataSnapshot = songRef.child("ratings").get().await()
@@ -104,8 +108,18 @@ class SongDetailViewModel @Inject constructor(
                     0.0
                 }
 
-                songRef.child("ratings").setValue(songRatings).await()
-                songRef.child("avgRating").setValue(average).await()
+                // Update song details along with the ratings and average rating
+                songRef.setValue(
+                    mapOf(
+                        "spotifyTrackId" to song.spotifyTrackId,
+                        "name" to song.name,
+                        "artist" to song.artist,
+                        "album" to song.album,
+                        "imgUrl" to song.imgUrl,
+                        "ratings" to songRatings,
+                        "avgRating" to average
+                    )
+                ).await()
 
 
                 // Update the user DB
@@ -115,13 +129,13 @@ class SongDetailViewModel @Inject constructor(
                     ?: mutableListOf()
 
                 // Check if user already rated the song before
-                val existingRatingOfSong = userRatings.find { it.contains(spotifyTrackId) }
+                val existingRatingOfSong = userRatings.find { it.contains(song.spotifyTrackId) }
                 if (existingRatingOfSong != null) {
                     // Update existing rating
-                    existingRatingOfSong[spotifyTrackId] = rating
+                    existingRatingOfSong[song.spotifyTrackId] = rating
                 } else {
                     // Add new rating
-                    userRatings.add(mutableMapOf(spotifyTrackId to rating))
+                    userRatings.add(mutableMapOf(song.spotifyTrackId to rating))
                 }
 
                 userRef.child("ratings").setValue(userRatings).await()
@@ -129,10 +143,28 @@ class SongDetailViewModel @Inject constructor(
                 _ratingSubmissionStatus.value = true
             } catch (e: Exception) {
                 _ratingSubmissionStatus.value = false
-                Log.e("Song Detail View Model", "Failed to save rating", e)
+                Log.e("SongDetailViewModel", "Failed to save rating", e)
             }
         }
     }
 
+    fun fetchSongDetails(spotifyTrackId: String) {
+        viewModelScope.launch {
+            try {
+                val songRef = songDbReference.child(spotifyTrackId).get().await()
+                val song = songRef.getValue(Song::class.java)
+                song?.let {
+                    _songDetails.value = it
+                }
+            } catch (e: Exception) {
+                Log.e("SongDetailViewModel", "Failed to fetch song details", e)
+            }
+        }
+    }
 
+    fun clearState() {
+        _isFavorite.value = null
+        _ratingSubmissionStatus.value = null
+        _songDetails.value = null
+    }
 }

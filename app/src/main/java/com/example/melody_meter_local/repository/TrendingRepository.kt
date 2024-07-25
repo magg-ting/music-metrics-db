@@ -15,16 +15,15 @@ class TrendingRepository @Inject constructor(
 ) {
 
     suspend fun fetchPopularSearches(): List<String> {
-        // Fetch all popular searches from Firebase Realtime Database
-        Log.d("TrendingRepository", "Fetching popular searches from Firebase Realtime Database")
+        // Fetch top 20 popular searches from Firebase
         return try {
             val snapshot =
-                popularSearchesDbReference.orderByChild("count").limitToLast(10).get().await()
+                popularSearchesDbReference.orderByChild("count").limitToFirst(20).get().await()
             val popularSearches = snapshot.children.mapNotNull {
                 it.child("searchString").getValue(String::class.java)
             }
-            Log.d("TrendingRepository", "Fetched popular searches: $popularSearches")
-            popularSearches.reversed() // since Firebase returns the smallest first, reverse to get the largest count first
+            // since Firebase returns the smallest first, reverse to get the largest count first
+            popularSearches.reversed()
         } catch (e: Exception) {
             Log.e("TrendingRepository", "Error fetching popular searches", e)
             emptyList()
@@ -33,12 +32,10 @@ class TrendingRepository @Inject constructor(
 
     suspend fun fetchFirstSongResult(search: String): Track? {
         // Fetch the first song result for a given search term from Spotify API
-        Log.d("TrendingRepository", "Fetching first song result for search: $search")
         return try {
             val response = spotifyApi.search(query = search)
             if (response.isSuccessful) {
                 val track = response.body()?.tracks?.items?.firstOrNull()
-                Log.d("TrendingRepository", "Fetched track: $track")
                 track
             } else {
                 Log.e(
@@ -54,10 +51,7 @@ class TrendingRepository @Inject constructor(
     }
 
     suspend fun fetchTrendingSongs(): List<Song> {
-        Log.d("TrendingRepository", "Fetching trending songs")
         val topSearches: List<String> = fetchPopularSearches()
-        Log.d("TrendingRepository", "Top searches: $topSearches")
-
         val trendingSongs = mutableListOf<Song>()
         for (search in topSearches) {
             val song = fetchFirstSongResult(search)?.toSong()
@@ -65,7 +59,6 @@ class TrendingRepository @Inject constructor(
                 trendingSongs.add(song)
             }
         }
-        Log.d("TrendingRepository", "Trending songs: $trendingSongs")
         return trendingSongs
     }
 }

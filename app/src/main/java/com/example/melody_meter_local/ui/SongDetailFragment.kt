@@ -18,9 +18,11 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentSongDetailBinding
+import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.viewmodel.SongDetailViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.round
 
 @AndroidEntryPoint
@@ -28,9 +30,11 @@ class SongDetailFragment : Fragment() {
     private var _binding: FragmentSongDetailBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var auth: FirebaseAuth
+
     private val args: SongDetailFragmentArgs by navArgs()
-    private val song by lazy { args.song }
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    //private val song by lazy { args.song }
     private val songDetailViewModel: SongDetailViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -46,7 +50,8 @@ class SongDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showSongDetails()
+        val song = args.song
+        showSongDetails(song)
         updateSaveButtonState()
         setupObservers()
         setupListeners()
@@ -57,7 +62,7 @@ class SongDetailFragment : Fragment() {
         _binding = null
     }
 
-    private fun showSongDetails() {
+    private fun showSongDetails(song: Song) {
         song.let {
             binding.trackName.text = it.name
             binding.artistName.text = it.artist
@@ -67,18 +72,21 @@ class SongDetailFragment : Fragment() {
                 Glide.with(this)
                     .load(it.imgUrl)
                     .into(binding.albumImage)
-                Log.d("SongDetailFragment", "Load Image URL: ${it.imgUrl}")
             } else {
                 binding.albumImage.setImageResource(R.drawable.default_album_cover)
-                Log.d("SongDetailFragment", "Cannot Load Image URL: ${it.imgUrl}")
+
             }
             // show community rating of the song
-            if (it.ratings.isEmpty()) {
-                binding.rating.text = getString(R.string.default_no_rating)
-            } else {
-                it.avgRating = it.ratings.map { pair -> pair.values.first() }.average()
-                binding.rating.text = String.format("%.1f", it.avgRating) + "(based on ${it.ratings.size} ratings)"
-            }
+            updateRatingUI(song)
+        }
+    }
+
+    private fun updateRatingUI(song: Song){
+        if (song.ratings.isEmpty()) {
+            binding.rating.text = getString(R.string.default_no_rating)
+        } else {
+            song.avgRating = song.ratings.map { pair -> pair.values.first() }.average()
+            binding.rating.text = String.format("%.1f", song.avgRating) + " (based on ${song.ratings.size} ratings)"
         }
     }
 
@@ -86,29 +94,38 @@ class SongDetailFragment : Fragment() {
         if (auth.currentUser == null) {
             binding.saveButton.setImageResource(R.drawable.ic_save_unpressed)
         } else {
-            songDetailViewModel.updateFavoriteState(song.spotifyTrackId)
+            songDetailViewModel.updateFavoriteState(args.song.spotifyTrackId)
         }
     }
 
     private fun setupObservers() {
-        songDetailViewModel.isFavorite.observe(viewLifecycleOwner, Observer { isFavorite ->
+        songDetailViewModel.isFavorite.observe(viewLifecycleOwner) { isFavorite ->
             binding.saveButton.setImageResource(
-                if (isFavorite) R.drawable.ic_save_pressed else R.drawable.ic_save_unpressed
+                if (isFavorite == true) R.drawable.ic_save_pressed else R.drawable.ic_save_unpressed
             )
-        })
+        }
 
-        songDetailViewModel.ratingSubmissionStatus.observe(viewLifecycleOwner, Observer { isSuccess ->
-            if (isSuccess) {
-                Toast.makeText(context, "Your rating has been submitted.", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Failed to submit rating. Please try again.", Toast.LENGTH_SHORT).show()
+        songDetailViewModel.ratingSubmissionStatus.observe(viewLifecycleOwner) { isSuccess ->
+            when (isSuccess) {
+                true -> {
+                    Toast.makeText(context, "Your rating has been submitted.", Toast.LENGTH_SHORT).show()
+                    songDetailViewModel.fetchSongDetails(args.song.spotifyTrackId)
+                }
+                false -> Toast.makeText(context, "Failed to submit rating. Please try again.", Toast.LENGTH_SHORT).show()
+                null -> { } // No toast when isSuccess is null (i.e. reset)
             }
-        })
+        }
+
+        songDetailViewModel.songDetails.observe(viewLifecycleOwner) { updatedSong ->
+            if (updatedSong != null) {
+                showSongDetails(updatedSong)
+            }
+        }
     }
 
     private fun setupListeners() {
         binding.spotifyUrl.setOnClickListener {
-            val url = "https://open.spotify.com/track/${song.spotifyTrackId}"
+            val url = "https://open.spotify.com/track/${args.song.spotifyTrackId}"
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
@@ -125,6 +142,7 @@ class SongDetailFragment : Fragment() {
         }
 
         binding.backButton.setOnClickListener {
+            songDetailViewModel.clearState()
             findNavController().navigateUp()
         }
 
@@ -132,6 +150,7 @@ class SongDetailFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    songDetailViewModel.clearState()
                     findNavController().navigateUp()
                 }
             }
@@ -155,7 +174,7 @@ class SongDetailFragment : Fragment() {
                     composeView.visibility = View.GONE
                 },
                 onRatingSelected = { rating ->
-                    songDetailViewModel.saveRating(song.spotifyTrackId, rating)
+                    songDetailViewModel.saveRating(args.song, rating)
                 })
         }
     }
@@ -164,9 +183,7 @@ class SongDetailFragment : Fragment() {
         if (auth.currentUser == null) {
             showLoginPrompt()
         } else {
-            songDetailViewModel.toggleFavorite(song.spotifyTrackId)
+            songDetailViewModel.toggleFavorite(args.song.spotifyTrackId)
         }
     }
-
-
 }
