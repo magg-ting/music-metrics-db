@@ -2,8 +2,6 @@ package com.example.melody_meter_local.network
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.melody_meter_local.BuildConfig
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +10,8 @@ import javax.inject.Singleton
 class SessionManager @Inject constructor(
     context: Context
 ) {
-    private val prefs: SharedPreferences = context.getSharedPreferences("spotify_prefs", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("spotify_prefs", Context.MODE_PRIVATE)
 
     fun saveTokens(accessToken: String, expiresIn: Long) {
         val editor = prefs.edit()

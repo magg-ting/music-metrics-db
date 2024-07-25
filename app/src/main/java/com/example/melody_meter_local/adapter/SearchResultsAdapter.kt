@@ -6,38 +6,36 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.melody_meter_local.R
-import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.databinding.ItemSongBinding
+import com.example.melody_meter_local.model.Song
 
-class SearchResultsAdapter (
+class SearchResultsAdapter(
     private val searchResults: List<Song>,
     private val onItemClick: (Song) -> Unit
-): RecyclerView.Adapter<SearchResultsAdapter.SearchResultsViewHolder>(){
+) : RecyclerView.Adapter<SearchResultsAdapter.SearchResultsViewHolder>() {
 
     class SearchResultsViewHolder(
         itemView: View,
         private val onItemClick: (Song) -> Unit
-    ) : RecyclerView.ViewHolder(itemView){
+    ) : RecyclerView.ViewHolder(itemView) {
 
         private val binding = ItemSongBinding.bind(itemView)
         fun bind(item: Song) {
             binding.trackName.text = item.name
             binding.trackArtist.text = item.artist
-            if(!item.imgUrl.isNullOrEmpty()){
+            if (!item.imgUrl.isNullOrEmpty()) {
                 // Load image into binding.albumImg using Glide
                 Glide.with(binding.root).load(item.imgUrl).into(binding.albumImg)
-            }
-            else{
+            } else {
                 binding.albumImg.setImageResource(R.drawable.default_album_cover)
             }
-            if(item.ratings.isEmpty()){
+            if (item.ratings.isEmpty()) {
                 binding.rating.text = "--"
-            }
-            else{
+            } else {
                 binding.rating.text = item.avgRating.toString()
             }
 
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 onItemClick(item)
             }
         }

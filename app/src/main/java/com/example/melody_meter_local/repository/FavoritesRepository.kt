@@ -1,13 +1,11 @@
 package com.example.melody_meter_local.repository
 
 import android.util.Log
-import com.example.melody_meter_local.di.FirebaseModule
 import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.network.SpotifyApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -37,7 +35,10 @@ class FavoritesRepository @Inject constructor(
                 if (response.isSuccessful) {
                     response.body()?.toSong()
                 } else {
-                    Log.e("FavoritesRepository", "Failed to fetch song details: ${response.message()}")
+                    Log.e(
+                        "FavoritesRepository",
+                        "Failed to fetch song details: ${response.message()}"
+                    )
                     null
                 }
             }

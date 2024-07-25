@@ -1,24 +1,15 @@
 package com.example.melody_meter_local
 
 import android.content.res.Configuration
-import android.media.Image
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.melody_meter_local.databinding.ActivityMainBinding
-import com.example.melody_meter_local.ui.profile.ProfileFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
-import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,13 +25,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        navController = (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+        navController =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
 
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             binding.bottomNavBar?.setupWithNavController(navController)
-        }
-        else {
+        } else {
             val btnHome = binding.btnHome
             val btnSearch = binding.btnSearch
             val btnProfile = binding.btnProfile
