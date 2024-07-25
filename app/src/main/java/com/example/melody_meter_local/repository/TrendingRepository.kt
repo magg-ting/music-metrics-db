@@ -6,13 +6,8 @@ import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.model.spotify.Track
 import com.example.melody_meter_local.network.SpotifyApi
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
-import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 class TrendingRepository @Inject constructor(
     private val spotifyApi: SpotifyApi,
@@ -23,8 +18,11 @@ class TrendingRepository @Inject constructor(
         // Fetch all popular searches from Firebase Realtime Database
         Log.d("TrendingRepository", "Fetching popular searches from Firebase Realtime Database")
         return try {
-            val snapshot = popularSearchesDbReference.orderByChild("count").limitToLast(10).get().await()
-            val popularSearches = snapshot.children.mapNotNull { it.child("searchString").getValue(String::class.java) }
+            val snapshot =
+                popularSearchesDbReference.orderByChild("count").limitToLast(10).get().await()
+            val popularSearches = snapshot.children.mapNotNull {
+                it.child("searchString").getValue(String::class.java)
+            }
             Log.d("TrendingRepository", "Fetched popular searches: $popularSearches")
             popularSearches.reversed() // since Firebase returns the smallest first, reverse to get the largest count first
         } catch (e: Exception) {
@@ -43,7 +41,10 @@ class TrendingRepository @Inject constructor(
                 Log.d("TrendingRepository", "Fetched track: $track")
                 track
             } else {
-                Log.e("TrendingRepository", "Spotify API response unsuccessful: ${response.message()}")
+                Log.e(
+                    "TrendingRepository",
+                    "Spotify API response unsuccessful: ${response.message()}"
+                )
                 null
             }
         } catch (e: Exception) {

@@ -48,7 +48,10 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerViews() {
         // Top Rated Section
-        topRatedAdapter = TopRatedAdapter()
+        topRatedAdapter = TopRatedAdapter { song ->
+            val action = HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(song)
+            findNavController().navigate(action)
+        }
         binding.topRatedRecyclerView.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -60,7 +63,10 @@ class HomeFragment : Fragment() {
         }
 
         // Trending Section
-        trendingAdapter = TrendingAdapter()
+        trendingAdapter = TrendingAdapter { song ->
+            val action = HomeFragmentDirections.actionHomeFragmentToSongDetailFragment(song)
+            findNavController().navigate(action)
+        }
         binding.trendingRecyclerView.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

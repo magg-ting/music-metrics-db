@@ -1,5 +1,6 @@
 package com.example.melody_meter_local.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,9 @@ class AlbumAdapter(
         fun bind(song: Song) {
             binding.songTitle.text = song.name
 
+            //TODO: item click not working
             itemView.setOnClickListener {
+                Log.d("AlbumAdapter", "Song clicked")
                 onItemClick(song)
             }
         }
