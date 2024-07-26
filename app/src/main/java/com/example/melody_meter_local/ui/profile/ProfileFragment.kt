@@ -18,11 +18,12 @@ import com.example.melody_meter_local.utils.ImagePickerHelper
 import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.example.melody_meter_local.viewmodel.ProfileViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -143,9 +144,4 @@ class ProfileFragment : Fragment() {
 //        binding.btnChangeImage.setOnClickListener { changeProfileImage() }
 
     }
-
-
-    //    override fun onRestoreInstanceState(savedInstanceState: Bundle){
-//        super.onRestoreInstanceState(savedInstanceState)
-//    }
 }

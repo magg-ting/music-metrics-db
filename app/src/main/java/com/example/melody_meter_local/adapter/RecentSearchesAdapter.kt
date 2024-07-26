@@ -1,36 +1,33 @@
 package com.example.melody_meter_local.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.melody_meter_local.R
+import com.example.melody_meter_local.databinding.ItemRecentSearchBinding
 
 class RecentSearchesAdapter(
-    private val recentSearches: MutableList<String>,
     private val onClearClick: (String) -> Unit
 ) :
     RecyclerView.Adapter<RecentSearchesAdapter.RecentSearchesViewHolder>() {
 
+    private var recentSearches: List<String> = listOf()
+
     class RecentSearchesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val searchTextView: TextView = itemView.findViewById(R.id.searchTextView)
-        private val clearButton: ImageButton = itemView.findViewById(R.id.clearButton)
+        private val binding = ItemRecentSearchBinding.bind(itemView)
 
         fun bind(searchItem: String, onClearClick: (String) -> Unit) {
-            searchTextView.text = searchItem
-//            TODO: onclick listener not working
-            clearButton.setOnClickListener {
+            binding.searchTextView.text = searchItem
+            binding.clearButton.setOnClickListener {
                 onClearClick(searchItem)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecentSearchesViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_recent_search, parent, false)
-        return RecentSearchesViewHolder(itemView)
+        val binding = ItemRecentSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return RecentSearchesViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: RecentSearchesViewHolder, position: Int) {
@@ -39,5 +36,10 @@ class RecentSearchesAdapter(
     }
 
     override fun getItemCount() = recentSearches.size
+
+    fun submitList(list: List<String>) {
+        recentSearches = list
+        notifyDataSetChanged()
+    }
 
 }

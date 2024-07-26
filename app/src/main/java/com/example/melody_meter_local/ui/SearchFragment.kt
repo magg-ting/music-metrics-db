@@ -36,7 +36,6 @@ import javax.inject.Inject
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -46,23 +45,9 @@ class SearchFragment : Fragment() {
 
     private lateinit var recentSearchesAdapter: RecentSearchesAdapter
     private lateinit var searchResultsAdapter: SearchResultsAdapter
-    private val recentSearches = mutableListOf<String>()
-    private val searchResults = mutableListOf<Song>()
 
     @Inject
     lateinit var auth: FirebaseAuth
-
-    @Inject
-    @UserDatabaseReference
-    lateinit var userDbReference: DatabaseReference
-
-    @Inject
-    @SongDatabaseReference
-    lateinit var songDbReference: DatabaseReference
-
-    @Inject
-    @PopularSearchesDatabaseReference
-    lateinit var popularSearchesDbReference: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,36 +61,8 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // set up recent search view
-        recentSearchesAdapter = RecentSearchesAdapter(recentSearches) {searchItem ->
-            recentSearches.remove(searchItem)
-            recentSearchesAdapter.notifyDataSetChanged()
-        }
-
-        binding.recentSearchesRecyclerView.apply{
-            layoutManager = LinearLayoutManager(context)
-            adapter = recentSearchesAdapter
-        }
-
-        // set up search results view
-        searchResultsAdapter = SearchResultsAdapter(searchResults){song ->
-            val action = SearchFragmentDirections.actionSearchFragmentToSongDetailFragment(song)
-            findNavController().navigate(action)
-        }
-
-        binding.searchResultsRecyclerView.apply{
-            layoutManager = LinearLayoutManager(context)
-            adapter = searchResultsAdapter
-        }
-
-        // show recent searches group and hide search results group by default
-        binding.recentSearchesGroup.visibility = View.VISIBLE
-        binding.searchResultsGroup.visibility = View.GONE
-
-        // observe login state
-        loginViewModel.isLoggedIn.observe(viewLifecycleOwner) { isLoggedIn ->
-            updateUIForLoginState(isLoggedIn)
-        }
+        setUpRecyclerViews()
+        setUpUI()
 
         // handle SearchView results
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -113,38 +70,65 @@ class SearchFragment : Fragment() {
                 query?.let {
                     val trimmedQuery = it.trim()
                     if (trimmedQuery.isNotEmpty()) {
-                        saveSearchQuery(trimmedQuery)
+                        searchViewModel.saveSearchQuery(trimmedQuery)
                         searchViewModel.performSearch(trimmedQuery)
-                        binding.recentSearchesGroup.visibility = View.GONE
+                        searchViewModel.setIsSearching(true)
+                        setUpUI()
                     }
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let{
+                    val trimmedNewQuery = it.trim()
+                    if (trimmedNewQuery.isEmpty()){
+                        searchViewModel.setIsSearching(false)
+                        setUpUI()
+                    }
+                }
                 return false
             }
         })
 
         // observe search results changes
         searchViewModel.searchResults.observe(viewLifecycleOwner) { results ->
-            searchResults.clear()
-            searchResults.addAll(results)
-            searchResultsAdapter.notifyDataSetChanged()
-            binding.recentSearchesGroup.visibility = View.GONE
-            binding.searchResultsGroup.visibility = View.VISIBLE
+            searchResultsAdapter.submitList(results)
+            binding.noResultMsg.visibility = if (searchViewModel.isSearching.value == true && results.isEmpty()) View.VISIBLE else View.GONE
+        }
+
+        searchViewModel.recentSearches.observe(viewLifecycleOwner) { recentSearches ->
+            recentSearchesAdapter.submitList(recentSearches)
+        }
+
+        binding.clearAllSearches.setOnClickListener {
+            searchViewModel.clearAllSearches()
+        }
+
+//        binding.clearAllSearches.setOnClickListener {
+//            recentSearches.clear()
+//            recentSearchesAdapter.notifyDataSetChanged()
+//        }
+
+//            TODO: onclick listeners not working
+        binding.btnLogin.setOnClickListener {
+            val loginDialogFragment = LoginDialogFragment()
+            loginDialogFragment.show(parentFragmentManager, "loginDialogFragment")
+        }
+    }
+
+    private fun setUpUI() {
+        searchViewModel.isSearching.observe(viewLifecycleOwner) { isSearching ->
+            val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
+            updateUI(isSearching, isLoggedIn)
         }
     }
 
     // TODO: search results not hidden when navigated back to search fragment
     override fun onResume() {
         super.onResume()
-        // show recent searches group and hide search results group by default
-        binding.recentSearchesGroup.visibility = View.VISIBLE
-        binding.searchResultsGroup.visibility = View.GONE
-
-        val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
-        updateUIForLoginState(isLoggedIn)
+        //setUpUI()
+        searchViewModel.loadRecentSearches()
     }
 
     override fun onDestroyView() {
@@ -152,94 +136,55 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-    private fun updateUIForLoginState(isLoggedIn: Boolean) {
-        if (isLoggedIn) {
-            // show recent searches of the user
-            binding.recentSearchesRecyclerView.visibility = View.VISIBLE
-            binding.clearAllSearches.visibility = View.VISIBLE
-            binding.loginPromptWrapper.visibility = View.GONE
-//            TODO: onclick listener not working
-            binding.clearAllSearches.setOnClickListener {
-                recentSearches.clear()
-                recentSearchesAdapter.notifyDataSetChanged()
+    private fun updateUI(isSearching: Boolean, isLoggedIn: Boolean) {
+        if(isSearching){
+            binding.recentSearchesGroup.visibility = View.GONE
+            binding.searchResultsGroup.visibility = View.VISIBLE
+            binding.noResultMsg.visibility = if(searchResultsAdapter.itemCount == 0) View.VISIBLE else View.GONE
+        }
+        else {
+            if(isLoggedIn){
+                binding.loginPromptWrapper.visibility = View.GONE
+                //loadRecentSearches()
+                binding.recentSearchesRecyclerView.visibility = View.VISIBLE
+                binding.clearAllSearches.visibility = View.VISIBLE
             }
-            loadRecentSearches()
-        } else {
-            // prompt user to login to retrieve his recent searches
-            binding.recentSearchesRecyclerView.visibility = View.GONE
-            binding.clearAllSearches.visibility = View.GONE
-            binding.loginPromptWrapper.visibility = View.VISIBLE
-//                TODO: onclick listener not working
-            Log.d("SearchFragment", "Login Prompt shown")
-            binding.btnLogin.isClickable = true
-            binding.btnLogin.setOnClickListener {
-                Log.d("SearchFragment", "Login dialog clicked")
-                val loginDialogFragment = LoginDialogFragment()
-                loginDialogFragment.show(parentFragmentManager, "loginDialogFragment")
+            else{
+                // Clear search results and recent searches for unlogged-in users
+//                searchResults.clear()
+//                recentSearches.clear()
+//                searchResultsAdapter.notifyDataSetChanged()
+//                recentSearchesAdapter.notifyDataSetChanged()
+
+                // prompt user to login to retrieve his recent searches
+                binding.recentSearchesRecyclerView.visibility = View.GONE
+                binding.clearAllSearches.visibility = View.GONE
+                binding.loginPromptWrapper.visibility = View.VISIBLE
             }
-            Log.d("SearchFragment", "Other code")
+
+            binding.recentSearchesGroup.visibility = View.VISIBLE
+            binding.searchResultsGroup.visibility = View.GONE
         }
     }
 
-    private fun saveSearchQuery(query: String) {
-        // update the user db for recent searches
-        val uid = auth.currentUser?.uid
-        if (uid != null) {
-            val user = userDbReference.child(uid)
-            user.child("recentSearches")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val recentSearches = dataSnapshot.getValue(object :
-                            GenericTypeIndicator<MutableList<String>>() {}) ?: mutableListOf()
-                        if (recentSearches.contains(query)) {
-                            recentSearches.remove(query)
-                        }
-                        recentSearches.add(0, query) // Add new search at the beginning
-                        if (recentSearches.size > 10) {
-                            recentSearches.removeAt(recentSearches.size - 1) // Remove oldest if more than 10
-                        }
-                        user.child("recentSearches").setValue(recentSearches)
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Load Recent Searches: onCancelled", databaseError.toException())
-                    }
-                })
+    private fun setUpRecyclerViews(){
+        // set up recent search view
+        recentSearchesAdapter = RecentSearchesAdapter { searchItem ->
+            searchViewModel.removeSearchQuery(searchItem)
+        }
+        binding.recentSearchesRecyclerView.apply{
+            layoutManager = LinearLayoutManager(context)
+            adapter = recentSearchesAdapter
         }
 
-        // update the popular searches db for search count
-        popularSearchesDbReference.child(query)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val currentCount = dataSnapshot.child("count").getValue(Long::class.java) ?: 0
-                    popularSearchesDbReference.child(query).child("count").setValue(currentCount + 1)
-                    popularSearchesDbReference.child(query).child("searchString").setValue(query)
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.w(ContentValues.TAG, "Update Popular Searches: onCancelled", databaseError.toException())
-                }
-            })
-    }
-
-    private fun loadRecentSearches() {
-        val uid = auth.currentUser?.uid
-        if (uid != null) {
-            val user = userDbReference.child(uid)
-            user.child("recentSearches")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val recentSearches = dataSnapshot.getValue(object :
-                            GenericTypeIndicator<MutableList<String>>() {}) ?: mutableListOf()
-                        this@SearchFragment.recentSearches.clear()
-                        this@SearchFragment.recentSearches.addAll(recentSearches)
-                        recentSearchesAdapter.notifyDataSetChanged()
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Load Recent Searches: onCancelled", databaseError.toException())
-                    }
-                })
+        // set up search results view
+        searchResultsAdapter = SearchResultsAdapter { song ->
+            val action = SearchFragmentDirections.actionSearchFragmentToSongDetailFragment(song)
+            findNavController().navigate(action)
+        }
+        binding.searchResultsRecyclerView.apply{
+            layoutManager = LinearLayoutManager(context)
+            adapter = searchResultsAdapter
         }
     }
 }

@@ -10,13 +10,13 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RatingHistoryRepository @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
+    private val auth: FirebaseAuth,
     @UserDatabaseReference private val userDbReference: DatabaseReference,
     private val api: SpotifyApi
 ) {
 
     suspend fun fetchRatingHistory(): List<Pair<Song, Double>> {
-        val uid = firebaseAuth.currentUser?.uid ?: return emptyList()
+        val uid = auth.currentUser?.uid ?: return emptyList()
 
         return try {
             val snapshot = userDbReference.child(uid).child("ratings").get().await()

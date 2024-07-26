@@ -3,6 +3,8 @@ package com.example.melody_meter_local.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.melody_meter_local.di.SongDatabaseReference
+import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -10,17 +12,20 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ProfileViewModel : ViewModel() {
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val auth: FirebaseAuth,
+    @UserDatabaseReference var userDbReference: DatabaseReference
+) : ViewModel() {
+
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> get() = _user
 
     private val _hasChanges = MutableLiveData<Boolean>()
     val hasChanges: LiveData<Boolean> get() = _hasChanges
-
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var userDbReference: DatabaseReference =
-        FirebaseDatabase.getInstance().getReference("Users")
 
     private var username: String? = null
     private var profileUrl: String? = null

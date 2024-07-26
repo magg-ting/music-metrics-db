@@ -10,13 +10,13 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FavoritesRepository @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
+    private val auth: FirebaseAuth,
     @UserDatabaseReference private val userDbReference: DatabaseReference,
     private val api: SpotifyApi
 ) {
 
     suspend fun fetchFavoriteSongs(): List<Song> {
-        val uid = firebaseAuth.currentUser?.uid ?: return emptyList()
+        val uid = auth.currentUser?.uid ?: return emptyList()
 
         return try {
             val snapshot = userDbReference.child(uid).child("favorites").get().await()
@@ -49,12 +49,12 @@ class FavoritesRepository @Inject constructor(
     }
 
     suspend fun addFavorite(songId: String) {
-        val uid = firebaseAuth.currentUser?.uid ?: return
+        val uid = auth.currentUser?.uid ?: return
         userDbReference.child(uid).child("favorites").push().setValue(songId).await()
     }
 
     suspend fun removeFavorite(songId: String) {
-        val uid = firebaseAuth.currentUser?.uid ?: return
+        val uid = auth.currentUser?.uid ?: return
         val snapshot = userDbReference.child(uid).child("favorites").get().await()
         val children = snapshot.children.toList()
         for (child in children) {

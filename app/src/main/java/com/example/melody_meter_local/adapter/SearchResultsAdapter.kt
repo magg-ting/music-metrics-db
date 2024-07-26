@@ -10,9 +10,10 @@ import com.example.melody_meter_local.databinding.ItemSongBinding
 import com.example.melody_meter_local.model.Song
 
 class SearchResultsAdapter(
-    private val searchResults: List<Song>,
     private val onItemClick: (Song) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.SearchResultsViewHolder>() {
+
+    private var searchResults: List<Song> = listOf()
 
     class SearchResultsViewHolder(
         itemView: View,
@@ -54,4 +55,10 @@ class SearchResultsAdapter(
     override fun getItemCount(): Int {
         return searchResults.size
     }
+
+    fun submitList(list: List<Song>) {
+        searchResults = list
+        notifyDataSetChanged()
+    }
+
 }
