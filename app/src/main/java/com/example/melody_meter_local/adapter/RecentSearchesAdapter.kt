@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.melody_meter_local.databinding.ItemRecentSearchBinding
 
 class RecentSearchesAdapter(
+    private val onTextClick: (String) -> Unit,
     private val onClearClick: (String) -> Unit
 ) :
     RecyclerView.Adapter<RecentSearchesAdapter.RecentSearchesViewHolder>() {
@@ -17,8 +18,11 @@ class RecentSearchesAdapter(
     class RecentSearchesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = ItemRecentSearchBinding.bind(itemView)
 
-        fun bind(searchItem: String, onClearClick: (String) -> Unit) {
+        fun bind(searchItem: String, onTextClick: (String) -> Unit, onClearClick: (String) -> Unit) {
             binding.searchTextView.text = searchItem
+            binding.searchTextView.setOnClickListener {
+                onTextClick(searchItem)
+            }
             binding.clearButton.setOnClickListener {
                 onClearClick(searchItem)
             }
@@ -32,7 +36,7 @@ class RecentSearchesAdapter(
 
     override fun onBindViewHolder(holder: RecentSearchesViewHolder, position: Int) {
         val searchItem = recentSearches[position]
-        holder.bind(searchItem, onClearClick)
+        holder.bind(searchItem, onTextClick, onClearClick)
     }
 
     override fun getItemCount() = recentSearches.size

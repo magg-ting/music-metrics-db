@@ -3,11 +3,13 @@ package com.example.melody_meter_local.viewmodel
 import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.melody_meter_local.di.PopularSearchesDatabaseReference
 import com.example.melody_meter_local.di.UserDatabaseReference
+import com.example.melody_meter_local.model.PopularSearch
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.repository.RecentSearchesRepository
 import com.example.melody_meter_local.repository.SpotifyRepository
@@ -25,6 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    // Inject the necessary dependencies
     private val spotifyRepository: SpotifyRepository,
     private val recentSearchesRepository: RecentSearchesRepository,
     @UserDatabaseReference private val userDbReference: DatabaseReference,
@@ -32,6 +35,7 @@ class SearchViewModel @Inject constructor(
     private val auth: FirebaseAuth
 ) : ViewModel() {
 
+    // Observe
     private val _searchResults = MutableLiveData<List<Song>>()
     val searchResults: LiveData<List<Song>> get() = _searchResults
 
@@ -41,6 +45,7 @@ class SearchViewModel @Inject constructor(
     private val _recentSearches = MutableLiveData<List<String>>()
     val recentSearches: LiveData<List<String>> get() = _recentSearches
 
+    // Call spotifyAPI to query and update the _searchResults live data
     fun performSearch(query: String) {
         viewModelScope.launch {
             try {
@@ -65,25 +70,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun setIsSearching(isSearching: Boolean) {
-        _isSearching.value = isSearching
-    }
-
-    fun updateRecentSearches(newRecentSearches: List<String>) {
-        _recentSearches.value = newRecentSearches
-    }
-
-    fun addSearchQuery(query: String) {
-        val currentSearches = _recentSearches.value?.toMutableList() ?: mutableListOf()
-        if (query !in currentSearches) {
-            currentSearches.add(0, query)
-            if (currentSearches.size > 10) {
-                currentSearches.removeAt(currentSearches.size - 1)
-            }
-            updateRecentSearches(currentSearches)
-        }
-    }
-
+    // remove a recent search by the query string
     fun removeSearchQuery(query: String) {
         val currentSearches = _recentSearches.value?.toMutableList() ?: mutableListOf()
         if (currentSearches.remove(query)) {
@@ -97,6 +84,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    // remove all recent searches of the user
     fun clearAllSearches(){
         val uid = auth.currentUser?.uid
         if (uid != null) {
@@ -112,6 +100,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    // save the query in both the user db and the popular search db
     fun saveSearchQuery(query: String) {
         val uid = auth.currentUser?.uid
         if (uid != null) {
@@ -125,6 +114,7 @@ class SearchViewModel @Inject constructor(
                             recentSearches.remove(query)
                         }
                         recentSearches.add(0, query)
+                        // keeping only 10 recent searches for simplicity
                         if (recentSearches.size > 10) {
                             recentSearches.removeAt(recentSearches.size - 1)
                         }
@@ -138,12 +128,16 @@ class SearchViewModel @Inject constructor(
                 })
         }
 
-        popularSearchesDbReference.child(query)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+        // first add the query in the full list
+        val fullListRef =  popularSearchesDbReference.child("fullList").child(query)
+        fullListRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val currentCount = dataSnapshot.child("count").getValue(Long::class.java) ?: 0
-                    popularSearchesDbReference.child(query).child("count").setValue(currentCount + 1)
-                    popularSearchesDbReference.child(query).child("searchString").setValue(query)
+                    fullListRef.child("count").setValue(currentCount + 1)
+                    fullListRef.child("searchString").setValue(query)
+
+                    //check if the query count makes it to the top 10
+                    updateTopSearchList(query, currentCount + 1)
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -152,21 +146,44 @@ class SearchViewModel @Inject constructor(
             })
     }
 
-    fun loadRecentSearches() {
-        val uid = auth.currentUser?.uid ?: return
-        val userRef = userDbReference.child(uid)
-        userRef.child("recentSearches")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val recentSearches = dataSnapshot.getValue(object :
-                        GenericTypeIndicator<MutableList<String>>() {}) ?: mutableListOf()
-                    _recentSearches.postValue(recentSearches)
+    private fun updateTopSearchList(query: String, newCount: Long) {
+        val topSearchRef = popularSearchesDbReference.child("topList")
+        topSearchRef.addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val topList = dataSnapshot.children.mapNotNull {
+                    it.child("count").getValue(Long::class.java)?.let{count ->
+                        Pair(it.key?: "", count)
+                    }
                 }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.w(ContentValues.TAG, "Load Recent Searches: onCancelled", databaseError.toException())
+                // Find the lowest count in the current top list
+                val minEntry = topList.minByOrNull { it.second }
+                val minCount = minEntry?.second ?: Long.MAX_VALUE
+
+                // If newCount is greater than the minimum count or the list is not yet 20, add/update the entry
+                if (newCount > minCount || topList.size < 10) {
+                    if (topList.size >= 10 && minEntry != null) {
+                        topSearchRef.child(minEntry.first).removeValue()
+                    }
+                    topSearchRef.child(query).child("searchString").setValue(query)
+                    topSearchRef.child(query).child("count").setValue(newCount)
                 }
-            })
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(ContentValues.TAG, "Update Top Search List: onCancelled", databaseError.toException())
+            }
+        })
+    }
+
+
+    fun setIsSearching(isSearching: Boolean) {
+        _isSearching.value = isSearching
+    }
+
+    fun updateRecentSearches(newRecentSearches: List<String>) {
+        _recentSearches.value = newRecentSearches
     }
 
 }

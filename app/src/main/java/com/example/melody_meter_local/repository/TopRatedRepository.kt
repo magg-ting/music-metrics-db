@@ -16,7 +16,7 @@ class TopRatedRepository @Inject constructor(
         Log.d("TopRatedRepository", "Fetching top-rated songs")
         return try {
             //Query the db by descending avgRating to fetch the top 20 highest rated songs
-            val snapshot = songDbReference.orderByChild("avgRating").limitToFirst(20).get().await()
+            val snapshot = songDbReference.orderByChild("avgRating").limitToLast(20).get().await()
             val songs = mutableListOf<Song>()
             for (songSnapshot in snapshot.children) {
                 val song = songSnapshot.getValue(Song::class.java)

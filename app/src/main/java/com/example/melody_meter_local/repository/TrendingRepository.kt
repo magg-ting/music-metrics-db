@@ -15,10 +15,10 @@ class TrendingRepository @Inject constructor(
 ) {
 
     suspend fun fetchPopularSearches(): List<String> {
-        // Fetch top 20 popular searches from Firebase
+        // Fetch top 10 popular searches from Firebase
         return try {
             val snapshot =
-                popularSearchesDbReference.orderByChild("count").limitToFirst(20).get().await()
+                popularSearchesDbReference.child("topList").orderByChild("count").get().await()
             val popularSearches = snapshot.children.mapNotNull {
                 it.child("searchString").getValue(String::class.java)
             }

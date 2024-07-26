@@ -23,9 +23,7 @@ class AlbumAdapter(
         fun bind(song: Song) {
             binding.songTitle.text = song.name
 
-            //TODO: item click not working
             itemView.setOnClickListener {
-                Log.d("AlbumAdapter", "Song clicked")
                 onItemClick(song)
             }
         }
