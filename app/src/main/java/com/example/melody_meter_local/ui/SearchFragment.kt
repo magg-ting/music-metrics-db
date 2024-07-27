@@ -76,38 +76,8 @@ class SearchFragment : Fragment() {
                 return false
             }
         })
-
     }
-//
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putBoolean("IS_SEARCHING", searchViewModel.isSearching.value ?: false)
-//        outState.putBoolean("IS_LOGGEDIN", loginViewModel.isLoggedIn.value ?: false)
-//    }
-//
-//    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-//        super.onViewStateRestored(savedInstanceState)
-//        if (savedInstanceState != null) {
-//            val isSearching = savedInstanceState.getBoolean("IS_SEARCHING")
-//            val isLoggedIn = savedInstanceState.getBoolean("IS_LOGGEDIN")
-//            searchViewModel.setIsSearching(isSearching)
-//            if (isLoggedIn) {
-//                loginViewModel.login()
-//            } else {
-//                loginViewModel.logout()
-//            }
-//        }
-//        observeViewModel()
-//        Log.d(
-//            "SearchFragment",
-//            "RestoreView with isSearching = ${searchViewModel.isSearching.value} and isLoggedIn = ${loginViewModel.isLoggedIn.value}"
-//        )
-//    }
-//
-//    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-//        super.onViewStateRestored(savedInstanceState)
-//        updateUI()
-//    }
+
 
     override fun onResume() {
         super.onResume()

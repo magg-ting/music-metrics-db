@@ -23,9 +23,6 @@ class TopRatedAdapter(
 
         private val binding = ItemSongCarouselBinding.bind(itemView)
         fun bind(song: Song) {
-            Log.d("TopRatedAdapter", "Top rated song ${song.name}")
-            Log.d("TopRatedAdapter", "Artist ${song.artist}")
-            //TODO: cannot load song details
             binding.trackName.text = song.name
             binding.artistName.text = song.artist
             if (!song.imgUrl.isNullOrEmpty()) {
