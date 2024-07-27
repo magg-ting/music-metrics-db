@@ -14,16 +14,14 @@ import androidx.fragment.app.activityViewModels
 import com.example.melody_meter_local.databinding.FragmentLoginBinding
 import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginDialogFragment : DialogFragment() {
 
     private var _binding: FragmentLoginBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var auth: FirebaseAuth
     private val loginViewModel: LoginViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -37,9 +35,6 @@ class LoginDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        auth = FirebaseAuth.getInstance()
-        auth.currentUser?.uid?.let { Log.d("LoginDialog", it) }
 
         val btnLogin = binding.btnLogin
         val edtxtEmail = binding.email
@@ -67,24 +62,31 @@ class LoginDialogFragment : DialogFragment() {
             val email = edtxtEmail.text.toString().trim()
             val password = edtxtPassword.text.toString().trim()
             Log.d("LoginDialog", email)
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(requireActivity()) {
-                    if (it.isSuccessful) {
-                        loginViewModel.login()
-                        Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
-                        dismiss()  //dismiss the login modal upon successful sign in
-                    }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
-                    Log.e("LoginDialog", "Failed to login", it)
-                }
+            loginViewModel.login(email, password)
         }
 
         btnSignup.setOnClickListener {
             dismiss()  //dismiss the login modal
             val signUpDialogFragment = SignUpDialogFragment()
             signUpDialogFragment.show(parentFragmentManager, "signUpDialogFragment")
+        }
+
+        // Observe login success status
+        loginViewModel.loginStatus.observe(viewLifecycleOwner) { result ->
+            result.fold(
+                onSuccess = {isSuccess ->
+                    if (isSuccess) {
+                        Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                        dismiss()
+                    } else {
+                        // Handle unexpected false result (if used)
+                    }
+                },
+                onFailure = {
+                    // Only show the failure toast if login was attempted and failed
+                    Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 

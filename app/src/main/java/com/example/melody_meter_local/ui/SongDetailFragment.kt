@@ -25,6 +25,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.math.round
 
+private const val s = "Your rating has been submitted."
+
 @AndroidEntryPoint
 class SongDetailFragment : Fragment() {
     private var _binding: FragmentSongDetailBinding? = null
@@ -92,6 +94,7 @@ class SongDetailFragment : Fragment() {
 
     private fun updateSaveButtonState() {
         if (auth.currentUser == null) {
+            Log.d("SongDetailFragment", "Current User: ${auth.currentUser}")
             binding.saveButton.setImageResource(R.drawable.ic_save_unpressed)
         } else {
             songDetailViewModel.updateFavoriteState(args.song.spotifyTrackId)
@@ -129,8 +132,8 @@ class SongDetailFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
-        // TODO: user shouldnt be able to rate a song unless logged in
         binding.rateButton.setOnClickListener{
+            Log.d("SongDetailFragment", "SetupListeners. Rating User: ${auth.currentUser}")
             if (auth.currentUser == null) {
                 showLoginPrompt()
             } else {
@@ -159,6 +162,15 @@ class SongDetailFragment : Fragment() {
 
     }
 
+    private fun handleSaveButtonClick() {
+        Log.d("SongDetailFragment", "Handle save button click. Current user: ${auth.currentUser}")
+        if (auth.currentUser == null) {
+            showLoginPrompt()
+        } else {
+            songDetailViewModel.toggleFavorite(args.song.spotifyTrackId)
+        }
+    }
+
     private fun showLoginPrompt() {
         Toast.makeText(context, "You must be logged in to leave a rating.", Toast.LENGTH_LONG)
             .show()
@@ -180,12 +192,4 @@ class SongDetailFragment : Fragment() {
         }
     }
 
-    // TODO: user shouldnt be able to save a song unless logged in
-    private fun handleSaveButtonClick() {
-        if (auth.currentUser == null) {
-            showLoginPrompt()
-        } else {
-            songDetailViewModel.toggleFavorite(args.song.spotifyTrackId)
-        }
-    }
 }

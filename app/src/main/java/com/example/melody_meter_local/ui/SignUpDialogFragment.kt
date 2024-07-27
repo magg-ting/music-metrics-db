@@ -11,21 +11,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentSignupBinding
-import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.viewmodel.LoginViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpDialogFragment : DialogFragment() {
-    private var _binding: FragmentSignupBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentSignupBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var databaseReference: DatabaseReference
     private val loginViewModel: LoginViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -39,8 +33,6 @@ class SignUpDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        auth = FirebaseAuth.getInstance()
 
         val btnSignup = binding.btnSignup
         val edtxtUsername = binding.username
@@ -76,43 +68,22 @@ class SignUpDialogFragment : DialogFragment() {
             val password = edtxtPassword.text.toString().trim()
             val confirmPassword = edtxtConfirmPassword.text.toString().trim()
 
-            if(username.contains(" ")){
-                Toast.makeText(context, R.string.invalid_username, Toast.LENGTH_SHORT).show()
-            }
-            else if(confirmPassword != password){
-                Toast.makeText(context, R.string.unmatched_passwords, Toast.LENGTH_SHORT).show()
-            }
-            else if (isPasswordValid(password)){
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(requireActivity()) { task ->
-                        if (task.isSuccessful) {
-                            // get the user id and add user to database
-                            val uid = auth.currentUser?.uid
-                            val user = User(username = username)
-                            databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+            when {
+                username.contains(" ") -> {
+                    Toast.makeText(context, R.string.invalid_username, Toast.LENGTH_SHORT).show()
+                }
 
-                            if (uid != null) {
-                                databaseReference.child(uid).setValue(user)
-                                    .addOnCompleteListener {
-                                        if (it.isSuccessful) {
-                                            Toast.makeText(
-                                                context,
-                                                "Account created successfully",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            loginViewModel.login()
-                                            dismiss()  //dismiss the signup modal upon successful registration
-                                        }
-                                    }
-                            }
-                        }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
-                    }
-            }
-            else{
-                Toast.makeText(context, R.string.invalid_password, Toast.LENGTH_SHORT).show()
+                confirmPassword != password -> {
+                    Toast.makeText(context, R.string.unmatched_passwords, Toast.LENGTH_SHORT).show()
+                }
+
+                isPasswordValid(password) -> {
+                    loginViewModel.signup(username, email, password)
+                }
+
+                else -> {
+                    Toast.makeText(context, R.string.invalid_password, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -120,6 +91,23 @@ class SignUpDialogFragment : DialogFragment() {
             dismiss() //dismiss the signup modal
             val loginDialogFragment = LoginDialogFragment()
             loginDialogFragment.show(parentFragmentManager, "loginDialogFragment")
+        }
+
+        // Observe sign-up status
+        loginViewModel.signUpStatus.observe(viewLifecycleOwner) { result ->
+            result.fold(
+                onSuccess = {isSuccess ->
+                    if (isSuccess) {
+                        Toast.makeText(context, "Account created successfully", Toast.LENGTH_SHORT).show()
+                        dismiss()  //dismiss the signup dialog upon successful sign in
+                    } else {
+                        // Handle unexpected false result (if used)
+                    }
+                },
+                onFailure = {
+                    Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 
@@ -138,7 +126,8 @@ class SignUpDialogFragment : DialogFragment() {
     }
 
     private fun isPasswordValid(password: String): Boolean {
-        val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$"
+        val passwordPattern =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$"
         return password.matches(passwordPattern.toRegex())
     }
 
