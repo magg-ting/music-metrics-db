@@ -42,7 +42,7 @@ class SongDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
+
         _binding = FragmentSongDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -129,6 +129,7 @@ class SongDetailFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
+        // TODO: user shouldnt be able to rate a song unless logged in
         binding.rateButton.setOnClickListener{
             if (auth.currentUser == null) {
                 showLoginPrompt()
@@ -179,6 +180,7 @@ class SongDetailFragment : Fragment() {
         }
     }
 
+    // TODO: user shouldnt be able to save a song unless logged in
     private fun handleSaveButtonClick() {
         if (auth.currentUser == null) {
             showLoginPrompt()

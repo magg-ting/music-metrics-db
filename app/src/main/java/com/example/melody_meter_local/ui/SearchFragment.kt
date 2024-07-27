@@ -50,6 +50,7 @@ class SearchFragment : Fragment() {
     //TODO: login prompt incorrectly shown when orientation changes
     //TODO: recent searches incorrectly shown with search results when orientation changes
     //TODO: app crashes when searchview is on close
+    //TODO: avg rating is not shown in search results items
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("SearchFragment", "View Created")

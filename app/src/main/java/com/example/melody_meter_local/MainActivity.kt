@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -49,13 +48,6 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.navigation_profile)
             }
 
-//            // Set initial fragment
-//            if (savedInstanceState == null) {
-//                supportFragmentManager.beginTransaction()
-//                    .replace(R.id.nav_host_fragment, ProfileFragment())
-//                    .commit()
-//                setActiveButton(btnProfile!!)
-//            }
         }
 
     }
