@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.FragmentSignupBinding
 import com.example.melody_meter_local.model.User
 import com.example.melody_meter_local.viewmodel.LoginViewModel
@@ -75,11 +76,16 @@ class SignUpDialogFragment : DialogFragment() {
             val password = edtxtPassword.text.toString().trim()
             val confirmPassword = edtxtConfirmPassword.text.toString().trim()
 
-            // TODO: add password validation
-            if (confirmPassword == password && username.isNotEmpty()) {
+            if(username.contains(" ")){
+                Toast.makeText(context, R.string.invalid_username, Toast.LENGTH_SHORT).show()
+            }
+            else if(confirmPassword != password){
+                Toast.makeText(context, R.string.unmatched_passwords, Toast.LENGTH_SHORT).show()
+            }
+            else if (isPasswordValid(password)){
                 auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(requireActivity()) {
-                        if (it.isSuccessful) {
+                    .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isSuccessful) {
                             // get the user id and add user to database
                             val uid = auth.currentUser?.uid
                             val user = User(username = username)
@@ -96,7 +102,6 @@ class SignUpDialogFragment : DialogFragment() {
                                             ).show()
                                             loginViewModel.login()
                                             dismiss()  //dismiss the signup modal upon successful registration
-                                            //findNavController().navigate(R.id.navigation_edit_profile)
                                         }
                                     }
                             }
@@ -106,7 +111,9 @@ class SignUpDialogFragment : DialogFragment() {
                         Toast.makeText(context, it.localizedMessage, Toast.LENGTH_SHORT).show()
                     }
             }
-
+            else{
+                Toast.makeText(context, R.string.invalid_password, Toast.LENGTH_SHORT).show()
+            }
         }
 
         btnLogin.setOnClickListener {
@@ -128,6 +135,11 @@ class SignUpDialogFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$"
+        return password.matches(passwordPattern.toRegex())
     }
 
 }

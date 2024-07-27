@@ -93,13 +93,16 @@ class ChangePasswordFragment : Fragment() {
         val newPassword = binding.newPassword.text.toString()
         val confirmNewPassword = binding.confirmNewPassword.text.toString()
 
-        // TODO: add password regex validation
         if (newPassword != confirmNewPassword) {
-            Toast.makeText(requireContext(), R.string.unmatched_passwords, Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), R.string.unmatched_passwords, Toast.LENGTH_SHORT).show()
+            return
+        }
+        else if(!isPasswordValid(newPassword)){
+            Toast.makeText(requireContext(), R.string.invalid_password, Toast.LENGTH_SHORT).show()
             return
         }
         // re-authenticate user and update password, ref https://stackoverflow.com/a/40904516
-        if (user != null) {
+        else if (user != null) {
             val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
             user.reauthenticate(credential)
                 .addOnCompleteListener {
@@ -110,16 +113,19 @@ class ChangePasswordFragment : Fragment() {
                                     Toast.makeText(
                                         requireContext(),
                                         R.string.password_changed,
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                     binding.currentPassword.setText("")
                                     binding.newPassword.setText("")
                                     binding.confirmNewPassword.setText("")
-                                } else {
+                                    // navigate back to the profile page after changing the password
+                                    findNavController().navigateUp()
+                                }
+                                else {
                                     Toast.makeText(
                                         requireContext(),
                                         R.string.password_unchanged,
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                     Log.e(
                                         "Change Password Fragment",
@@ -131,7 +137,7 @@ class ChangePasswordFragment : Fragment() {
                         Toast.makeText(
                             requireContext(),
                             R.string.authentication_failed,
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                         Log.e(
                             "Change Password Fragment",
@@ -142,4 +148,8 @@ class ChangePasswordFragment : Fragment() {
         }
     }
 
+    private fun isPasswordValid(password: String): Boolean {
+        val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$"
+        return password.matches(passwordPattern.toRegex())
+    }
 }

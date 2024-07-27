@@ -64,19 +64,15 @@ class LoginDialogFragment : DialogFragment() {
         edtxtPassword.addTextChangedListener(textWatcher)
 
         btnLogin.setOnClickListener {
-            Log.d("LoginDialog", "Clicked login button")
             val email = edtxtEmail.text.toString().trim()
             val password = edtxtPassword.text.toString().trim()
             Log.d("LoginDialog", email)
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity()) {
-                    Log.d("LoginDialog", "Attempting to login")
                     if (it.isSuccessful) {
                         loginViewModel.login()
-
                         Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                         dismiss()  //dismiss the login modal upon successful sign in
-                        Log.d("LoginDialog", "Dismissed login dialog")
                     }
                 }
                 .addOnFailureListener {
@@ -105,4 +101,5 @@ class LoginDialogFragment : DialogFragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }
