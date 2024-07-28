@@ -1,6 +1,7 @@
 package com.example.melody_meter_local.repository
 
 import android.util.Log
+import com.example.melody_meter_local.di.SongDatabaseReference
 import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.network.SpotifyApi
@@ -12,26 +13,35 @@ import javax.inject.Inject
 class RatingHistoryRepository @Inject constructor(
     private val auth: FirebaseAuth,
     @UserDatabaseReference private val userDbReference: DatabaseReference,
-    private val api: SpotifyApi
+    @SongDatabaseReference private val songDbReference: DatabaseReference
 ) {
 
+    //TODO: order by latest to oldest?
     suspend fun fetchRatingHistory(): List<Pair<Song, Double>> {
         val uid = auth.currentUser?.uid ?: return emptyList()
 
         return try {
             val snapshot = userDbReference.child(uid).child("ratings").get().await()
             val ratedSongs = mutableListOf<Pair<Song, Double>>()
+
             snapshot.children.forEach { ratingSnapshot ->
-                val ratingMap = ratingSnapshot.value as Map<String, Any>
+                Log.d("RatingHistoryRepository", "Rating entry: ${ratingSnapshot.value}")
+                val ratingMap = ratingSnapshot.value as? Map<String, Any> ?: return@forEach
+
+                // Process each song rating in the current snapshot
                 ratingMap.forEach { (songId, rating) ->
                     val ratingValue = when (rating) {
-                        is Long -> rating.toDouble()
-                        is Double -> rating
+                        is Number -> rating.toDouble()
                         else -> null
                     }
+
                     if (ratingValue != null) {
                         val song = fetchSongsDetails(songId)
-                        ratedSongs.add(Pair(song, ratingValue) as Pair<Song, Double>)
+                        if (song != null) {
+                            ratedSongs.add(Pair(song, ratingValue))
+                        } else {
+                            Log.w("RatingHistoryRepository", "Failed to fetch song details for songId: $songId")
+                        }
                     }
                 }
             }
@@ -43,20 +53,45 @@ class RatingHistoryRepository @Inject constructor(
     }
 
     suspend fun fetchSongsDetails(songId: String): Song? {
+
         return try {
-            val response = api.getSongById(songId)
-            if (response.isSuccessful) {
-                response.body()?.toSong()
-            } else {
-                Log.e(
-                    "RatingHistoryRepository",
-                    "Failed to fetch song details: ${response.message()}"
+            val snapshot = songDbReference.child(songId).get().await()
+            if (snapshot.exists()) {
+                val song = Song(
+                    spotifyTrackId = songId,
+                    name = snapshot.child("name").value.toString(),
+                    artist = snapshot.child("artist").value.toString(),
+                    album = snapshot.child("album").value.toString(),
+                    imgUrl = snapshot.child("imgUrl").value.toString(),
                 )
-                null
+
+                val ratingsList = mutableListOf<MutableMap<String, Double>>()
+                snapshot.child("ratings").children.forEach { ratingSnapshot ->
+                    val ratingMap = ratingSnapshot.value as? Map<String, Any>
+                    ratingMap?.let {
+                        val uid = it.keys.first()
+                        val ratingValue = when (val value = it[uid]) {
+                            is Number -> value.toDouble()
+                            else -> 0.0
+                        }
+                        ratingsList.add(mutableMapOf(uid to ratingValue))
+                    }
+                }
+                song.ratings = ratingsList
+
+                val avgRating = (snapshot.child("avgRating").value as? Number)?.toDouble() ?: 0.0
+                song.avgRating = avgRating
+                song
             }
 
-        } catch (e: Exception) {
-            Log.e("RatingHistoryRepository", "Error fetching song details", e)
+            else {
+                Log.w("RatingHistoryRepository", "No song found with songId: $songId")
+                null
+            }
+        }
+
+        catch (e: Exception) {
+            Log.e("RatingHistoryRepository", "Failed to fetch song details", e)
             null
         }
     }

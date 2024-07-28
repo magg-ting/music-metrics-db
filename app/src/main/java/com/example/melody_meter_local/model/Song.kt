@@ -19,7 +19,20 @@ data class Song(
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString(),
-        TODO("ratings"),
+        // Deserialize ratings
+        mutableListOf<MutableMap<String, Double>>().apply {
+            val size = parcel.readInt()
+            repeat(size) {
+                val map = mutableMapOf<String, Double>()
+                val mapSize = parcel.readInt()
+                repeat(mapSize) {
+                    val key = parcel.readString().orEmpty()
+                    val value = parcel.readDouble()
+                    map[key] = value
+                }
+                add(map)
+            }
+        },
         parcel.readDouble()
     )
 
@@ -29,6 +42,15 @@ data class Song(
         parcel.writeString(artist)
         parcel.writeString(album)
         parcel.writeString(imgUrl)
+        // Serialize ratings
+        parcel.writeInt(ratings.size)
+        ratings.forEach { map ->
+            parcel.writeInt(map.size)
+            map.forEach { (key, value) ->
+                parcel.writeString(key)
+                parcel.writeDouble(value)
+            }
+        }
         parcel.writeDouble(avgRating)
     }
 

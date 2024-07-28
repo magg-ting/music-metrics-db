@@ -30,6 +30,7 @@ class SearchResultsAdapter(
             } else {
                 binding.albumImg.setImageResource(R.drawable.default_album_cover)
             }
+            // TODO: avg rating not showing
             if (item.ratings.isEmpty()) {
                 binding.rating.text = "--"
             } else {

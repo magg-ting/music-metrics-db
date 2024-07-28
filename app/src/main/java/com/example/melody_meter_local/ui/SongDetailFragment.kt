@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.math.round
 
-private const val s = "Your rating has been submitted."
 
 @AndroidEntryPoint
 class SongDetailFragment : Fragment() {
@@ -36,7 +35,7 @@ class SongDetailFragment : Fragment() {
     lateinit var auth: FirebaseAuth
 
     private val args: SongDetailFragmentArgs by navArgs()
-    //private val song by lazy { args.song }
+    private val song by lazy { args.song }
     private val songDetailViewModel: SongDetailViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -88,7 +87,18 @@ class SongDetailFragment : Fragment() {
             binding.rating.text = getString(R.string.default_no_rating)
         } else {
             song.avgRating = song.ratings.map { pair -> pair.values.first() }.average()
-            binding.rating.text = String.format("%.1f", song.avgRating) + " (based on ${song.ratings.size} ratings)"
+
+            // find current user rating
+            val currentUserRating = song.ratings.find { it.contains(auth.currentUser?.uid ?: "") }
+            val userRatingText = if (currentUserRating != null) {
+                "Your rating: ${currentUserRating.values.first()}"
+            } else {
+                ""
+            }
+
+            // update song rating text
+            binding.rating.text =
+                "${String.format("%.1f", song.avgRating)} (based on ${song.ratings.size} ratings)\n$userRatingText"
         }
     }
 
@@ -111,7 +121,12 @@ class SongDetailFragment : Fragment() {
         songDetailViewModel.ratingSubmissionStatus.observe(viewLifecycleOwner) { isSuccess ->
             when (isSuccess) {
                 true -> {
-                    Toast.makeText(context, "Your rating has been submitted.", Toast.LENGTH_SHORT).show()
+                    val toastMessage = if (auth.currentUser?.uid in args.song.ratings.map { it.keys.first() }) {
+                        "Your rating has been successfully updated."
+                    } else {
+                        "Your rating has been submitted."
+                    }
+                    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
                     songDetailViewModel.fetchSongDetails(args.song.spotifyTrackId)
                 }
                 false -> Toast.makeText(context, "Failed to submit rating. Please try again.", Toast.LENGTH_SHORT).show()
@@ -120,6 +135,7 @@ class SongDetailFragment : Fragment() {
         }
 
         songDetailViewModel.songDetails.observe(viewLifecycleOwner) { updatedSong ->
+            Log.d("SongDetailFragment", "Updated Song: $updatedSong")
             if (updatedSong != null) {
                 showSongDetails(updatedSong)
             }
@@ -132,6 +148,7 @@ class SongDetailFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
+        //TODO: the rate button is only working on the first click but not subsequent ones
         binding.rateButton.setOnClickListener{
             Log.d("SongDetailFragment", "SetupListeners. Rating User: ${auth.currentUser}")
             if (auth.currentUser == null) {
@@ -178,6 +195,7 @@ class SongDetailFragment : Fragment() {
         loginDialogFragment.show(parentFragmentManager, "loginDialogFragment")
     }
 
+    //TODO: change rating colors
     private fun showRatingDialog() {
         val composeView = binding.composeView
         composeView.visibility = View.VISIBLE

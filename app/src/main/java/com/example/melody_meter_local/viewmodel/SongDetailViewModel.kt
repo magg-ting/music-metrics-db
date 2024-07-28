@@ -48,7 +48,7 @@ class SongDetailViewModel @Inject constructor(
                 _isFavorite.value = favorites.contains(spotifyTrackId)
             } catch (e: Exception) {
                 _isFavorite.value = false
-                Log.e("Song Detail View Model", "Failed to get user favorites", e)
+                Log.e("SongDetailViewModel", "Failed to get user favorites", e)
             }
         }
     }

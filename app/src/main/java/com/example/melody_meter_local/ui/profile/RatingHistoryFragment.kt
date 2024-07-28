@@ -1,11 +1,13 @@
 package com.example.melody_meter_local.ui.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,13 +19,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RatingHistoryFragment : Fragment() {
-    private var _binding: FragmentRatingHistoryBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentRatingHistoryBinding? = null
     private val binding get() = _binding!!
 
-    private val ratingHistoryViewModel: RatingHistoryViewModel by viewModels()
+    private val ratingHistoryViewModel: RatingHistoryViewModel by activityViewModels()
     private lateinit var ratingHistoryAdapter: RatingHistoryAdapter
 
     override fun onCreateView(

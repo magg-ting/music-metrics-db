@@ -1,6 +1,8 @@
 package com.example.melody_meter_local.repository
 
+import android.provider.ContactsContract.Data
 import android.util.Log
+import com.example.melody_meter_local.di.SongDatabaseReference
 import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.network.SpotifyApi
@@ -12,7 +14,7 @@ import javax.inject.Inject
 class FavoritesRepository @Inject constructor(
     private val auth: FirebaseAuth,
     @UserDatabaseReference private val userDbReference: DatabaseReference,
-    private val api: SpotifyApi
+    @SongDatabaseReference private val songDbReference: DatabaseReference
 ) {
 
     suspend fun fetchFavoriteSongs(): List<Song> {
@@ -30,19 +32,42 @@ class FavoritesRepository @Inject constructor(
 
     suspend fun fetchSongsDetails(songIds: List<String>): List<Song> {
         return try {
-            songIds.mapNotNull { songId ->
-                val response = api.getSongById(songId)
-                if (response.isSuccessful) {
-                    response.body()?.toSong()
-                } else {
-                    Log.e(
-                        "FavoritesRepository",
-                        "Failed to fetch song details: ${response.message()}"
+            val songs = mutableListOf<Song>()
+            songIds.forEach { songId ->
+                val snapshot = songDbReference.child(songId).get().await()
+                if (snapshot.exists()) {
+                    val song = Song(
+                        spotifyTrackId = songId,
+                        name = snapshot.child("name").value.toString(),
+                        artist = snapshot.child("artist").value.toString(),
+                        album = snapshot.child("album").value.toString(),
+                        imgUrl = snapshot.child("imgUrl").value.toString(),
                     )
-                    null
+
+                    val ratingsList = mutableListOf<MutableMap<String, Double>>()
+                    snapshot.child("ratings").children.forEach { ratingSnapshot ->
+                        val ratingMap = ratingSnapshot.value as? Map<String, Any>
+                        ratingMap?.let {
+                            val uid = it.keys.first()
+                            val ratingValue = when (val value = it[uid]) {
+                                is Number -> value.toDouble()
+                                else -> 0.0
+                            }
+                            ratingsList.add(mutableMapOf(uid to ratingValue))
+                        }
+                    }
+                    song.ratings = ratingsList
+
+                    val avgRating =
+                        (snapshot.child("avgRating").value as? Number)?.toDouble() ?: 0.0
+                    song.avgRating = avgRating
+                    songs.add(song)
                 }
             }
-        } catch (e: Exception) {
+            songs
+        }
+
+        catch (e: Exception) {
             Log.e("FavoritesRepository", "Error fetching song details", e)
             emptyList()
         }
