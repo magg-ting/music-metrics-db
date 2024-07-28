@@ -52,6 +52,9 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
 
     private lateinit var imagePicker: ImagePicker
 
+    // Temporary variable to hold the picked image file
+    private var tempImageFile: File? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -101,13 +104,15 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
             binding.btnSaveChanges.isEnabled = hasChanges
         }
 
-        //TODO: toast should not be shown unless user actually has made changes
         profileViewModel.updateSuccess.observe(viewLifecycleOwner) { success ->
-            if (profileViewModel.hasChanges.value == true) {
+            if (success != null) { // Check if update was attempted
                 val message = if (success) {
                     "Profile updated successfully!"
                 } else {
                     "Failed to update profile."
+                }
+                if (success) {
+                    binding.btnSaveChanges.isEnabled = false
                 }
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
@@ -189,21 +194,10 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
                     Glide.with(this)
                         .load(file)
                         .into(binding.imageViewProfile)
+
+                    tempImageFile = file // Save the temporary image file
                     binding.btnSaveChanges.isEnabled = true
 
-                    // Upload the image
-                    profileViewModel.uploadProfileImage(file,
-                        onSuccess = { imageUrl ->
-                            // Handle success if needed
-                        },
-                        onFailure = { exception ->
-                            Toast.makeText(
-                                context,
-                                "Error uploading image: ${exception.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    )
                 } else {
                     Toast.makeText(context, "Image size should be under 2MB", Toast.LENGTH_SHORT)
                         .show()
@@ -226,7 +220,8 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
         binding.editTextUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                profileViewModel.checkIfChanged(binding.editTextUsername.text.toString().trim())
+                val newUsername = s.toString().trim()
+                profileViewModel.checkIfNameChanged(newUsername)
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -259,33 +254,44 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
         }
 
         binding.btnSaveChanges.setOnClickListener {
-            val imageUri = profileViewModel.user.value?.profileUrl
-            if (imageUri != null) {
-                // If an image URL is set, just save the changes
-                profileViewModel.saveChanges()
-            } else {
-                // No image URL is set, we need to upload the new image first
-                binding.imageViewProfile.drawable?.let { drawable ->
-                    val bitmap = (drawable as BitmapDrawable).bitmap
-                    val file = File(requireContext().cacheDir, "profile_image.jpg")
-                    FileOutputStream(file).use { outputStream ->
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                    }
+            val newUsername = binding.editTextUsername.text.toString().trim()
+            val newProfileUrl = profileViewModel.user.value?.profileUrl
+            Log.d("ProfileFragment", "Save button clicked. New Username: $newUsername, New Profile URL: $newProfileUrl")
 
-                    profileViewModel.uploadProfileImage(file,
-                        onSuccess = { imageUrl ->
-                            // Success message is handled by ViewModel
-                        },
-                        onFailure = { exception ->
-                            Toast.makeText(
-                                requireContext(),
-                                "Image upload failed: ${exception.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    )
-                }
+            // Update ViewModel with new values
+            profileViewModel.setUsername(newUsername)
+            if (newProfileUrl != null) {
+                profileViewModel.setUserProfileImageUrl(newProfileUrl)
             }
+
+            // If a temporary image file exists, upload it first
+            if (tempImageFile != null) {
+                Log.d("ProfileFragment", "Temporary image file exists, uploading image.")
+                profileViewModel.uploadProfileImage(tempImageFile!!,
+                    onSuccess = { imageUrl ->
+                        Log.d("ProfileFragment", "Image upload successful with URL: $imageUrl")
+                        // Set the image URL in the ViewModel
+                        profileViewModel.setUserProfileImageUrl(imageUrl)
+                        // Now save other profile changes
+                        profileViewModel.saveChanges()
+                        // Clear the temporary image file after upload
+                        tempImageFile = null
+                    },
+                    onFailure = { exception ->
+                        Log.e("ProfileFragment", "Image upload failed: ${exception.message}")
+                        Toast.makeText(
+                            requireContext(),
+                            "Image upload failed: ${exception.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
+            } else {
+                Log.d("ProfileFragment", "No temporary image file, saving changes.")
+                // No temporary image file, just save changes
+                profileViewModel.saveChanges()
+            }
+            //profileViewModel.checkOverallSuccess()
         }
     }
 

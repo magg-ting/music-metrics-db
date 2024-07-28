@@ -32,16 +32,17 @@ class ProfileViewModel @Inject constructor(
     private val _hasChanges = MutableLiveData<Boolean>()
     val hasChanges: LiveData<Boolean> get() = _hasChanges
 
-    private val _updateSuccess = MutableLiveData<Boolean>()
-    val updateSuccess: LiveData<Boolean> get() = _updateSuccess
+    private val _updateSuccess = MutableLiveData<Boolean?>(null)
+    val updateSuccess: LiveData<Boolean?> get() = _updateSuccess
 
-    private var isImageUploadSuccessful = false
-    private var isProfileUpdateSuccessful = false
+    private var isImageUploadSuccessful: Boolean? = null
+    private var isProfileUpdateSuccessful: Boolean? = null
 
-    private var username: String? = null
-    private var profileUrl: String? = null
+    private var newUsername: String? = null
+    private var newProfileUrl: String? = null
 
 
+    // load user's existing info from db for comparison
     fun loadUserProfile() {
         val uid = auth.currentUser?.uid
         if (uid != null) {
@@ -50,8 +51,6 @@ class ProfileViewModel @Inject constructor(
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val user = dataSnapshot.getValue(User::class.java)
                     if (user != null) {
-                        username = user.username
-                        profileUrl = user.profileUrl
                         _user.value = user
                     }
                 }
@@ -63,34 +62,40 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun checkIfChanged(newUsername: String) {
-        _hasChanges.value = (newUsername != username) || (profileUrl != _user.value?.profileUrl)
+    fun checkIfNameChanged(newUsername: String) {
+        _hasChanges.value = (newUsername != _user.value?.username)
     }
 
-    fun setUserProfileImageUrl(url: String) {
-        profileUrl = url
-        _user.value?.profileUrl = url
+    fun setUsername(name: String) {
+        newUsername = name
         _hasChanges.value = true
     }
 
-    //TODO: image uploaded to storage but profile url not updated to database
+    fun setUserProfileImageUrl(url: String) {
+        newProfileUrl = url
+        _hasChanges.value = true
+    }
+
     fun saveChanges() {
         val uid = auth.currentUser?.uid ?: return
-        val user = _user.value ?: return
+        val currentUser = _user.value ?: return
 
         val updates = mutableMapOf<String, Any>()
 
         // Only add fields to updates map if they have changed
-        if (user.username != username) {
-            updates["username"] = user.username
+        if (currentUser.username != newUsername) {
+            updates["username"] = newUsername ?: ""
+            Log.d("ProfileViewModel", "Username changed: ${newUsername}")
         }
 
-        if (user.profileUrl != profileUrl) {
-            updates["profileUrl"] = user.profileUrl ?: ""
+        if (currentUser.profileUrl != newProfileUrl) {
+            updates["profileUrl"] = newProfileUrl ?: ""
+            Log.d("ProfileViewModel", "Profile URL changed: ${newProfileUrl}")
         }
 
         // If there's nothing to update, exit early
         if (updates.isEmpty()) {
+            Log.d("ProfileViewModel", "No changes to update.")
             _updateSuccess.value = false
             return
         }
@@ -98,16 +103,11 @@ class ProfileViewModel @Inject constructor(
         userDbReference.child(uid).updateChildren(updates)
             .addOnCompleteListener { task ->
                 isProfileUpdateSuccessful = task.isSuccessful
+                if (task.isSuccessful) {
+                    _hasChanges.value = false // Reset changes after successful update
+                }
+                Log.d("ProfileViewModel", "Database update task is successful: ${task.isSuccessful}")
                 checkOverallSuccess()
-
-//                if (task.isSuccessful) {
-//                    username = user.username
-//                    profileUrl = user.profileUrl
-//                    _hasChanges.value = false
-//                    _updateSuccess.value = true
-//                } else {
-//                    _updateSuccess.value = false
-//                }
             }
     }
 
@@ -118,35 +118,42 @@ class ProfileViewModel @Inject constructor(
     ) {
         val imageUri = Uri.fromFile(file)
         val imageExtension = getFileExtension(imageUri) // Get file extension from URI
-        val imageRef =
-            storageReference.child("profile_images/${UUID.randomUUID()}.${imageExtension}")
+        val imageRef = storageReference.child("profile_images/${UUID.randomUUID()}.$imageExtension")
         val uploadTask = imageRef.putFile(imageUri)
 
+        Log.d("ProfileViewModel", "Starting upload of image file: ${file.name}")
+
         uploadTask.addOnSuccessListener {
+            Log.d("ProfileViewModel", "Image upload successful")
+            isImageUploadSuccessful = true
             imageRef.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
-                setUserProfileImageUrl(imageUrl)
-                saveChanges() // Update the profile URL in the database
+                Log.d("ProfileViewModel", "Image URL obtained: $imageUrl")
+                // Notify success with the image URL
                 onSuccess(imageUrl)
-//                _updateSuccess.value = true
-                isImageUploadSuccessful = true
-                checkOverallSuccess()
             }.addOnFailureListener { exception ->
+                Log.e("ProfileViewModel", "Failed to get download URL: ${exception.message}")
+                // Notify failure with the exception
                 onFailure(exception)
-                isImageUploadSuccessful = false
-                checkOverallSuccess()
-//                _updateSuccess.value = false
             }
         }.addOnFailureListener { exception ->
-            onFailure(exception)
             isImageUploadSuccessful = false
-            checkOverallSuccess()
-//            _updateSuccess.value = false
+            Log.e("ProfileViewModel", "Image upload failed: ${exception.message}")
+            // Notify failure with the exception
+            onFailure(exception)
         }
     }
 
     private fun checkOverallSuccess() {
-        _updateSuccess.value = isImageUploadSuccessful && isProfileUpdateSuccessful
+        Log.d("ProfileViewModel", "imageUpload: $isImageUploadSuccessful , profileUpdate: $isProfileUpdateSuccessful")
+        if(isProfileUpdateSuccessful == null) return
+        if(isImageUploadSuccessful == true || isImageUploadSuccessful == null){
+            _updateSuccess.value = isProfileUpdateSuccessful
+        }
+        else {
+            _updateSuccess.value = false
+        }
+
     }
 
     private fun getFileExtension(uri: Uri): String {
@@ -154,5 +161,7 @@ class ProfileViewModel @Inject constructor(
         val mimeTypeMap = MimeTypeMap.getSingleton()
         return mimeTypeMap.getExtensionFromMimeType(uri.toString()) ?: "jpg"
     }
+
+    //TODO (future enhancement): remove outdated profile images from Storage
 
 }
