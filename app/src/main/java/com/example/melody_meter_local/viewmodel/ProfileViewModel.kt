@@ -148,6 +148,10 @@ class ProfileViewModel @Inject constructor(
         return mimeTypeMap.getExtensionFromMimeType(uri.toString()) ?: "jpg"
     }
 
+    fun resetUpdateSuccess() {
+        savedStateHandle["updateSuccess"] = null
+    }
+
     //TODO (future enhancement): remove outdated profile images from Storage
     //TODO: persists temp uploaded image and username update and dont show up
 

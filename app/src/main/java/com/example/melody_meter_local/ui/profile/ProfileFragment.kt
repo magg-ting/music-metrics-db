@@ -115,6 +115,7 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
                     binding.btnSaveChanges.isEnabled = false
                 }
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                profileViewModel.resetUpdateSuccess()
             }
         }
 
