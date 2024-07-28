@@ -186,7 +186,6 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
                 // Selected multiple images, do whatever you want with files
             }
 
-            //TODO: uploaded image not persists when orientation changes
             is PickedResult.Single -> {
                 val pickedImage = result.image
                 val file = pickedImage.file
@@ -291,7 +290,6 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
                 // No temporary image file, just save changes
                 profileViewModel.saveChanges()
             }
-            //profileViewModel.checkOverallSuccess()
         }
     }
 
