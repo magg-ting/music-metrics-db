@@ -20,11 +20,7 @@ class FavoritesViewModel @Inject constructor(
     private val _favoriteSongs = MutableLiveData<List<Song>>()
     val favoriteSongs: LiveData<List<Song>> get() = _favoriteSongs
 
-    init {
-        fetchFavoriteSongs()
-    }
-
-    private fun fetchFavoriteSongs() {
+    fun fetchFavoriteSongs() {
         viewModelScope.launch {
             val favorites = repository.fetchFavoriteSongs()
             _favoriteSongs.value = favorites

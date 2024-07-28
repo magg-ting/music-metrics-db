@@ -53,11 +53,14 @@ class SongDetailViewModel @Inject constructor(
         }
     }
 
-    fun toggleFavorite(spotifyTrackId: String) {
+    fun toggleFavorite(spotifyTrackId: String, song: Song) {
         val uid = auth.currentUser?.uid ?: return
         viewModelScope.launch {
             try {
                 val userRef = userDbReference.child(uid)
+                val songRef = songDbReference.child(spotifyTrackId)
+
+                // check if the song is in user favorites
                 val dataSnapshot = userRef.child("favorites").get().await()
                 val favorites =
                     dataSnapshot.getValue(object : GenericTypeIndicator<MutableList<String>>() {})
@@ -67,11 +70,19 @@ class SongDetailViewModel @Inject constructor(
                     false
                 } else {
                     favorites.add(spotifyTrackId)
+
+                    // Save the song to the song database if it does not exist
+                    val songSnapshot = songRef.get().await()
+                    if (!songSnapshot.exists()) {
+                        songRef.setValue(song).await()
+                    }
+
                     true
                 }
                 userRef.child("favorites").setValue(favorites).await()
                 _isFavorite.value = isFavorite
-            } catch (e: Exception) {
+            }
+            catch (e: Exception) {
                 _isFavorite.value = false
                 Log.e("SongDetailViewModel", "Failed to update favorites", e)
             }

@@ -37,11 +37,20 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        favoritesAdapter = FavoritesAdapter(favoritesViewModel) { song ->
-            val action =
-                FavoritesFragmentDirections.actionFavoritesFragmentToSongDetailFragment(song)
-            findNavController().navigate(action)
-        }
+        favoritesAdapter = FavoritesAdapter(
+            onItemClick = { song ->
+                    val action =
+                        FavoritesFragmentDirections.actionFavoritesFragmentToSongDetailFragment(song)
+                    findNavController().navigate(action)
+                },
+            onFavoriteToggle = {song: Song, isFavorite: Boolean ->
+                if (isFavorite) {
+                    favoritesViewModel.addFavorite(song.spotifyTrackId)
+                } else {
+                    favoritesViewModel.removeFavorite(song.spotifyTrackId)
+                }
+            }
+        )
 
         binding.favoritesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -65,6 +74,9 @@ class FavoritesFragment : Fragment() {
                 }
             }
         )
+
+        favoritesViewModel.fetchFavoriteSongs()
+
     }
 
     override fun onDestroyView() {
@@ -81,7 +93,5 @@ class FavoritesFragment : Fragment() {
             binding.favoritesRecyclerView.visibility = View.GONE
         }
     }
-
-    //TODO: remove unsaved song when navigating back to the favorites fragment
 
 }

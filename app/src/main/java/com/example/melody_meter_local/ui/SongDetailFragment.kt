@@ -184,7 +184,7 @@ class SongDetailFragment : Fragment() {
         if (auth.currentUser == null) {
             showLoginPrompt()
         } else {
-            songDetailViewModel.toggleFavorite(args.song.spotifyTrackId)
+            songDetailViewModel.toggleFavorite(args.song.spotifyTrackId, args.song)
         }
     }
 

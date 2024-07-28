@@ -38,7 +38,7 @@ class RatingHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ratingHistoryAdapter = RatingHistoryAdapter{ song ->
+        ratingHistoryAdapter = RatingHistoryAdapter { song ->
             val action =
                 RatingHistoryFragmentDirections.actionRatingHistoryFragmentToSongDetailFragment(song)
             findNavController().navigate(action)

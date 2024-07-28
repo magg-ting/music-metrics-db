@@ -16,7 +16,6 @@ class RatingHistoryRepository @Inject constructor(
     @SongDatabaseReference private val songDbReference: DatabaseReference
 ) {
 
-    //TODO: order by latest to oldest?
     suspend fun fetchRatingHistory(): List<Pair<Song, Double>> {
         val uid = auth.currentUser?.uid ?: return emptyList()
 
@@ -24,7 +23,15 @@ class RatingHistoryRepository @Inject constructor(
             val snapshot = userDbReference.child(uid).child("ratings").get().await()
             val ratedSongs = mutableListOf<Pair<Song, Double>>()
 
-            snapshot.children.forEach { ratingSnapshot ->
+            // Create a list of rating snapshots with their keys
+            val ratingSnapshotsWithKeys = snapshot.children.map {
+                it.key?.toInt() to it
+            }
+
+            // Sort by the key in descending order
+            val sortedRatings = ratingSnapshotsWithKeys.sortedByDescending { it.first }.map { it.second }
+
+            sortedRatings.forEach { ratingSnapshot ->
                 Log.d("RatingHistoryRepository", "Rating entry: ${ratingSnapshot.value}")
                 val ratingMap = ratingSnapshot.value as? Map<String, Any> ?: return@forEach
 
@@ -53,7 +60,6 @@ class RatingHistoryRepository @Inject constructor(
     }
 
     suspend fun fetchSongsDetails(songId: String): Song? {
-
         return try {
             val snapshot = songDbReference.child(songId).get().await()
             if (snapshot.exists()) {

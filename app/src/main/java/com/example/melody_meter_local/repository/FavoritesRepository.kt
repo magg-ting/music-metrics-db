@@ -1,11 +1,9 @@
 package com.example.melody_meter_local.repository
 
-import android.provider.ContactsContract.Data
 import android.util.Log
 import com.example.melody_meter_local.di.SongDatabaseReference
 import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.model.Song
-import com.example.melody_meter_local.network.SpotifyApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.tasks.await
@@ -22,8 +20,17 @@ class FavoritesRepository @Inject constructor(
 
         return try {
             val snapshot = userDbReference.child(uid).child("favorites").get().await()
-            val songIds = snapshot.children.mapNotNull { it.getValue(String::class.java) }
-            fetchSongsDetails(songIds)
+
+            // Map the favorite entries to their keys and sort by key in descending order
+            val sortedSongIds = snapshot.children
+                .mapNotNull { child ->
+                    val key = child.key?.toIntOrNull()
+                    val songId = child.getValue(String::class.java)
+                    key to songId
+                }
+                .sortedByDescending { it.first }
+                .mapNotNull { it.second }
+            fetchSongsDetails(sortedSongIds)
         } catch (e: Exception) {
             Log.e("FavoritesRepository", "Failed to fetch favorites", e)
             emptyList()
@@ -43,7 +50,6 @@ class FavoritesRepository @Inject constructor(
                         album = snapshot.child("album").value.toString(),
                         imgUrl = snapshot.child("imgUrl").value.toString(),
                     )
-
                     val ratingsList = mutableListOf<MutableMap<String, Double>>()
                     snapshot.child("ratings").children.forEach { ratingSnapshot ->
                         val ratingMap = ratingSnapshot.value as? Map<String, Any>
@@ -62,12 +68,12 @@ class FavoritesRepository @Inject constructor(
                         (snapshot.child("avgRating").value as? Number)?.toDouble() ?: 0.0
                     song.avgRating = avgRating
                     songs.add(song)
+                } else {
+                    Log.d("FavoritesRepository", "No snapshot exists for this songId")
                 }
             }
             songs
-        }
-
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Log.e("FavoritesRepository", "Error fetching song details", e)
             emptyList()
         }

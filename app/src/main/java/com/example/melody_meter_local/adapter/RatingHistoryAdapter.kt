@@ -9,10 +9,8 @@ import com.example.melody_meter_local.R
 import com.example.melody_meter_local.databinding.ItemRatingRecordBinding
 import com.example.melody_meter_local.model.Song
 
-//import com.example.melody_meter_local.viewmodel.RatingHistoryViewModel
 
 class RatingHistoryAdapter(
-    //private val viewModel: RatingHistoryViewModel,
     private val onItemClick: (Song) -> Unit
 ) : RecyclerView.Adapter<RatingHistoryAdapter.RatingHistoryViewHolder>() {
     private var ratedSongs: List<Pair<Song, Double>> = emptyList()

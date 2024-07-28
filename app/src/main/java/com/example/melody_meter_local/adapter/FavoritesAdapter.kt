@@ -11,14 +11,17 @@ import com.example.melody_meter_local.model.Song
 import com.example.melody_meter_local.viewmodel.FavoritesViewModel
 
 class FavoritesAdapter(
-    private val viewModel: FavoritesViewModel,
-    private val onItemClick: (Song) -> Unit
+    //private val viewModel: FavoritesViewModel,
+    private val onItemClick: (Song) -> Unit,
+    private val onFavoriteToggle: (Song, Boolean) -> Unit
 ) : RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder>() {
+
     private var favorites: List<Song> = emptyList()
 
     inner class FavoritesViewHolder(
         itemView: View,
-        private val onItemClick: (Song) -> Unit
+        private val onItemClick: (Song) -> Unit,
+        private val onFavoriteToggle: (Song, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val binding = ItemFavoriteBinding.bind(itemView)
@@ -32,16 +35,13 @@ class FavoritesAdapter(
                 binding.albumImg.setImageResource(R.drawable.default_album_cover)
             }
 
+            val isFavorite = item in favorites
+            binding.saveButton.setImageResource(
+                if (isFavorite) R.drawable.ic_save_pressed else R.drawable.ic_save_unpressed
+            )
+
             binding.saveButton.setOnClickListener {
-                val songId = item.spotifyTrackId
-                if (item in favorites) {
-                    viewModel.removeFavorite(songId)
-                    binding.saveButton.setImageResource(R.drawable.ic_save_unpressed)
-                } else {
-                    viewModel.addFavorite(songId)
-                    binding.saveButton.setImageResource(R.drawable.ic_save_pressed)
-                }
-                notifyDataSetChanged()
+                onFavoriteToggle(item, !isFavorite)
             }
 
             itemView.setOnClickListener {
@@ -53,7 +53,7 @@ class FavoritesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoritesViewHolder {
         val binding =
             ItemFavoriteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FavoritesViewHolder(binding.root, onItemClick)
+        return FavoritesViewHolder(binding.root, onItemClick, onFavoriteToggle)
     }
 
     override fun onBindViewHolder(holder: FavoritesViewHolder, position: Int) {
