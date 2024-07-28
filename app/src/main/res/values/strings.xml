@@ -58,4 +58,7 @@
     <string name="placeholder_album_name">{Placeholder_Album_Name}</string>
     <string name="no_results_found">No results found.</string>
     <string name="no_rating">---</string>
+    <string name="confirm_discard_changes">Do you want to discard the unsaved changes?</string>
+    <string name="discard">Discard Changes</string>
+    <string name="discard_changes">Unsaved Changes</string>
 </resources>

@@ -35,6 +35,9 @@ class ProfileViewModel @Inject constructor(
     private val _updateSuccess = MutableLiveData<Boolean>()
     val updateSuccess: LiveData<Boolean> get() = _updateSuccess
 
+    private var isImageUploadSuccessful = false
+    private var isProfileUpdateSuccessful = false
+
     private var username: String? = null
     private var profileUrl: String? = null
 
@@ -94,14 +97,17 @@ class ProfileViewModel @Inject constructor(
 
         userDbReference.child(uid).updateChildren(updates)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    username = user.username
-                    profileUrl = user.profileUrl
-                    _hasChanges.value = false
-                    _updateSuccess.value = true
-                } else {
-                    _updateSuccess.value = false
-                }
+                isProfileUpdateSuccessful = task.isSuccessful
+                checkOverallSuccess()
+
+//                if (task.isSuccessful) {
+//                    username = user.username
+//                    profileUrl = user.profileUrl
+//                    _hasChanges.value = false
+//                    _updateSuccess.value = true
+//                } else {
+//                    _updateSuccess.value = false
+//                }
             }
     }
 
@@ -122,15 +128,25 @@ class ProfileViewModel @Inject constructor(
                 setUserProfileImageUrl(imageUrl)
                 saveChanges() // Update the profile URL in the database
                 onSuccess(imageUrl)
-                _updateSuccess.value = true
+//                _updateSuccess.value = true
+                isImageUploadSuccessful = true
+                checkOverallSuccess()
             }.addOnFailureListener { exception ->
                 onFailure(exception)
-                _updateSuccess.value = false
+                isImageUploadSuccessful = false
+                checkOverallSuccess()
+//                _updateSuccess.value = false
             }
         }.addOnFailureListener { exception ->
             onFailure(exception)
-            _updateSuccess.value = false
+            isImageUploadSuccessful = false
+            checkOverallSuccess()
+//            _updateSuccess.value = false
         }
+    }
+
+    private fun checkOverallSuccess() {
+        _updateSuccess.value = isImageUploadSuccessful && isProfileUpdateSuccessful
     }
 
     private fun getFileExtension(uri: Uri): String {

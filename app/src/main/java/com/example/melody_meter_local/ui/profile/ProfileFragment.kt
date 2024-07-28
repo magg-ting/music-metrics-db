@@ -1,16 +1,23 @@
 package com.example.melody_meter_local.ui.profile
 
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.melody_meter_local.R
@@ -25,8 +32,13 @@ import com.shz.imagepicker.imagepicker.ImagePickerCallback
 import com.shz.imagepicker.imagepicker.model.GalleryPicker
 import com.shz.imagepicker.imagepicker.model.PickedResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.coroutines.resume
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(), ImagePickerCallback {
@@ -60,7 +72,6 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
             .galleryPicker(GalleryPicker.NATIVE)        // Available values: GalleryPicker.NATIVE, GalleryPicker.CUSTOM
             .build()
 
-        // TODO: set button save to visible when either profile pic or username is changed
         binding.btnSaveChanges.isEnabled = false
 
         loginViewModel.isLoggedIn.observe(viewLifecycleOwner) { isLoggedIn ->
@@ -92,16 +103,61 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
 
         //TODO: toast should not be shown unless user actually has made changes
         profileViewModel.updateSuccess.observe(viewLifecycleOwner) { success ->
-            val message = if (success) {
-                "Profile updated successfully!"
-            } else {
-                "Failed to update profile."
+            if (profileViewModel.hasChanges.value == true) {
+                val message = if (success) {
+                    "Profile updated successfully!"
+                } else {
+                    "Failed to update profile."
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
 
         //TODO: if user navigates back without saving, we should show a dialog to confirm discard changes
+
+        // Add a listener to handle navigation changes
+        findNavController().addOnDestinationChangedListener { _, destination, _ ->
+            Log.d("ProfileFragment", "Destination Changed")
+            if (profileViewModel.hasChanges.value == true) {
+                //showDiscardChangesDialog(destination.id)
+                lifecycleScope.launch {
+                    val shouldProceed = showDiscardChangesDialog()
+                    if (shouldProceed) {
+                        Log.d("ProfileFragment", "onDestinationChanged proceed to ${destination.id}")
+                            findNavController().navigate(destination.id)
+                    }
+                }
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (profileViewModel.hasChanges.value == true) {
+                        lifecycleScope.launch {
+                            val shouldProceed = showDiscardChangesDialog()
+                            if (shouldProceed) {
+                                Log.d("ProfileFragment", "onBackPressed proceed")
+                                findNavController().navigateUp()
+                            }
+                        }
+                    } else {
+                        findNavController().navigateUp()
+                    }
+                }
+            }
+        )
     }
+
+    private suspend fun showDiscardChangesDialog(): Boolean {
+        return MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.discard_changes))
+            .setMessage(getString(R.string.confirm_discard_changes))
+            .create()
+            .await(positiveText = getString(R.string.discard), negativeText = getString(R.string.cancel))
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -246,4 +302,30 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
             .show()
     }
 
+}
+
+// ref: https://federicokt.medium.com/smarter-dialogs-with-coroutines-b83e1d0e06a0
+private suspend fun AlertDialog.await(
+    positiveText: String,
+    negativeText: String
+) = suspendCancellableCoroutine { cont ->
+    val listener = DialogInterface.OnClickListener { _, which ->
+        cont.resume(which == DialogInterface.BUTTON_POSITIVE)
+    }
+
+    setButton(AlertDialog.BUTTON_POSITIVE, positiveText, listener)
+    setButton(AlertDialog.BUTTON_NEGATIVE, negativeText, listener)
+
+    // we can either decide to cancel the coroutine if the dialog
+    // itself gets cancelled, or resume the coroutine with the
+    // value [false]
+    setOnCancelListener { cont.cancel() }
+
+    // if we make this coroutine cancellable, we should also close the
+    // dialog when the coroutine is cancelled
+    cont.invokeOnCancellation { dismiss() }
+
+    // remember to show the dialog before returning from the block,
+    // you won't be able to do it after this function is called!
+    show()
 }
