@@ -35,6 +35,7 @@ class FavoritesAdapter(
                 binding.albumImg.setImageResource(R.drawable.default_album_cover)
             }
 
+            //TODO: update icon at real time for toggling
             val isFavorite = item in favorites
             binding.saveButton.setImageResource(
                 if (isFavorite) R.drawable.ic_save_pressed else R.drawable.ic_save_unpressed

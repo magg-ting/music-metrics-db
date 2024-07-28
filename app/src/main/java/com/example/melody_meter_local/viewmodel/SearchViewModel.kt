@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.melody_meter_local.di.PopularSearchesDatabaseReference
+import com.example.melody_meter_local.di.SongDatabaseReference
 import com.example.melody_meter_local.di.UserDatabaseReference
 import com.example.melody_meter_local.model.PopularSearch
 import com.example.melody_meter_local.model.Song
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -32,6 +34,7 @@ class SearchViewModel @Inject constructor(
     private val recentSearchesRepository: RecentSearchesRepository,
     @UserDatabaseReference private val userDbReference: DatabaseReference,
     @PopularSearchesDatabaseReference private val popularSearchesDbReference: DatabaseReference,
+    @SongDatabaseReference private val songDbReference: DatabaseReference,
     private val auth: FirebaseAuth
 ) : ViewModel() {
 
@@ -55,8 +58,10 @@ class SearchViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     val spotifyResponse = response.body()
                     spotifyResponse?.let { res ->
-                        val results = res.tracks?.items?.map { it.toSong() } ?: emptyList()
-                        _searchResults.postValue(results)
+                            val tracks = res.tracks?.items ?: emptyList()
+                            val songs = tracks.map { it.toSong() }
+                            val ratedSongs = fetchSongRatings(songs)
+                            _searchResults.postValue(ratedSongs)
                         }
 
                 } else {
@@ -66,6 +71,32 @@ class SearchViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}")
+            }
+        }
+    }
+
+    private suspend fun fetchSongRatings(songs: List<Song>): List<Song> {
+        return withContext(Dispatchers.IO) {
+            songs.map { song ->
+                try {
+                    val songRef = songDbReference.child(song.spotifyTrackId)
+
+                    val ratingsSnapshot = songRef.child("ratings").get().await()
+                    val songRatings = ratingsSnapshot.getValue(object :
+                        GenericTypeIndicator<MutableList<MutableMap<String, Double>>>() {}) ?: mutableListOf()
+
+                    val avgRatingSnapshot = songRef.child("avgRating").get().await()
+                    val avgRating = (avgRatingSnapshot.value as Number).toDouble()
+
+                    // Create a new Song object with updated ratings and avgRating
+                    song.copy(
+                        ratings = songRatings,
+                        avgRating = avgRating
+                    )
+                } catch (e: Exception) {
+                    Log.e("SearchViewModel", "Failed to fetch ratings for song: ${song.spotifyTrackId}", e)
+                    song.copy(ratings = mutableListOf(), avgRating = 0.0)
+                }
             }
         }
     }

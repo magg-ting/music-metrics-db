@@ -45,7 +45,7 @@
             android:layout_height="match_parent"
             android:drawablePadding="@dimen/spacing_small_8dp"
             android:padding="@dimen/spacing_small_8dp"
-            android:text="6.5"
+            android:text="@string/no_rating"
             android:layout_gravity="center_vertical"
             android:gravity="end|center_vertical"
             android:textColor="@color/on_background_60"
