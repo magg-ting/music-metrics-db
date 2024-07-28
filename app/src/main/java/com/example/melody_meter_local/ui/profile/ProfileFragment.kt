@@ -105,16 +105,18 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
         }
 
         profileViewModel.updateSuccess.observe(viewLifecycleOwner) { success ->
-            if (success != null) { // Check if update was attempted
-                val message = if (success) {
+            success?.let {
+                val message = if (it) {
                     "Profile updated successfully!"
                 } else {
                     "Failed to update profile."
                 }
-                if (success) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                // Disable the button only if the update was successful
+                if (it) {
                     binding.btnSaveChanges.isEnabled = false
                 }
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                // Reset the value to null after handling
                 profileViewModel.resetUpdateSuccess()
             }
         }
@@ -122,38 +124,38 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
         //TODO: if user navigates back without saving, we should show a dialog to confirm discard changes
 
         // Add a listener to handle navigation changes
-        findNavController().addOnDestinationChangedListener { _, destination, _ ->
-            Log.d("ProfileFragment", "Destination Changed")
-            if (profileViewModel.hasChanges.value == true) {
-                //showDiscardChangesDialog(destination.id)
-                lifecycleScope.launch {
-                    val shouldProceed = showDiscardChangesDialog()
-                    if (shouldProceed) {
-                        Log.d("ProfileFragment", "onDestinationChanged proceed to ${destination.id}")
-                            findNavController().navigate(destination.id)
-                    }
-                }
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (profileViewModel.hasChanges.value == true) {
-                        lifecycleScope.launch {
-                            val shouldProceed = showDiscardChangesDialog()
-                            if (shouldProceed) {
-                                Log.d("ProfileFragment", "onBackPressed proceed")
-                                findNavController().navigateUp()
-                            }
-                        }
-                    } else {
-                        findNavController().navigateUp()
-                    }
-                }
-            }
-        )
+//        findNavController().addOnDestinationChangedListener { _, destination, _ ->
+//            Log.d("ProfileFragment", "Destination Changed")
+//            if (profileViewModel.hasChanges.value == true) {
+//                //showDiscardChangesDialog(destination.id)
+//                lifecycleScope.launch {
+//                    val shouldProceed = showDiscardChangesDialog()
+//                    if (shouldProceed) {
+//                        Log.d("ProfileFragment", "onDestinationChanged proceed to ${destination.id}")
+//                            findNavController().navigate(destination.id)
+//                    }
+//                }
+//            }
+//        }
+//
+//        requireActivity().onBackPressedDispatcher.addCallback(
+//            viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    if (profileViewModel.hasChanges.value == true) {
+//                        lifecycleScope.launch {
+//                            val shouldProceed = showDiscardChangesDialog()
+//                            if (shouldProceed) {
+//                                Log.d("ProfileFragment", "onBackPressed proceed")
+//                                findNavController().navigateUp()
+//                            }
+//                        }
+//                    } else {
+//                        findNavController().navigateUp()
+//                    }
+//                }
+//            }
+//        )
     }
 
     private suspend fun showDiscardChangesDialog(): Boolean {
@@ -256,6 +258,14 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
         binding.btnSaveChanges.setOnClickListener {
             val newUsername = binding.editTextUsername.text.toString().trim()
             val newProfileUrl = profileViewModel.user.value?.profileUrl
+
+            // Check if newUsername contains white spaces or is empty
+            if (newUsername.isEmpty() || newUsername.contains(Regex("\\s"))) {
+                // Show error prompt
+                Toast.makeText(requireContext(), getString(R.string.invalid_username), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             Log.d("ProfileFragment", "Save button clicked. New Username: $newUsername, New Profile URL: $newProfileUrl")
 
             // Update ViewModel with new values

@@ -69,7 +69,7 @@ class SignUpDialogFragment : DialogFragment() {
             val confirmPassword = edtxtConfirmPassword.text.toString().trim()
 
             when {
-                username.contains(" ") -> {
+                username.contains(Regex("\\s")) -> {
                     Toast.makeText(context, R.string.invalid_username, Toast.LENGTH_SHORT).show()
                 }
 

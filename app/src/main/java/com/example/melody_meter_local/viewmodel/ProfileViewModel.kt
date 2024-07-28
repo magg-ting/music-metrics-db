@@ -38,6 +38,9 @@ class ProfileViewModel @Inject constructor(
     private var newUsername: String? = null
     private var newProfileUrl: String? = null
 
+    private var isProfileUpdateSuccessful: Boolean? = null
+    private var isImageUploadSuccessful: Boolean?  = null
+
     // load user's existing info from db for comparison
     fun loadUserProfile() {
         val uid = auth.currentUser?.uid ?: return
@@ -94,13 +97,12 @@ class ProfileViewModel @Inject constructor(
 
         userDbReference.child(uid).updateChildren(updates)
             .addOnCompleteListener { task ->
-                val profileUpdateSuccessful = task.isSuccessful
-                // isProfileUpdateSuccessful = task.isSuccessful
-                if (profileUpdateSuccessful) {
+                if (task.isSuccessful) {
+                    isProfileUpdateSuccessful = true
                     _hasChanges.value = false // Reset changes after successful update
                 }
                 Log.d("ProfileViewModel", "Database update task is successful: ${task.isSuccessful}")
-                checkOverallSuccess(profileUpdateSuccessful)
+                checkOverallSuccess()
             }
     }
 
@@ -116,29 +118,34 @@ class ProfileViewModel @Inject constructor(
 
         Log.d("ProfileViewModel", "Starting upload of image file: ${file.name}")
 
-        uploadTask.addOnSuccessListener {
-            Log.d("ProfileViewModel", "Image upload successful")
-            //isImageUploadSuccessful = true
-            imageRef.downloadUrl.addOnSuccessListener { uri ->
-                val imageUrl = uri.toString()
-                Log.d("ProfileViewModel", "Image URL obtained: $imageUrl")
-                // Notify success with the image URL
-                onSuccess(imageUrl)
-            }.addOnFailureListener { exception ->
-                Log.e("ProfileViewModel", "Failed to get download URL: ${exception.message}")
+        uploadTask
+            .addOnSuccessListener {
+                Log.d("ProfileViewModel", "Image upload successful")
+                isImageUploadSuccessful = true
+                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                    val imageUrl = uri.toString()
+                    Log.d("ProfileViewModel", "Image URL obtained: $imageUrl")
+                    // Notify success with the image URL
+                    onSuccess(imageUrl)
+                }.addOnFailureListener { exception ->
+                    Log.e("ProfileViewModel", "Failed to get download URL: ${exception.message}")
+                    // Notify failure with the exception
+                    onFailure(exception)
+                }
+            }
+            .addOnFailureListener { exception ->
+                isImageUploadSuccessful = false
+                Log.e("ProfileViewModel", "Image upload failed: ${exception.message}")
                 // Notify failure with the exception
                 onFailure(exception)
             }
-        }.addOnFailureListener { exception ->
-            //isImageUploadSuccessful = false
-            Log.e("ProfileViewModel", "Image upload failed: ${exception.message}")
-            // Notify failure with the exception
-            onFailure(exception)
-        }
     }
 
-    private fun checkOverallSuccess(profileUpdateSuccessful: Boolean) {
-        _updateSuccess.value = profileUpdateSuccessful && (newProfileUrl == null || newProfileUrl != null)
+    private fun checkOverallSuccess() {
+        if(isProfileUpdateSuccessful == null) return
+        if(isImageUploadSuccessful == null || isImageUploadSuccessful == true){
+            _updateSuccess.value = isProfileUpdateSuccessful
+        }
     }
 
 
@@ -149,10 +156,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun resetUpdateSuccess() {
-        savedStateHandle["updateSuccess"] = null
+        _updateSuccess.value = null
     }
 
     //TODO (future enhancement): remove outdated profile images from Storage
-    //TODO: persists temp uploaded image and username update and dont show up
+    //TODO (future enhancement): persists temp uploaded image and username update and dont show up
 
 }
