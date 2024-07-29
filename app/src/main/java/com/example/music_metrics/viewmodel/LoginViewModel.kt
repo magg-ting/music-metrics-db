@@ -31,7 +31,7 @@ class LoginViewModel @Inject constructor(
     val signUpStatus: LiveData<Result<Boolean>> get() = _signUpStatus
 
     // livedata for whether user is logged in
-    private val _isLoggedIn = savedStateHandle.getLiveData("isLoggedIn", auth.currentUser != null)
+    private val _isLoggedIn = MutableLiveData<Boolean>()
     val isLoggedIn: LiveData<Boolean> get() = _isLoggedIn
 
     private val sharedPreferences =
@@ -40,7 +40,16 @@ class LoginViewModel @Inject constructor(
     init {
         // Load the persisted login state
         val persistedLoginState = sharedPreferences.getBoolean(LOGIN_KEY, false)
-        savedStateHandle["isLoggedIn"] = persistedLoginState
+        _isLoggedIn.value = persistedLoginState
+
+        // Optionally, check if the user is logged in using Firebase
+        if (auth.currentUser != null) {
+            _isLoggedIn.value = true
+        }
+//
+//        // Load the persisted login state
+//        val persistedLoginState = sharedPreferences.getBoolean(LOGIN_KEY, false)
+//        savedStateHandle["isLoggedIn"] = persistedLoginState
     }
 
     fun login(email: String, password: String) {
@@ -48,7 +57,7 @@ class LoginViewModel @Inject constructor(
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     _loginStatus.value = Result.success(true)
-                    _isLoggedIn.value = true
+                    setLoggedIn(true)
                 } else {
                     _loginStatus.value = Result.failure(task.exception ?: Exception("Unknown error"))
                 }
@@ -57,7 +66,7 @@ class LoginViewModel @Inject constructor(
 
     fun logout() {
         auth.signOut()
-        _isLoggedIn.value = false
+        setLoggedIn(false)
 
         // Reset login/signup status to prevent incorrect status being shown
         _loginStatus.value = Result.success(false)
@@ -76,7 +85,7 @@ class LoginViewModel @Inject constructor(
                             .addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     _signUpStatus.value = Result.success(true)
-                                    _isLoggedIn.value = true
+                                    setLoggedIn(true)
                                 } else {
                                     _signUpStatus.value = Result.failure(task.exception ?: Exception("Unknown error"))
                                 }
@@ -91,7 +100,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun setLoggedIn(isLoggedIn: Boolean) {
-        savedStateHandle["isLoggedIn"] = isLoggedIn
+        _isLoggedIn.value = isLoggedIn
         persistLoginState(isLoggedIn)
     }
 

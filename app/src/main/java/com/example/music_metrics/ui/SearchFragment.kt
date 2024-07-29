@@ -52,6 +52,8 @@ class SearchFragment : Fragment() {
         outState.putBoolean("isSearching", searchViewModel.isSearching.value ?: false)
     }
 
+    //TODO: recent searches is empty (not updated) if user logs in by the login dialog on search fragment
+    //TODO: when orientation changes, all views are invisible
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

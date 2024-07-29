@@ -13,22 +13,25 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.music_metrics.R
 import com.example.music_metrics.databinding.FragmentChangePasswordBinding
+import com.example.music_metrics.di.UserDatabaseReference
 import com.example.music_metrics.viewmodel.LoginViewModel
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ChangePasswordFragment : Fragment() {
     private var _binding: FragmentChangePasswordBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val loginViewModel: LoginViewModel by activityViewModels()
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var userDbReference: DatabaseReference
+    @Inject
+    lateinit var auth: FirebaseAuth
+    @Inject
+    @UserDatabaseReference private lateinit var userDbReference: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +44,6 @@ class ChangePasswordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
         // disable the save button by default
