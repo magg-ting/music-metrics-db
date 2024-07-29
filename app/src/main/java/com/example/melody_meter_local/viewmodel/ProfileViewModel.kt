@@ -160,6 +160,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     //TODO (future enhancement): remove outdated profile images from Storage
-    //TODO (future enhancement): persists temp uploaded image and username update and dont show up
+    //TODO (future enhancement): persists temp uploaded image and username update
 
 }

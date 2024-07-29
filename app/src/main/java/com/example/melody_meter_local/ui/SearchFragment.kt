@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.melody_meter_local.adapter.RecentSearchesAdapter
@@ -17,15 +18,13 @@ import com.example.melody_meter_local.viewmodel.LoginViewModel
 import com.example.melody_meter_local.viewmodel.SearchViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val searchViewModel: SearchViewModel by activityViewModels()
@@ -43,50 +42,38 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        Log.d("SearchFragment", "Create View loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
         return binding.root
     }
 
-    //TODO: recent searches of logged in user not populated when view is first created
     //TODO: login prompt incorrectly shown when orientation changes
     //TODO: recent searches incorrectly shown with search results when orientation changes
-    //TODO: app crashes when searchview is on close
-    //TODO: avg rating is not shown in search results items
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("SearchFragment", "View Created")
         setUpAdapters()
-        setUpUI()
-        Log.d("SearchFragment", "loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
+        setUpListeners()
+        Log.d("SearchFragment", "View Created loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
         observeViewModel()
-
-        // handle SearchView results
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    val trimmedQuery = it.trim()
-                    if (trimmedQuery.isNotEmpty()) {
-                        searchViewModel.saveSearchQuery(trimmedQuery)
-                        searchViewModel.performSearch(trimmedQuery)
-                        searchViewModel.setIsSearching(true)
-                    }
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return false
-            }
-        })
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d("SearchFragment", "View Paused loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
+        allViewsGone()
+    }
 
     override fun onResume() {
         super.onResume()
+        Log.d("SearchFragment", "View Resumed loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
         updateUI()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("SearchFragment", "View Destroyed loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
+        allViewsGone()
         _binding = null
     }
 
@@ -116,16 +103,33 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun setUpUI() {
+    private fun setUpListeners() {
         binding.clearAllSearches.setOnClickListener {
             searchViewModel.clearAllSearches()
         }
 
         binding.searchView.setOnCloseListener {
             searchViewModel.setIsSearching(false)
-            //searchResultsAdapter.submitList(emptyList())
             false
         }
+
+        // handle SearchView results
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    val trimmedQuery = it.trim()
+                    if (trimmedQuery.isNotEmpty()) {
+                        searchViewModel.performSearch(trimmedQuery)
+                        searchViewModel.setIsSearching(true)
+                    }
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
 
         binding.searchView.setOnSearchClickListener {
             searchViewModel.setIsSearching(true)
@@ -135,11 +139,18 @@ class SearchFragment : Fragment() {
             val loginDialogFragment = LoginDialogFragment()
             loginDialogFragment.show(parentFragmentManager, "loginDialogFragment")
         }
+
     }
 
     private fun observeViewModel() {
         searchViewModel.searchResults.observe(viewLifecycleOwner) { results ->
             searchResultsAdapter.submitList(results)
+            Log.d("SearchFragment", "search results updated: $results")
+        }
+
+        // Fetch recent searches
+        viewLifecycleOwner.lifecycleScope.launch {
+            searchViewModel.fetchRecentSearches()
         }
 
         searchViewModel.recentSearches.observe(viewLifecycleOwner) { recentSearches ->
@@ -159,7 +170,7 @@ class SearchFragment : Fragment() {
     private fun updateUI() {
         val isSearching = searchViewModel.isSearching.value ?: false
         val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
-        Log.d("SearchFragment", "UpdateUI isSearching ${isSearching} isLoggedIn ${isLoggedIn}")
+        Log.d("SearchFragment", "UpdateUI isLoggedIn ${isLoggedIn} isSearching ${isSearching} ")
         if (isSearching) {
             binding.recentSearchesGroup.visibility = View.GONE
             binding.searchResultsGroup.visibility = View.VISIBLE
@@ -168,18 +179,19 @@ class SearchFragment : Fragment() {
             binding.searchResultsGroup.visibility = View.GONE
 
             if (isLoggedIn) {
+                binding.recentSearchesTitleWrapper.visibility = View.VISIBLE
                 binding.loginPromptWrapper.visibility = View.GONE
                 binding.recentSearchesRecyclerView.visibility = View.VISIBLE
-                binding.clearAllSearches.visibility = View.VISIBLE
+
             } else {
                 // Clear search results and recent searches for unlogged-in users
                 recentSearchesAdapter.submitList(emptyList())
                 searchResultsAdapter.submitList(emptyList())
 
                 // prompt user to login to retrieve his recent searches
-                binding.recentSearchesRecyclerView.visibility = View.GONE
-                binding.clearAllSearches.visibility = View.GONE
+                binding.recentSearchesTitleWrapper.visibility = View.VISIBLE
                 binding.loginPromptWrapper.visibility = View.VISIBLE
+                binding.recentSearchesRecyclerView.visibility = View.GONE
             }
         }
     }

@@ -30,6 +30,7 @@
         android:id="@+id/recent_searches_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="
                     recent_searches_title_wrapper,
                     recent_searches_recycler_view,
@@ -42,7 +43,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_view">
+        app:layout_constraintTop_toBottomOf="@id/search_view"
+        android:visibility="gone" >
 
         <TextView
             style="@style/TextStyle.TitleLarge"
@@ -53,7 +55,7 @@
             android:text="@string/recent_searches"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             style="@style/TextStyle.HelpText"
@@ -65,7 +67,7 @@
             android:text="@string/clear_all"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -78,7 +80,8 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recent_searches_title_wrapper">
+        app:layout_constraintTop_toBottomOf="@id/recent_searches_title_wrapper"
+        android:visibility="gone" >
 
         <TextView
             style="@style/TextStyle.BodyMedium"
@@ -111,13 +114,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recent_searches_title_wrapper"
         app:layoutManager="LinearLayoutManager"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:visibility="gone" />
 
     <!-- Search results section -->
     <androidx.constraintlayout.widget.Group
         android:id="@+id/search_results_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="
                     search_results_recycler_view
             " />

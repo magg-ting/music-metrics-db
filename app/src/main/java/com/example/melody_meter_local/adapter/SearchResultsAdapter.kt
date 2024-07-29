@@ -30,7 +30,7 @@ class SearchResultsAdapter(
             } else {
                 binding.albumImg.setImageResource(R.drawable.default_album_cover)
             }
-            if (item.ratings.isEmpty()) {
+            if (item.ratings.isNullOrEmpty()) {
                 binding.rating.setText(R.string.no_rating)
             } else {
                 binding.rating.text = item.avgRating.toString()

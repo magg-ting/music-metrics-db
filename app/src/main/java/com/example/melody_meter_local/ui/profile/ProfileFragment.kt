@@ -121,7 +121,7 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
             }
         }
 
-        //TODO: if user navigates back without saving, we should show a dialog to confirm discard changes
+        //TODO (future enhancement): if user navigates back without saving, we should show a dialog to confirm discard changes
 
         // Add a listener to handle navigation changes
 //        findNavController().addOnDestinationChangedListener { _, destination, _ ->
