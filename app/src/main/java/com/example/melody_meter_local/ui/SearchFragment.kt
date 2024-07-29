@@ -51,7 +51,7 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("SearchFragment", "View Created")
+        Log.d("SearchFragment", "View Created, ${savedInstanceState}")
         setUpAdapters()
         setUpListeners()
         Log.d("SearchFragment", "View Created loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
@@ -73,7 +73,7 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d("SearchFragment", "View Destroyed loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
-        allViewsGone()
+        //allViewsGone()
         _binding = null
     }
 
@@ -158,19 +158,23 @@ class SearchFragment : Fragment() {
             Log.d("SearchFragment", "Recent searches updated: $recentSearches")
         }
 
+        loginViewModel.isLoggedIn.observe(viewLifecycleOwner) {
+            updateUI()
+        }
+
         searchViewModel.isSearching.observe(viewLifecycleOwner) {
             updateUI()
         }
 
-        loginViewModel.isLoggedIn.observe(viewLifecycleOwner) {
-            updateUI()
-        }
     }
 
     private fun updateUI() {
+        allViewsGone()  //always reset first
+
         val isSearching = searchViewModel.isSearching.value ?: false
         val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
         Log.d("SearchFragment", "UpdateUI isLoggedIn ${isLoggedIn} isSearching ${isSearching} ")
+
         if (isSearching) {
             binding.recentSearchesGroup.visibility = View.GONE
             binding.searchResultsGroup.visibility = View.VISIBLE
@@ -193,6 +197,35 @@ class SearchFragment : Fragment() {
                 binding.loginPromptWrapper.visibility = View.VISIBLE
                 binding.recentSearchesRecyclerView.visibility = View.GONE
             }
+        }
+        Log.d("SearchFragment", "Recent searches group visibility: ${binding.recentSearchesGroup.visibility}")
+        Log.d("SearchFragment", "Search results group visibility: ${binding.searchResultsGroup.visibility}")
+        Log.d("SearchFragment", "Recent searches title visibility: ${binding.recentSearchesTitleWrapper.visibility}")
+        Log.d("SearchFragment", "Login prompt visibility: ${binding.loginPromptWrapper.visibility}")
+    }
+
+    private fun allViewsGone(){
+        binding.recentSearchesGroup.visibility = View.GONE
+        binding.recentSearchesTitleWrapper.visibility = View.GONE
+        binding.recentSearchesRecyclerView.visibility = View.GONE
+        binding.loginPromptWrapper.visibility = View.GONE
+        binding.searchResultsGroup.visibility = View.GONE
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save UI state here
+        outState.putBoolean("IS_SEARCHING", searchViewModel.isSearching.value ?: false)
+        outState.putBoolean("IS_LOGGEDIN", loginViewModel.isLoggedIn.value ?: false)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            val isSearching = savedInstanceState.getBoolean("IS_SEARCHING", false)
+            searchViewModel.setIsSearching(isSearching)
+            val isLoggedIn = savedInstanceState.getBoolean("IS_LOGGEDIN", false)
+            Log.d("SearchFragment", "viewStateRestored isLoggedin $isLoggedIn")
         }
     }
 }

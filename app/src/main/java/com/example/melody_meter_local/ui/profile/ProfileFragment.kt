@@ -61,11 +61,13 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        Log.d("ProfileFragment", "Create View")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("ProfileFragment", "View Created")
 
         imagePicker = ImagePicker.Builder(requireContext().packageName + ".provider", this)
             .useGallery(true)                           // Use gallery picker if true
@@ -169,7 +171,13 @@ class ProfileFragment : Fragment(), ImagePickerCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("ProfileFragment", "Destroy View")
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("ProfileFragment", "Resume View")
     }
 
     override fun onImagePickerResult(result: PickedResult) {

@@ -98,7 +98,7 @@
         <item name="android:drawablePadding">@dimen/spacing_small_8dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingVertical">@dimen/spacing_small_8dp</item>
-        <item name="android:textColor">@color/on_background_60</item>
+        <item name="android:textColor">@color/on_background_87</item>
         <item name="drawableStartCompat">@drawable/ic_bookmark</item>
         <item name="drawableTint">@color/on_background_60</item>
         <item name="android:clickable">true</item>

@@ -153,7 +153,7 @@
     <color name="on_background_87">#F1DFDB</color>
     <color name="on_background_60">#F1DFDB</color>
     <color name="on_background_38">#F1DFDB</color>
-    <color name="card">#FFFFFF</color>
+    <color name="card">@color/md_theme_surfaceVariant_highContrast</color>
     <color name="border">#14845EC2</color>
     <color name="login_form_background">@color/background</color>
     <color name="edittext_background">@color/card</color>
@@ -162,7 +162,7 @@
     <color name="bottom_navigation_background">@color/md_theme_surfaceContainerLowest_highContrast</color>
     <color name="chip_unselected_background">@color/card</color>
     <color name="rating_color">#f6f6f6</color>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="ic_launcher_background">#8ea7c4</color>
     <color name="star">#F6B203</color>
     <color name="gradient1">#B3FFFFFF</color>
     <color name="gradient2">#00FFFFFF</color>

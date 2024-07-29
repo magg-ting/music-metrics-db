@@ -13,7 +13,7 @@ data class User(
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString(),
-        TODO("ratings"),
+        readMapList(parcel),
         parcel.createStringArrayList(),
         parcel.createStringArrayList()
     )
@@ -21,6 +21,7 @@ data class User(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(username)
         parcel.writeString(profileUrl)
+        writeMapList(parcel, ratings)
         parcel.writeStringList(recentSearches)
         parcel.writeStringList(favorites)
     }
@@ -37,6 +38,34 @@ data class User(
         override fun newArray(size: Int): Array<User?> {
             return arrayOfNulls(size)
         }
+
+        private fun writeMapList(parcel: Parcel, list: List<MutableMap<String, Double>>?) {
+            parcel.writeInt(list?.size ?: 0)
+            list?.forEach { map ->
+                parcel.writeInt(map.size)
+                map.forEach { (key, value) ->
+                    parcel.writeString(key)
+                    parcel.writeDouble(value)
+                }
+            }
+        }
+
+        private fun readMapList(parcel: Parcel): MutableList<MutableMap<String, Double>> {
+            val size = parcel.readInt()
+            val list = mutableListOf<MutableMap<String, Double>>()
+            repeat(size) {
+                val mapSize = parcel.readInt()
+                val map = mutableMapOf<String, Double>()
+                repeat(mapSize) {
+                    val key = parcel.readString() ?: ""
+                    val value = parcel.readDouble()
+                    map[key] = value
+                }
+                list.add(map)
+            }
+            return list
+        }
+
     }
 
 }

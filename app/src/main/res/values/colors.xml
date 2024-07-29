@@ -162,7 +162,7 @@
     <color name="bottom_navigation_background">#f6cdb9</color>
     <color name="chip_unselected_background">@color/card</color>
     <color name="rating_color">#f6f6f6</color>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="ic_launcher_background">#8ea7c4</color>
     <color name="star">#F6B203</color>
     <color name="gradient1">#B3FFFFFF</color>
     <color name="gradient2">#00FFFFFF</color>

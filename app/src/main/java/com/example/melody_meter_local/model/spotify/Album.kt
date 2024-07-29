@@ -14,14 +14,16 @@ data class Album(
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),
-        TODO("images"),
-        TODO("artists")
+        parcel.createTypedArrayList(AlbumImage.CREATOR),
+        parcel.createTypedArrayList(Artist.CREATOR) ?: emptyList()
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(spotifyAlbumId)
         parcel.writeString(name)
+        parcel.writeTypedList(images)
+        parcel.writeTypedList(artists)
     }
 
     override fun describeContents(): Int {
