@@ -11,7 +11,8 @@ import javax.inject.Inject
 
 class TrendingRepository @Inject constructor(
     private val spotifyApi: SpotifyApi,
-    @PopularSearchesDatabaseReference private val popularSearchesDbReference: DatabaseReference
+    @PopularSearchesDatabaseReference private val popularSearchesDbReference: DatabaseReference,
+    private val spotifyRepository: SpotifyRepository
 ) {
 
     suspend fun fetchPopularSearches(): List<String> {
@@ -59,6 +60,6 @@ class TrendingRepository @Inject constructor(
                 trendingSongs.add(song)
             }
         }
-        return trendingSongs
+        return spotifyRepository.fetchSongRatings(trendingSongs)
     }
 }
