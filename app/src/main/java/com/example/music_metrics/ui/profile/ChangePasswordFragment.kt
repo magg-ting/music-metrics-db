@@ -31,7 +31,7 @@ class ChangePasswordFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
     @Inject
-    @UserDatabaseReference private lateinit var userDbReference: DatabaseReference
+    @UserDatabaseReference lateinit var userDbReference: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,

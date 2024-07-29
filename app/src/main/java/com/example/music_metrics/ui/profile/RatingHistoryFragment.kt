@@ -1,6 +1,7 @@
 package com.example.music_metrics.ui.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class RatingHistoryFragment : Fragment() {
 
         ratingHistoryViewModel.ratingHistory.observe(viewLifecycleOwner) { ratings ->
             ratingHistoryAdapter.submitList(ratings)
+            Log.d("RatingHistoryFragment", "${ratings.first()}")
             showHistory(ratings)
         }
 

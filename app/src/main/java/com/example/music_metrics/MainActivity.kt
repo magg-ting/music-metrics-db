@@ -2,6 +2,7 @@ package com.example.music_metrics
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -28,29 +29,37 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         // Setup navigation based on orientation
-        val orientation = resources.configuration.orientation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (binding.bottomNavBar != null) {
+            // Portrait mode
             binding.bottomNavBar?.setupWithNavController(navController)
         } else {
-            val btnHome = binding.btnHome
-            val btnSearch = binding.btnSearch
-            val btnProfile = binding.btnProfile
-
-            btnHome?.setOnClickListener {
-                setActiveButton(btnHome)
-                navController.navigate(R.id.navigation_home)
-            }
-            btnSearch?.setOnClickListener {
-                setActiveButton(btnSearch)
-                navController.navigate(R.id.navigation_search)
-            }
-            btnProfile?.setOnClickListener {
-                setActiveButton(btnProfile)
-                navController.navigate(R.id.navigation_profile)
-            }
-
+            // Landscape mode
+            setupLandscapeNavigation()
         }
 
+        // Add destination changed listener for debugging
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            Log.d("Navigation", "Navigated to ${destination.label}")
+        }
+
+    }
+
+    private fun setupLandscapeNavigation() {
+        binding.btnHome?.setOnClickListener {
+            setActiveButton(it as ImageButton)
+            navController.navigate(R.id.navigation_home)
+        }
+        binding.btnSearch?.setOnClickListener {
+            setActiveButton(it as ImageButton)
+            navController.navigate(R.id.navigation_search)
+        }
+        binding.btnProfile?.setOnClickListener {
+            setActiveButton(it as ImageButton)
+            navController.navigate(R.id.navigation_profile)
+        }
+
+        // Set initial active button
+        setActiveButton(binding.btnHome as ImageButton)
     }
 
     private fun setActiveButton(activeButton: ImageButton) {
