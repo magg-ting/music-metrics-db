@@ -272,7 +272,7 @@ private suspend fun AlertDialog.await(
 }
 
 
-
+//TODO (future enhancement): refactor to move imagePicker and discardDialog to utils
 //TODO (future enhancement): if user navigates back without saving, we should show a dialog to confirm discard changes
 
 // Add a listener to handle navigation changes

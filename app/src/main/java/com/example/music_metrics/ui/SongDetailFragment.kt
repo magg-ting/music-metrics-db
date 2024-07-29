@@ -192,7 +192,7 @@ class SongDetailFragment : Fragment() {
         loginDialogFragment.show(parentFragmentManager, "loginDialogFragment")
     }
 
-    //TODO: change rating colors
+    //TODO (future enhancement): change rating colors (the library doesn't seem to provide an option for this)
     private fun showRatingDialog() {
         val composeView = binding.composeView
         composeView.visibility = View.VISIBLE

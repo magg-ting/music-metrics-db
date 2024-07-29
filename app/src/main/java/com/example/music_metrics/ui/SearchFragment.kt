@@ -45,7 +45,7 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    //TODO: when orientation changes, all views are invisible
+    //TODO: when orientation changes, all views are invisible if not searching
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -122,7 +122,6 @@ class SearchFragment : Fragment() {
     private fun observeViewModel() {
         searchViewModel.searchResults.observe(viewLifecycleOwner) { results ->
             searchResultsAdapter.submitList(results)
-            Log.d("SearchFragment", "search results updated: $results")
         }
 
         searchViewModel.recentSearches.observe(viewLifecycleOwner) { recentSearches ->
@@ -135,10 +134,10 @@ class SearchFragment : Fragment() {
             if (it == true) {
                 viewLifecycleOwner.lifecycleScope.launch {
                     searchViewModel.refreshRecentSearches()
+                    searchViewModel.fetchRecentSearches()
                     searchViewModel.fetchSearchResults()
                 }
             }
-            Log.d("SearchFragment", "observing live data _searchResults: ${searchViewModel.fetchSearchResults()?.first()}")
         }
 
         searchViewModel.isSearching.observe(viewLifecycleOwner) {
@@ -146,7 +145,7 @@ class SearchFragment : Fragment() {
             if(it == false){
                 viewLifecycleOwner.lifecycleScope.launch {
                     searchViewModel.refreshRecentSearches()
-                    Log.d("SearchFragment", "observing live data _recentSearches: ${searchViewModel.fetchRecentSearches()?.first()}")
+                    searchViewModel.fetchRecentSearches()
                 }
             }
 
@@ -156,6 +155,11 @@ class SearchFragment : Fragment() {
     private fun updateUI() {
         allViewsGone()  //always reset first
 
+        Log.d("SearchFragment", "Recent searches recycler visibility: ${binding.recentSearchesRecyclerView.visibility}")
+        Log.d("SearchFragment", "Search results group visibility: ${binding.searchResultsGroup.visibility}")
+        Log.d("SearchFragment", "Recent searches title visibility: ${binding.recentSearchesTitleWrapper.visibility}")
+        Log.d("SearchFragment", "Login prompt visibility: ${binding.loginPromptWrapper.visibility}")
+
         val isSearching = searchViewModel.isSearching.value ?: false
         val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
         Log.d("SearchFragment", "Update UI, isLoggedIn $isLoggedIn isSearching $isSearching")
@@ -164,6 +168,11 @@ class SearchFragment : Fragment() {
         binding.loginPromptWrapper.visibility = if (!isSearching && !isLoggedIn) View.VISIBLE else View.GONE
         binding.recentSearchesRecyclerView.visibility = if (!isSearching && isLoggedIn) View.VISIBLE else View.GONE
         binding.searchResultsGroup.visibility = if (isSearching) View.VISIBLE else View.GONE
+
+        Log.d("SearchFragment", "Recent searches recycler visibility: ${binding.recentSearchesRecyclerView.visibility}")
+        Log.d("SearchFragment", "Search results group visibility: ${binding.searchResultsGroup.visibility}")
+        Log.d("SearchFragment", "Recent searches title visibility: ${binding.recentSearchesTitleWrapper.visibility}")
+        Log.d("SearchFragment", "Login prompt visibility: ${binding.loginPromptWrapper.visibility}")
     }
 
     private fun allViewsGone(){
@@ -176,9 +185,6 @@ class SearchFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val isSearching = searchViewModel.isSearching.value ?: false
-        val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
-        Log.d("SearchFragment", "Resume, isLoggedIn $isLoggedIn isSearching $isSearching")
         updateUI()
     }
 

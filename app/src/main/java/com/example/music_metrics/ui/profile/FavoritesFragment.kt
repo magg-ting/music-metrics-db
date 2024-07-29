@@ -1,6 +1,7 @@
 package com.example.music_metrics.ui.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ class FavoritesFragment : Fragment() {
                     findNavController().navigate(action)
                 },
             onFavoriteToggle = {song: Song, isFavorite: Boolean ->
+                Log.d("FavoritesFragment", "onToggle for ${song.name}")
                 if (isFavorite) {
                     favoritesViewModel.addFavorite(song.spotifyTrackId)
                 } else {

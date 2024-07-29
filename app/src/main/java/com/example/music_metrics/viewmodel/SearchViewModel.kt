@@ -51,24 +51,18 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun fetchSearchResults(): List<Song>?{
+    fun fetchSearchResults(): List<Song>? {
         return _searchResults.value
     }
 
     fun refreshRecentSearches() {
         viewModelScope.launch {
-            try{
-                val recentSearches = recentSearchesRepository.fetchRecentSearches()
-                _recentSearches.postValue(recentSearches)
-            }
-            catch (e: Exception) {
-                Log.e("SearchViewModel", "Recent searches failed: ${e.message}")
-                _recentSearches.postValue(emptyList())
-            }
+            val recentSearches = recentSearchesRepository.fetchRecentSearches()
+            _recentSearches.postValue(recentSearches)
         }
     }
 
-    fun fetchRecentSearches(): List<String>?{
+    fun fetchRecentSearches(): List<String>? {
         return _recentSearches.value
     }
 

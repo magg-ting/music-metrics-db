@@ -6,6 +6,7 @@ import com.example.music_metrics.di.UserDatabaseReference
 import com.example.music_metrics.model.Song
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.GenericTypeIndicator
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -81,18 +82,33 @@ class FavoritesRepository @Inject constructor(
 
     suspend fun addFavorite(songId: String) {
         val uid = auth.currentUser?.uid ?: return
-        userDbReference.child(uid).child("favorites").push().setValue(songId).await()
+        try {
+            val userFavoritesRef = userDbReference.child(uid).child("favorites")
+            val snapshot = userFavoritesRef.get().await()
+            val favorites = snapshot.getValue(object : GenericTypeIndicator<MutableList<String>>() {}) ?: mutableListOf()
+
+            if (!favorites.contains(songId)) {
+                favorites.add(songId)
+                userFavoritesRef.setValue(favorites).await()
+            }
+        } catch (e: Exception) {
+            Log.e("FavoritesRepository", "Failed to add favorite", e)
+        }
     }
 
     suspend fun removeFavorite(songId: String) {
         val uid = auth.currentUser?.uid ?: return
-        val snapshot = userDbReference.child(uid).child("favorites").get().await()
-        val children = snapshot.children.toList()
-        for (child in children) {
-            if (child.getValue(String::class.java) == songId) {
-                child.ref.removeValue().await()
-                break
+        try {
+            val userFavoritesRef = userDbReference.child(uid).child("favorites")
+            val snapshot = userFavoritesRef.get().await()
+            val favorites = snapshot.getValue(object : GenericTypeIndicator<MutableList<String>>() {}) ?: mutableListOf()
+
+            if (favorites.contains(songId)) {
+                favorites.remove(songId)
+                userFavoritesRef.setValue(favorites).await()
             }
+        } catch (e: Exception) {
+            Log.e("FavoritesRepository", "Failed to remove favorite", e)
         }
     }
 }
