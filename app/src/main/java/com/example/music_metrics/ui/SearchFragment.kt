@@ -42,25 +42,13 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        Log.d("SearchFragment", "Create View loggedin ${loginViewModel.isLoggedIn.value} isSearching ${searchViewModel.isSearching.value}")
         return binding.root
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean("isLoggedIn", loginViewModel.isLoggedIn.value ?: false)
-        outState.putBoolean("isSearching", searchViewModel.isSearching.value ?: false)
-    }
-
-    //TODO: recent searches is empty (not updated) if user logs in by the login dialog on search fragment
     //TODO: when orientation changes, all views are invisible
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loginViewModel.isLoggedIn.observe(viewLifecycleOwner) { isLoggedIn ->
-            updateUI()
-        }
-        Log.d("SearchFragment", "View Created, ${savedInstanceState}")
         Log.d("SearchFragment", "Current user: ${auth.currentUser?.uid}")
         setUpAdapters()
         setUpListeners()
@@ -82,14 +70,7 @@ class SearchFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-//        // Clear search results and recent searches for unlogged-in users
-//        val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
-//        if(!isLoggedIn){
-//            recentSearchesAdapter.submitList(emptyList())
-//            searchResultsAdapter.submitList(emptyList())
-//        }
-
-        // apply to recylcerviews
+        // apply to recylcer views
         binding.recentSearchesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = recentSearchesAdapter
@@ -144,11 +125,6 @@ class SearchFragment : Fragment() {
             Log.d("SearchFragment", "search results updated: $results")
         }
 
-        // Fetch recent searches
-        viewLifecycleOwner.lifecycleScope.launch {
-            searchViewModel.fetchRecentSearches()
-        }
-
         searchViewModel.recentSearches.observe(viewLifecycleOwner) { recentSearches ->
             recentSearchesAdapter.submitList(recentSearches)
             Log.d("SearchFragment", "Recent searches updated: $recentSearches")
@@ -156,10 +132,24 @@ class SearchFragment : Fragment() {
 
         loginViewModel.isLoggedIn.observe(viewLifecycleOwner) {
             updateUI()
+            if (it == true) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    searchViewModel.refreshRecentSearches()
+                    searchViewModel.fetchSearchResults()
+                }
+            }
+            Log.d("SearchFragment", "observing live data _searchResults: ${searchViewModel.fetchSearchResults()?.first()}")
         }
 
         searchViewModel.isSearching.observe(viewLifecycleOwner) {
             updateUI()
+            if(it == false){
+                viewLifecycleOwner.lifecycleScope.launch {
+                    searchViewModel.refreshRecentSearches()
+                    Log.d("SearchFragment", "observing live data _recentSearches: ${searchViewModel.fetchRecentSearches()?.first()}")
+                }
+            }
+
         }
     }
 
@@ -186,6 +176,9 @@ class SearchFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        val isSearching = searchViewModel.isSearching.value ?: false
+        val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
+        Log.d("SearchFragment", "Resume, isLoggedIn $isLoggedIn isSearching $isSearching")
         updateUI()
     }
 
@@ -194,13 +187,4 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-//    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-//        super.onViewStateRestored(savedInstanceState)
-//        if (savedInstanceState != null) {
-//            val isSearching = savedInstanceState.getBoolean("IS_SEARCHING", false)
-//            searchViewModel.setIsSearching(isSearching)
-//            val isLoggedIn = savedInstanceState.getBoolean("IS_LOGGEDIN", false)
-//            loginViewModel.setLoggedIn(isLoggedIn)
-//        }
-//    }
 }

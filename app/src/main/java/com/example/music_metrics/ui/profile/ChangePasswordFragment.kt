@@ -9,15 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.music_metrics.R
 import com.example.music_metrics.databinding.FragmentChangePasswordBinding
-import com.example.music_metrics.di.UserDatabaseReference
-import com.example.music_metrics.viewmodel.LoginViewModel
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,12 +22,8 @@ class ChangePasswordFragment : Fragment() {
     private var _binding: FragmentChangePasswordBinding? = null
     private val binding get() = _binding!!
 
-    private val loginViewModel: LoginViewModel by activityViewModels()
-
     @Inject
     lateinit var auth: FirebaseAuth
-    @Inject
-    @UserDatabaseReference lateinit var userDbReference: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +36,6 @@ class ChangePasswordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val user = auth.currentUser
 
         // disable the save button by default
         binding.btnConfirm.isEnabled = false
@@ -96,10 +87,10 @@ class ChangePasswordFragment : Fragment() {
         val confirmNewPassword = binding.confirmNewPassword.text.toString()
 
         if (newPassword != confirmNewPassword) {
-            Toast.makeText(requireContext(), R.string.unmatched_passwords, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.unmatched_passwords, Toast.LENGTH_SHORT)
+                .show()
             return
-        }
-        else if(!isPasswordValid(newPassword)){
+        } else if (!isPasswordValid(newPassword)) {
             Toast.makeText(requireContext(), R.string.invalid_password, Toast.LENGTH_SHORT).show()
             return
         }
@@ -122,8 +113,7 @@ class ChangePasswordFragment : Fragment() {
                                     binding.confirmNewPassword.setText("")
                                     // navigate back to the profile page after changing the password
                                     findNavController().navigateUp()
-                                }
-                                else {
+                                } else {
                                     Toast.makeText(
                                         requireContext(),
                                         R.string.password_unchanged,
@@ -151,7 +141,8 @@ class ChangePasswordFragment : Fragment() {
     }
 
     private fun isPasswordValid(password: String): Boolean {
-        val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$"
+        val passwordPattern =
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,12}$"
         return password.matches(passwordPattern.toRegex())
     }
 }

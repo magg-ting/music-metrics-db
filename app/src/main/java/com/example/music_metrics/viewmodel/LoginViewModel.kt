@@ -18,8 +18,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     application: Application,
     private val auth: FirebaseAuth,
-    @UserDatabaseReference private val userDbReference: DatabaseReference,
-    private val savedStateHandle: SavedStateHandle
+    @UserDatabaseReference private val userDbReference: DatabaseReference
 ) : AndroidViewModel(application) {
 
     // livedata for whether login is successful
@@ -46,10 +45,6 @@ class LoginViewModel @Inject constructor(
         if (auth.currentUser != null) {
             _isLoggedIn.value = true
         }
-//
-//        // Load the persisted login state
-//        val persistedLoginState = sharedPreferences.getBoolean(LOGIN_KEY, false)
-//        savedStateHandle["isLoggedIn"] = persistedLoginState
     }
 
     fun login(email: String, password: String) {

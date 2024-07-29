@@ -36,59 +36,40 @@ class SearchViewModel @Inject constructor(
     fun performSearch(query: String) {
         viewModelScope.launch {
             try {
-                // Save the query to recent searches
-                saveSearchQuery(query)
+                withContext(Dispatchers.IO) {
+                    // Save the query to recent searches
+                    saveSearchQuery(query)
 
-                val response = withContext(Dispatchers.IO) {
-                    spotifyRepository.search(query)
+                    // search and fetch ratings
+                    val songs = spotifyRepository.search(query)
+                    _searchResults.postValue(songs)
                 }
-                if (response.isSuccessful) {
-                    val spotifyResponse = response.body()
-                    spotifyResponse?.let { res ->
-                        val tracks = res.tracks?.items ?: emptyList()
-                        val songs = tracks.map { it.toSong() }
-                        val ratedSongs = fetchSongRatings(songs)
-                        _searchResults.postValue(ratedSongs)
-                    }
 
-                } else {
-                    Log.e(
-                        "SearchViewModel",
-                        "Search failed with response: ${response.errorBody()?.string()}"
-                    )
-                }
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Search failed: ${e.message}")
             }
         }
     }
 
-    private suspend fun fetchSongRatings(songs: List<Song>): List<Song> {
-        return withContext(Dispatchers.IO) {
-            songs.map { song ->
-                try {
-                    val (songRatings, avgRating) = spotifyRepository.getSongRatings(song.spotifyTrackId)
-                    song.copy(
-                        ratings = songRatings,
-                        avgRating = avgRating
-                    )
-                } catch (e: Exception) {
-                    Log.d(
-                        "SearchViewModel",
-                        "Failed to fetch ratings for song: ${song.spotifyTrackId}",
-                        e
-                    )
-                    song.copy(ratings = mutableListOf(), avgRating = 0.0)
-                }
+    fun fetchSearchResults(): List<Song>?{
+        return _searchResults.value
+    }
+
+    fun refreshRecentSearches() {
+        viewModelScope.launch {
+            try{
+                val recentSearches = recentSearchesRepository.fetchRecentSearches()
+                _recentSearches.postValue(recentSearches)
+            }
+            catch (e: Exception) {
+                Log.e("SearchViewModel", "Recent searches failed: ${e.message}")
+                _recentSearches.postValue(emptyList())
             }
         }
     }
 
-    fun fetchRecentSearches() {
-        viewModelScope.launch {
-            val recentSearches = recentSearchesRepository.fetchRecentSearches()
-            _recentSearches.postValue(recentSearches)
-        }
+    fun fetchRecentSearches(): List<String>?{
+        return _recentSearches.value
     }
 
 
