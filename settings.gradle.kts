@@ -21,6 +21,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Melody-Meter-Local"
+rootProject.name = "Music-Metrics"
 include(":app")
  

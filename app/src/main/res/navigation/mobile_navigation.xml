@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.melody_meter_local.ui.HomeFragment"
+        android:name="com.example.music_metrics.ui.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
@@ -19,7 +19,7 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="song"
-                app:argType="com.example.melody_meter_local.model.Song"
+                app:argType="com.example.music_metrics.model.Song"
                 app:nullable="false" />
         </action>
         <action
@@ -31,19 +31,19 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="album"
-                app:argType="com.example.melody_meter_local.model.spotify.Album"
+                app:argType="com.example.music_metrics.model.spotify.Album"
                 app:nullable="false" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/navigation_album"
-        android:name="com.example.melody_meter_local.ui.AlbumFragment"
+        android:name="com.example.music_metrics.ui.AlbumFragment"
         android:label="Album"
         tools:layout="@layout/fragment_album" >
         <argument
             android:name="album"
-            app:argType="com.example.melody_meter_local.model.spotify.Album"
+            app:argType="com.example.music_metrics.model.spotify.Album"
             app:nullable="false" />
         <action
             android:id="@+id/action_albumFragment_to_songDetailFragment"
@@ -54,14 +54,14 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="song"
-                app:argType="com.example.melody_meter_local.model.Song"
+                app:argType="com.example.music_metrics.model.Song"
                 app:nullable="false" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.example.melody_meter_local.ui.SearchFragment"
+        android:name="com.example.music_metrics.ui.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" >
         <action
@@ -73,25 +73,25 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="song"
-                app:argType="com.example.melody_meter_local.model.Song"
+                app:argType="com.example.music_metrics.model.Song"
                 app:nullable="false" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/navigation_song_detail"
-        android:name="com.example.melody_meter_local.ui.SongDetailFragment"
+        android:name="com.example.music_metrics.ui.SongDetailFragment"
         android:label="Song Details"
         tools:layout="@layout/fragment_song_detail" >
         <argument
             android:name="song"
-            app:argType="com.example.melody_meter_local.model.Song"
+            app:argType="com.example.music_metrics.model.Song"
             app:nullable="false" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.melody_meter_local.ui.profile.ProfileFragment"
+        android:name="com.example.music_metrics.ui.profile.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -103,7 +103,7 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="user"
-                app:argType="com.example.melody_meter_local.model.User"
+                app:argType="com.example.music_metrics.model.User"
                 app:nullable="false" />
         </action>
         <action
@@ -115,7 +115,7 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="user"
-                app:argType="com.example.melody_meter_local.model.User"
+                app:argType="com.example.music_metrics.model.User"
                 app:nullable="false" />
         </action>
         <action
@@ -127,19 +127,19 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="user"
-                app:argType="com.example.melody_meter_local.model.User"
+                app:argType="com.example.music_metrics.model.User"
                 app:nullable="false" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.example.melody_meter_local.ui.profile.FavoritesFragment"
+        android:name="com.example.music_metrics.ui.profile.FavoritesFragment"
         android:label="Favorites"
         tools:layout="@layout/fragment_favorites" >
         <argument
             android:name="user"
-            app:argType="com.example.melody_meter_local.model.User"
+            app:argType="com.example.music_metrics.model.User"
             app:nullable="false" />
         <action
             android:id="@+id/action_favoritesFragment_to_songDetailFragment"
@@ -150,19 +150,19 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="song"
-                app:argType="com.example.melody_meter_local.model.Song"
+                app:argType="com.example.music_metrics.model.Song"
                 app:nullable="false" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/navigation_rating_history"
-        android:name="com.example.melody_meter_local.ui.profile.RatingHistoryFragment"
+        android:name="com.example.music_metrics.ui.profile.RatingHistoryFragment"
         android:label="Rating History"
         tools:layout="@layout/fragment_rating_history" >
         <argument
             android:name="user"
-            app:argType="com.example.melody_meter_local.model.User"
+            app:argType="com.example.music_metrics.model.User"
             app:nullable="false" />
         <action
             android:id="@+id/action_ratingHistoryFragment_to_songDetailFragment"
@@ -173,19 +173,19 @@
             app:popExitAnim="@anim/pop_exit_anim">
             <argument
                 android:name="song"
-                app:argType="com.example.melody_meter_local.model.Song"
+                app:argType="com.example.music_metrics.model.Song"
                 app:nullable="false" />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/navigation_change_password"
-        android:name="com.example.melody_meter_local.ui.profile.ChangePasswordFragment"
+        android:name="com.example.music_metrics.ui.profile.ChangePasswordFragment"
         android:label="Change Password"
         tools:layout="@layout/fragment_change_password" >
         <argument
             android:name="user"
-            app:argType="com.example.melody_meter_local.model.User"
+            app:argType="com.example.music_metrics.model.User"
             app:nullable="false" />
     </fragment>
 

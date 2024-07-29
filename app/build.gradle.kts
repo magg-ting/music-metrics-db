@@ -11,11 +11,11 @@ plugins {
 
 
 android {
-    namespace = "com.example.melody_meter_local"
+    namespace = "com.example.music_metrics"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.melody_meter_local"
+        applicationId = "com.example.music_metrics"
         minSdk = 31
         targetSdk = 34
         versionCode = 1
