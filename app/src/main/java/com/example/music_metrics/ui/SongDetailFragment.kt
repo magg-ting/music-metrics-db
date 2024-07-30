@@ -20,6 +20,7 @@ import com.example.music_metrics.model.Song
 import com.example.music_metrics.viewmodel.SongDetailViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 import javax.inject.Inject
 
 
@@ -95,7 +96,7 @@ class SongDetailFragment : Fragment() {
 
             // update song rating text
             binding.rating.text =
-                "${String.format("%.1f", song.avgRating)} (based on ${song.ratings.size} ratings)\n$userRatingText"
+                "${String.format(Locale.US, "%.1f", song.avgRating)} (based on ${song.ratings.size} ratings)\n$userRatingText"
         }
     }
 

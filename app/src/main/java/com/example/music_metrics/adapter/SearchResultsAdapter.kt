@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.example.music_metrics.R
 import com.example.music_metrics.databinding.ItemSongBinding
 import com.example.music_metrics.model.Song
+import java.util.Locale
 
 class SearchResultsAdapter(
     private val onItemClick: (Song) -> Unit
@@ -33,7 +34,7 @@ class SearchResultsAdapter(
             if (item.ratings.isNullOrEmpty()) {
                 binding.rating.setText(R.string.no_rating)
             } else {
-                binding.rating.text = item.avgRating.toString()
+                binding.rating.text = String.format(Locale.US, "%.1f", item.avgRating)
             }
 
             itemView.setOnClickListener {
