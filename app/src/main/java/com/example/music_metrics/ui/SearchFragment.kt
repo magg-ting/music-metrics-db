@@ -49,6 +49,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.loadingView.visibility = View.GONE
         Log.d("SearchFragment", "Current user: ${auth.currentUser?.uid}")
         setUpAdapters()
         setUpListeners()
@@ -105,6 +106,7 @@ class SearchFragment : Fragment() {
                 return true
             }
             override fun onQueryTextChange(newText: String?): Boolean {
+                showLoading(false)
                 return false
             }
         })
@@ -121,7 +123,10 @@ class SearchFragment : Fragment() {
 
     private fun observeViewModel() {
         searchViewModel.searchResults.observe(viewLifecycleOwner) { results ->
+            showLoading(checkLoading())
             searchResultsAdapter.submitList(results)
+            Log.d("SearchFragment", "Search results updated: $results")
+            showLoading(checkLoading())
         }
 
         searchViewModel.recentSearches.observe(viewLifecycleOwner) { recentSearches ->
@@ -148,7 +153,6 @@ class SearchFragment : Fragment() {
                     searchViewModel.fetchRecentSearches()
                 }
             }
-
         }
     }
 
@@ -162,6 +166,7 @@ class SearchFragment : Fragment() {
 
         val isSearching = searchViewModel.isSearching.value ?: false
         val isLoggedIn = loginViewModel.isLoggedIn.value ?: false
+
         Log.d("SearchFragment", "Update UI, isLoggedIn $isLoggedIn isSearching $isSearching")
 
         binding.recentSearchesTitleWrapper.visibility = if (!isSearching) View.VISIBLE else View.GONE
@@ -183,8 +188,18 @@ class SearchFragment : Fragment() {
         binding.searchResultsGroup.visibility = View.GONE
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun checkLoading(): Boolean {
+        val isSearching = searchViewModel.isSearching.value ?: false
+        return (isSearching && binding.searchResultsRecyclerView.isComputingLayout)
+    }
+
     override fun onResume() {
         super.onResume()
+        binding.loadingView.visibility = View.GONE
         updateUI()
     }
 

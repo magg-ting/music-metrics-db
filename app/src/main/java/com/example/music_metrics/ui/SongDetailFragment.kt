@@ -47,7 +47,7 @@ class SongDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d("SongDetailFragment", "onViewCreated")
         val song = args.song
         showSongDetails(song)
         updateSaveButtonState()
@@ -173,7 +173,6 @@ class SongDetailFragment : Fragment() {
                 }
             }
         )
-
     }
 
     private fun handleSaveButtonClick() {
@@ -194,15 +193,20 @@ class SongDetailFragment : Fragment() {
 
     //TODO (future enhancement): change rating colors (the library doesn't seem to provide an option for this)
     private fun showRatingDialog() {
+        Log.d("SongDetailFragment", "Showing rating dialog")
         val composeView = binding.composeView
         composeView.visibility = View.VISIBLE
         composeView.setContent {
+            Log.d("SongDetailFragment", "Setting content for rating dialog")
             RatingDialogComponent(
                 closeSelection = {
+                    Log.d("SongDetailFragment", "Closing rating dialog")
                     composeView.visibility = View.GONE
                 },
                 onRatingSelected = { rating ->
+                    Log.d("SongDetailFragment", "Rating selected: $rating")
                     songDetailViewModel.saveRating(args.song, rating)
+                    composeView.visibility = View.GONE
                 })
         }
     }

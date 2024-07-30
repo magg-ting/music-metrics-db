@@ -2,62 +2,83 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_no_back_btn_top_margin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_no_back_btn_top_margin"
     tools:context=".ui.HomeFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/spacing_extra_extra_giant_56dp" >
+        android:layout_height="wrap_content">
 
-        <!-- New Releases Section -->
-        <TextView
-            style="@style/TextStyle.TitleLarge"
-            android:id="@+id/new_releases_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Releases" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/new_releases_recycler_view"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/new_releases_label" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing_extra_extra_giant_56dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Top Rated Songs Section -->
-        <TextView
-            style="@style/TextStyle.TitleLarge"
-            android:id="@+id/top_rated_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Top Rated" />
+            <!-- New Releases Section -->
+            <TextView
+                android:id="@+id/new_releases_label"
+                style="@style/TextStyle.TitleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Releases" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/top_rated_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/top_rated_title" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/new_releases_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/new_releases_label" />
 
-        <!-- Popular Songs Section -->
-        <TextView
-            style="@style/TextStyle.TitleLarge"
-            android:id="@+id/trending_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Trending" />
+            <!-- Top Rated Songs Section -->
+            <TextView
+                android:id="@+id/top_rated_title"
+                style="@style/TextStyle.TitleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Top Rated" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/trending_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/trending_label" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/top_rated_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/top_rated_title" />
 
-    </LinearLayout>
+            <!-- Popular Songs Section -->
+            <TextView
+                android:id="@+id/trending_label"
+                style="@style/TextStyle.TitleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trending" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trending_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/trending_label" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/loading_view"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

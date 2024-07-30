@@ -18,10 +18,16 @@ class RatingHistoryViewModel @Inject constructor(
     private val _ratingHistory = MutableLiveData<List<Pair<Song, Double>>>()
     val ratingHistory: LiveData<List<Pair<Song, Double>>> get() = _ratingHistory
 
+    private val _isLoading = MutableLiveData<Boolean>(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+
     fun fetchRatingHistory() {
         viewModelScope.launch {
+            _isLoading.value = true
             val records = repository.fetchRatingHistory()
             _ratingHistory.value = records
+            _isLoading.value = false
         }
     }
 

@@ -37,6 +37,8 @@ class RatingHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.loadingView.visibility = View.GONE
+
         ratingHistoryAdapter = RatingHistoryAdapter { song ->
             val action =
                 RatingHistoryFragmentDirections.actionRatingHistoryFragmentToSongDetailFragment(song)
@@ -52,6 +54,10 @@ class RatingHistoryFragment : Fragment() {
             ratingHistoryAdapter.submitList(ratings)
             Log.d("RatingHistoryFragment", "${ratings.first()}")
             showHistory(ratings)
+        }
+
+        ratingHistoryViewModel.isLoading.observe(viewLifecycleOwner){
+            showLoading(it)
         }
 
         binding.btnBack.setOnClickListener {
@@ -70,11 +76,6 @@ class RatingHistoryFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     private fun showHistory(ratings: List<Pair<Song, Double>>) {
         if (ratings.isNotEmpty()) {
             binding.noHistoryMsg.visibility = View.GONE
@@ -83,6 +84,15 @@ class RatingHistoryFragment : Fragment() {
             binding.noHistoryMsg.visibility = View.VISIBLE
             binding.ratingHistoryRecyclerView.visibility = View.GONE
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

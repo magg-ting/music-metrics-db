@@ -33,7 +33,13 @@ class HomeViewModel @Inject constructor(
     private val _albumTracks = MutableLiveData<List<Song>>()
     val albumTracks: LiveData<List<Song>> get() = _albumTracks
 
+    private val _isLoading = MutableLiveData<Boolean>(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private var pendingOperations = 3 // Number of operations to track
+
     init {
+        _isLoading.value = true
         fetchTopRatedSongs()
         fetchTrendingSongs()
         fetchNewReleases()
@@ -41,15 +47,23 @@ class HomeViewModel @Inject constructor(
 
     fun fetchTopRatedSongs() {
         viewModelScope.launch {
-            val songs = topRatedRepository.fetchTopRatedSongs()
-            _topRatedSongs.postValue(songs)
+            try {
+                val songs = topRatedRepository.fetchTopRatedSongs()
+                _topRatedSongs.postValue(songs)
+            } finally {
+                checkAllOperationsCompleted()
+            }
         }
     }
 
     fun fetchTrendingSongs() {
         viewModelScope.launch {
-            val songs = trendingRepository.fetchTrendingSongs()
-            _trendingSongs.postValue(songs)
+            try {
+                val songs = trendingRepository.fetchTrendingSongs()
+                _trendingSongs.postValue(songs)
+            } finally {
+                checkAllOperationsCompleted()
+            }
         }
     }
 
@@ -67,9 +81,21 @@ class HomeViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Error fetching new releases", e)
+            } finally {
+                checkAllOperationsCompleted()
             }
         }
     }
 
+    private fun checkAllOperationsCompleted() {
+        pendingOperations--
+        if (pendingOperations <= 0) {
+            _isLoading.value = false
+        }
+    }
+
+    fun resetPendingOperations(){
+        pendingOperations = 3
+    }
 
 }

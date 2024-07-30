@@ -20,9 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     private val homeViewModel: HomeViewModel by viewModels()
@@ -42,6 +39,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.loadingView.visibility = View.GONE
         setupRecyclerViews()
     }
 
@@ -92,11 +90,20 @@ class HomeFragment : Fragment() {
         homeViewModel.newReleases.observe(viewLifecycleOwner) { albums ->
             newReleasesAdapter.submitList(albums)
         }
+
+        homeViewModel.isLoading.observe(viewLifecycleOwner){
+            showLoading(it)
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onResume() {
         super.onResume()
         // refresh the lists when user navigates back to the home fragment
+        homeViewModel.resetPendingOperations()
         homeViewModel.fetchTopRatedSongs()
         homeViewModel.fetchNewReleases()
         homeViewModel.fetchTrendingSongs()

@@ -37,6 +37,8 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.loadingView.visibility = View.GONE
+
         favoritesAdapter = FavoritesAdapter(
             onItemClick = { song ->
                     val action =
@@ -63,6 +65,10 @@ class FavoritesFragment : Fragment() {
             showFavorites(songs)
         }
 
+        favoritesViewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
+        }
+
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -80,11 +86,6 @@ class FavoritesFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     private fun showFavorites(songs: List<Song>) {
         if (songs.isNotEmpty()) {
             binding.noFavoritesMsg.visibility = View.GONE
@@ -93,6 +94,15 @@ class FavoritesFragment : Fragment() {
             binding.noFavoritesMsg.visibility = View.VISIBLE
             binding.favoritesRecyclerView.visibility = View.GONE
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

@@ -119,7 +119,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="
-                    search_results_recycler_view
+                    search_results_recycler_view,
+                    loading_view
             " />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -134,6 +135,17 @@
         app:layout_constraintTop_toBottomOf="@id/search_view"
         app:layoutManager="LinearLayoutManager"
         android:scrollbars="vertical" />
+
+    <ProgressBar
+        android:id="@+id/loading_view"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_view"
+        android:visibility="gone"
+        android:indeterminate="true"/>
 
 <!--TODO (future enhancement): no results / records textview -->
 <!--TODO (future enhancement): popular searches section -->
