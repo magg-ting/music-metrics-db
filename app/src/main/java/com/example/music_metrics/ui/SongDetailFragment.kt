@@ -58,6 +58,7 @@ class SongDetailFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        songDetailViewModel.clearState()
         _binding = null
     }
 
