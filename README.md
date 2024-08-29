@@ -46,8 +46,11 @@ https://github.com/user-attachments/assets/5a308432-5598-4a38-b345-dd34fbf3cf01
     (<a href="https://developer.spotify.com/documentation/web-api">Spotify Web API</a>) to fetch song and album details.
   </p>
   <div align="center">
-    <img src="assets/screenshots/feature-1.gif" alt="ScreenShot-1" width="150" height="320">
-    <img src="assets/screenshots/feature-2.gif" alt="ScreenShot-2" width="150" height="320">
+    <img src="assets/images/feature-1.gif" alt="ScreenShot-1" width="225" height="480">
+    <span>&ensp;&ensp;&ensp;&ensp;&ensp;</span>
+    <img src="assets/images/feature-2.gif" alt="ScreenShot-2" width="225" height="480">
+    <span>&ensp;&ensp;&ensp;&ensp;&ensp;</span>
+    <img src="assets/images/feature-3.png" alt="ScreenShot-3" width="225" height="480">
   </div>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
