@@ -23,6 +23,7 @@
     <li><a href="#about-the-project">About the Project</a></li>
     <li><a href="#built-with">Built With</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#future-enhancements">Future Enhancements</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#disclaimer">Disclaimer</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -41,9 +42,7 @@
     (<a href="https://developer.spotify.com/documentation/web-api">Spotify Web API</a>) to fetch song and album details.
   </p>
   <div>
-    <video width="1080" height="720" controls>
-      <source src="assets/videos/MMDb.mp4" type="video/mp4">
-    </video>
+    <video src="assets/videos/MMDb.mp4" width="320" height="240" controls></video>
   </div>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
