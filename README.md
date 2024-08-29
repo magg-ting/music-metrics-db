@@ -10,7 +10,6 @@
   <p align="center">
     Discover, Rate, and Explore Music Like Never Before!
     <br />
-    <br />
   </p>
 </div>
 
@@ -30,6 +29,11 @@
     <li><a href="#publish-date">Publish Date</a></li>
   </ol>
 </details>
+<br/>
+
+
+https://github.com/user-attachments/assets/5a308432-5598-4a38-b345-dd34fbf3cf01
+
 
 
 
@@ -42,7 +46,7 @@
     (<a href="https://developer.spotify.com/documentation/web-api">Spotify Web API</a>) to fetch song and album details.
   </p>
   <div>
-    <video src="assets/videos/MMDb.mp4" width="320" height="240" controls></video>
+    <img src="assets/screenshots/feature-1.png" width="50%">
   </div>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
@@ -88,28 +92,25 @@
 
 
 
-<!-- ROADMAP -->
-<!--
-## Roadmap
-
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/magg-ting/music-metrics-db/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
--->
+<!-- FUTURE ENHANCEMENTS -->
+<div id="future-enhancements">
+<h2>Future Enhancements</h2>
+<p>The app is currently meant to be an MVP only. Some enhancements I have in mind include:</p>
+<ul>
+  <li>Comments section to facilitate user nteraction</li>
+  <li>Tags for popular searches in the search page</li>
+  <li>Optimization of trending song algorithm</li>
+</ul>
+<p>Also see the <a href="https://github.com/magg-ting/music-metrics-db/issues">open issues</a> for a full list of community-proposed features (and known issues).</p>
+<p align="right"><a href="#readme-top">back to top</a></p>
+</div>
 
 
 
 <!-- CONTRIBUTING -->
 <div id="contributing">
   <h2>Contributing</h2>
-  <p>Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are <em>greatly appreciated</em>.</p>
-  <p>If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".</p>
-  <p>Don't forget to give the project a star! Thanks again!</p>
+  <p>If you have a suggestion that would make this project better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".</p>
   <ol>
     <li>Fork the Project</li>
     <li>Create your Feature Branch (<code>git checkout -b feature/AmazingFeature</code>)</li>
@@ -117,6 +118,7 @@ See the [open issues](https://github.com/magg-ting/music-metrics-db/issues) for 
     <li>Push to the Branch (<code>git push origin feature/AmazingFeature</code>)</li>
     <li>Open a Pull Request</li>
   </ol>
+  <p>Don't forget to give the project a star! Thanks again!</p>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
 
@@ -125,7 +127,11 @@ See the [open issues](https://github.com/magg-ting/music-metrics-db/issues) for 
 <!-- DISCLAIMER -->
 <div id="disclaimer">
   <h2>Disclaimer</h2>
-  <p>This app was originally developed as an individual college project. As a Proof-of-Concept instance, I used Spotify Web API to fetch the song data</p>
+  <p>
+    This app was originally developed as an individual college project as a proof-of-concept instance. It is not affiliated with Spotify, Inc. or any of its subsidiaries. All song data used in the app, including track, album, artist information, and album images, are sourced from the Spotify Web API and are owned by Spotify. All rights to the content belong to their respective owners.</p>
+  <p>
+    This app is intended for personal use only and should not be reproduced, distributed, or used for commercial purposes without explicit permission from the copyright holders. By using this app, you acknowledge and agree to these terms.
+  </p>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
 
@@ -150,9 +156,4 @@ See the [open issues](https://github.com/magg-ting/music-metrics-db/issues) for 
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
 
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[product-screenshot]: assets/screenshots/feature-1.png
 
