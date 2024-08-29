@@ -45,8 +45,9 @@ https://github.com/user-attachments/assets/5a308432-5598-4a38-b345-dd34fbf3cf01
     It utilizes Firebase to provide real-time updates on song ratings. As a POC, the app is currently using an external API 
     (<a href="https://developer.spotify.com/documentation/web-api">Spotify Web API</a>) to fetch song and album details.
   </p>
-  <div>
-    <img src="assets/screenshots/feature-1.png" width="50%">
+  <div align="center">
+    <img src="assets/screenshots/feature-1.gif" alt="ScreenShot-1" width="150" height="320">
+    <img src="assets/screenshots/feature-2.gif" alt="ScreenShot-2" width="150" height="320">
   </div>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
