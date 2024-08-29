@@ -74,7 +74,7 @@ https://github.com/user-attachments/assets/5a308432-5598-4a38-b345-dd34fbf3cf01
 <!-- GETTING STARTED -->
 <div id="getting-started">
   <h2>Getting Started</h2>
-  <p>To get a local copy up and running follow these simple example steps.</p>
+  <p>To get a local copy up and running, follow these simple steps.</p>
   <ol>
     <li>
       <p>Register for a Spotify Developer account and get an <a href="https://developer.spotify.com/documentation/web-api/tutorials/getting-started">access token</a>.</p>
@@ -114,7 +114,7 @@ https://github.com/user-attachments/assets/5a308432-5598-4a38-b345-dd34fbf3cf01
 <!-- CONTRIBUTING -->
 <div id="contributing">
   <h2>Contributing</h2>
-  <p>If you have a suggestion that would make this project better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".</p>
+  <p>All feedback and suggestions are welcome. If you have a suggestion that would make this project better, please fork the repo and create a pull request. You can also open an issue with the tag "enhancement".</p>
   <ol>
     <li>Fork the Project</li>
     <li>Create your Feature Branch (<code>git checkout -b feature/AmazingFeature</code>)</li>
