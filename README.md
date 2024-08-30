@@ -52,6 +52,7 @@ https://github.com/user-attachments/assets/5a308432-5598-4a38-b345-dd34fbf3cf01
     <span>&ensp;&ensp;&ensp;&ensp;&ensp;</span>
     <img src="assets/images/feature-3.png" alt="ScreenShot-3" width="225" height="480">
   </div>
+  <br/>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
 
@@ -90,6 +91,7 @@ https://github.com/user-attachments/assets/5a308432-5598-4a38-b345-dd34fbf3cf01
         <code>git remote -v # confirm the changes</code>
       </p>
     </li>
+    <li>Follow the doc <a href="https://firebase.google.com/docs/android/setup">here</a> to add firebase to the Android project.</li>
   </ol>
   <p align="right"><a href="#readme-top">back to top</a></p>
 </div>
